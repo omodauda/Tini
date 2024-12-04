@@ -12,4 +12,5 @@ struct Colors {
     static let secondary = "#808089"
     static let titleText = "#27272A"
     static let background = "#F5F5FA"
+    static let tetiary = "#EBEBF0"
 }

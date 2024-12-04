@@ -39,7 +39,7 @@ class HomeHeader: UIView {
     private let actionView: UIStackView = {
         let actionView = UIStackView()
         actionView.axis = .horizontal
-        actionView.backgroundColor = .gray
+        actionView.backgroundColor = UIColor(hex: Colors.tetiary)
         actionView.layer.cornerRadius = 12
         actionView.translatesAutoresizingMaskIntoConstraints = false
         actionView.alignment = .center
@@ -60,7 +60,7 @@ class HomeHeader: UIView {
     private let divider: UIView = {
         let divider = UIView()
         divider.backgroundColor = UIColor.black
-        divider.widthAnchor.constraint(equalToConstant: 1).isActive = true
+        divider.widthAnchor.constraint(equalToConstant: 0.35).isActive = true
         divider.heightAnchor.constraint(equalToConstant: 16).isActive = true
         return divider
     }()

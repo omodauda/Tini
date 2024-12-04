@@ -21,6 +21,7 @@ class HomeTabController: UITabBarController {
     
     private func configureTabBar() {
         tabBar.tintColor = UIColor(hex: Colors.primary)
+        tabBar.unselectedItemTintColor = UIColor(hex: Colors.secondary)
         tabBar.backgroundColor = UIColor.white
         tabBar.layer.shadowColor = UIColor.gray.cgColor
         tabBar.layer.shadowOpacity = 0.2

@@ -19,5 +19,8 @@ struct Images {
         static let storeLogo = UIImage(named: "StoreLogo")
         static let moreIcon = UIImage(systemName: "ellipsis")
         static let closeIcon = UIImage(systemName: "xmark.circle")
+        static let pickupImage = UIImage(named: "PickupLogo")
+        static let deliveryImage = UIImage(named: "DeliveryLogo")
+        static let reservationImage = UIImage(named: "ReservationLogo")
     }
 }
