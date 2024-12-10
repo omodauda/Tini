@@ -10,6 +10,7 @@ import UIKit
 class HomeCollectionViewHeader: UICollectionReusableView {
     static let reuseIdentifier = "HomeCollectionViewHeader"
     
+    private let discountCollection = DiscountCollectionView()
     private let deliveryCard = DeliveryCard()
     private let reservationCard = ReservationCard()
     private let title: UILabel = {
@@ -31,15 +32,22 @@ class HomeCollectionViewHeader: UICollectionReusableView {
     }
     
     private func setupUI() {
+        addSubview(discountCollection)
         addSubview(deliveryCard)
         addSubview(reservationCard)
         addSubview(title)
         
+        discountCollection.translatesAutoresizingMaskIntoConstraints = false
         deliveryCard.translatesAutoresizingMaskIntoConstraints = false
         reservationCard.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            deliveryCard.topAnchor.constraint(equalTo: topAnchor, constant: 16),
+            discountCollection.topAnchor.constraint(equalTo: topAnchor),
+            discountCollection.leadingAnchor.constraint(equalTo: leadingAnchor),
+            discountCollection.trailingAnchor.constraint(equalTo: trailingAnchor),
+            discountCollection.heightAnchor.constraint(equalToConstant: 134),
+            
+            deliveryCard.topAnchor.constraint(equalTo: discountCollection.bottomAnchor, constant: 24),
             deliveryCard.leadingAnchor.constraint(equalTo: leadingAnchor),
             deliveryCard.trailingAnchor.constraint(equalTo: trailingAnchor),
             deliveryCard.heightAnchor.constraint(equalToConstant: 154),

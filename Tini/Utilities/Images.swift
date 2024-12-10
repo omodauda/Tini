@@ -23,5 +23,6 @@ struct Images {
         static let deliveryImage = UIImage(named: "DeliveryLogo")
         static let reservationImage = UIImage(named: "ReservationLogo")
         static let promoImage = UIImage(named: "PromoImage")
+        static let discountImage = UIImage(named: "DiscountImage")
     }
 }

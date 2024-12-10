@@ -35,7 +35,7 @@ class HomeVC: UIViewController {
         collectionView.register(PromotionItemCollectionViewCell.self, forCellWithReuseIdentifier: PromotionItemCollectionViewCell.identifier)
         collectionView.register(HomeCollectionViewHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HomeCollectionViewHeader.reuseIdentifier)
         collectionView.showsVerticalScrollIndicator = false
-        collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
+        collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 120, right: 0)
     }
     
     private func setupUI() {
@@ -97,6 +97,6 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollec
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return CGSize(width: collectionView.bounds.width, height: 395)
+        return CGSize(width: collectionView.bounds.width, height: 545)
     }
 }
