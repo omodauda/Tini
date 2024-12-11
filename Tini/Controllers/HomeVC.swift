@@ -22,8 +22,9 @@ class HomeVC: UIViewController {
         setupUI()
     }
     
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.isNavigationBarHidden = true
     }
     
     func configureCollectionView() {
@@ -38,7 +39,18 @@ class HomeVC: UIViewController {
         collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 120, right: 0)
     }
     
+    private func goToPickupScreen() {
+        let storePickupVC = StorePickupMenuVC()
+        storePickupVC.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(storePickupVC, animated: false)
+    }
+
+    private func goToDeliveryScreen() {
+        print("Go to delivery screen")
+    }
+    
     private func setupUI() {
+        
         view.addSubview(headerView)
         headerView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -91,6 +103,13 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollec
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         if kind == UICollectionView.elementKindSectionHeader {
             let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HomeCollectionViewHeader.reuseIdentifier, for: indexPath) as! HomeCollectionViewHeader
+            header.onPickupPressed = { [weak self] in
+                self?.goToPickupScreen()
+            }
+            
+            header.onDeliveryPressed = { [weak self] in
+                self?.goToDeliveryScreen()
+            }
             return header
         }
         return UICollectionReusableView()

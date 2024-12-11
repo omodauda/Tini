@@ -123,7 +123,3 @@ class HomeHeader: UIView {
     }
     
 }
-
-#Preview {
-    HomeHeader()
-}

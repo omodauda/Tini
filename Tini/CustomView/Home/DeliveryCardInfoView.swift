@@ -9,20 +9,20 @@ import UIKit
 
 class DeliveryCardInfoView: UIView {
     
-    private let imageView: UIImageView = {
+    let imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
     
-    private let title: UILabel = {
+    let titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = UIColor(hex: Colors.titleText)
         return label
     }()
     
-    private let desc: UILabel = {
+    let desc: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = UIColor(hex: Colors.secondary)
@@ -31,15 +31,15 @@ class DeliveryCardInfoView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setup()
+        setupUI()
     }
     
     convenience init(image: UIImage, title: String, desc: String) {
         self.init(frame: .zero)
         
-        setup()
+        setupUI()
         imageView.image = image
-        self.title.text = title
+        self.titleLabel.text = title
         self.desc.text = desc
     }
     
@@ -47,22 +47,22 @@ class DeliveryCardInfoView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setup() {
+    private func setupUI() {
         addSubview(imageView)
-        addSubview(title)
+        addSubview(titleLabel)
         addSubview(desc)
         
         NSLayoutConstraint.activate([
             imageView.topAnchor.constraint(equalTo: topAnchor),
-            imageView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            imageView.centerXAnchor.constraint(equalTo: centerXAnchor),
             imageView.widthAnchor.constraint(equalToConstant: 108),
             imageView.heightAnchor.constraint(equalToConstant: 72),
             
-            title.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 8),
-            title.centerXAnchor.constraint(equalTo: imageView.centerXAnchor),
+            titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 8),
+            titleLabel.centerXAnchor.constraint(equalTo: imageView.centerXAnchor),
             
-            desc.topAnchor.constraint(equalTo: title.bottomAnchor),
-            desc.centerXAnchor.constraint(equalTo: title.centerXAnchor)
+            desc.topAnchor.constraint(equalTo: titleLabel.bottomAnchor),
+            desc.centerXAnchor.constraint(equalTo: titleLabel.centerXAnchor)
         ])
         
     }

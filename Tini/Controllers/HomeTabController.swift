@@ -29,9 +29,10 @@ class HomeTabController: UITabBarController {
         tabBar.layer.shadowRadius = 4
         tabBar.layer.masksToBounds = false
         
-        let home = HomeVC()
-        home.title = "Home"
-        home.tabBarItem.image = Images.Nav.home
+        let homeVC = HomeVC()
+        homeVC.title = "Home"
+        homeVC.tabBarItem.image = Images.Nav.home
+        let home = UINavigationController(rootViewController: homeVC)
         
         let stores = StoresVC()
         stores.title = "Stores"
