@@ -25,4 +25,9 @@ struct Images {
         static let promoImage = UIImage(named: "PromoImage")
         static let discountImage = UIImage(named: "DiscountImage")
     }
+    
+    static let backIcon = UIImage(systemName: "chevron.backward")
+    static let searchIcon = UIImage(systemName: "magnifyingglass")
+    static let pickupStoreLogo = UIImage(named: "PickupStoreLogo")
+    static let rightIcon = UIImage(systemName: "chevron.right")
 }
