@@ -31,6 +31,7 @@ struct Images {
     static let pickupStoreLogo = UIImage(named: "PickupStoreLogo")
     static let rightIcon = UIImage(systemName: "chevron.right")
     static let deliveryAddressLogo = UIImage(named: "DeliveryAddressLogo")
+    static let downIcon = UIImage(systemName: "chevron.down")
     
     struct Products {
         static let pureBlack = UIImage(named: "PureBlack")

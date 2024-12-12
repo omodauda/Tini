@@ -48,7 +48,7 @@ class StorePickupMenuVC: UIViewController {
     private let selectStoreIcon: UIButton = {
         let selectStoreIcon = UIButton()
         selectStoreIcon.translatesAutoresizingMaskIntoConstraints = false
-        selectStoreIcon.tintColor = UIColor(hex: Colors.titleText)
+        selectStoreIcon.tintColor = UIColor(hex: Colors.secondary)
         selectStoreIcon.setImage(Images.rightIcon, for: .normal)
         return selectStoreIcon
     }()
@@ -65,6 +65,7 @@ class StorePickupMenuVC: UIViewController {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.register(MenuListTableSectionHeaderView.self, forHeaderFooterViewReuseIdentifier: MenuListTableSectionHeaderView.identifier)
         tableView.tableHeaderView?.backgroundColor = .white
+        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 68, right: 0)
         return tableView
     }()
 

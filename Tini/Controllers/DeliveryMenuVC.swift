@@ -47,7 +47,7 @@ class DeliveryMenuVC: UIViewController {
     private let selectAddressIcon: UIButton = {
         let selectAddressIcon = UIButton()
         selectAddressIcon.translatesAutoresizingMaskIntoConstraints = false
-        selectAddressIcon.tintColor = UIColor(hex: Colors.titleText)
+        selectAddressIcon.tintColor = UIColor(hex: Colors.secondary)
         selectAddressIcon.setImage(Images.rightIcon, for: .normal)
         return selectAddressIcon
     }()
@@ -62,6 +62,49 @@ class DeliveryMenuVC: UIViewController {
         return descriptionText
     }()
     
+    private let storePickerView: UIView = {
+        let storePickerView = UIView()
+        storePickerView.translatesAutoresizingMaskIntoConstraints = false
+        storePickerView.layer.borderWidth = 1
+        storePickerView.layer.cornerRadius = 4
+        storePickerView.layer.borderColor = UIColor(hex: "#DDDDE3").cgColor
+        return storePickerView
+    }()
+    
+    private let storeLabel: UILabel = {
+        let storeLabel = UILabel()
+        storeLabel.text = "Store"
+        storeLabel.font = UIFont.systemFont(ofSize: 14, weight: .regular)
+        storeLabel.textColor = UIColor(hex: Colors.titleText)
+        storeLabel.translatesAutoresizingMaskIntoConstraints = false
+        return storeLabel
+    }()
+    
+    private let divider: UIView = {
+        let divider = UIView()
+        divider.translatesAutoresizingMaskIntoConstraints = false
+        divider.backgroundColor = UIColor(hex: "#EBEBF0")
+        return divider
+    }()
+    
+    private let dropDownButton: UIButton = {
+        let dropDownButton = UIButton()
+        dropDownButton.setImage(Images.downIcon, for: .normal)
+        dropDownButton.translatesAutoresizingMaskIntoConstraints = false
+        dropDownButton.tintColor = UIColor(hex: Colors.secondary)
+        return dropDownButton
+    }()
+    
+    private let storeAddress: UILabel = {
+        let storeAddress = UILabel()
+        storeAddress.text = "SB Han Thuyen, 113 Han Thuyen, Ho Chi Minh Ho Chi Minh"
+        storeAddress.font = UIFont.systemFont(ofSize: 14, weight: .regular)
+        storeAddress.textColor = UIColor(hex: Colors.titleText)
+        storeAddress.lineBreakMode = .byTruncatingTail
+        storeAddress.translatesAutoresizingMaskIntoConstraints = false
+        return storeAddress
+    }()
+    
     // table view
     var menuList = ProductsListViewModel()
     
@@ -74,6 +117,7 @@ class DeliveryMenuVC: UIViewController {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.register(MenuListTableSectionHeaderView.self, forHeaderFooterViewReuseIdentifier: MenuListTableSectionHeaderView.identifier)
         tableView.tableHeaderView?.backgroundColor = .white
+        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 68, right: 0)
         return tableView
     }()
     
@@ -98,16 +142,23 @@ class DeliveryMenuVC: UIViewController {
         deliveryDetailView.addSubview(selectAddressIcon)
         deliveryDetailView.addSubview(descriptionText)
         
+        storePickerView.addSubview(storeLabel)
+        storePickerView.addSubview(divider)
+        storePickerView.addSubview(storeAddress)
+        storePickerView.addSubview(dropDownButton)
+        
+        deliveryDetailView.addSubview(storePickerView)
+        
         NSLayoutConstraint.activate([
             deliveryDetailView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             deliveryDetailView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            deliveryDetailView.heightAnchor.constraint(equalToConstant: 62),
+            deliveryDetailView.heightAnchor.constraint(equalToConstant: 110),
             
             deliveryLogo.topAnchor.constraint(equalTo: deliveryDetailView.topAnchor, constant: 8),
             deliveryLogo.leadingAnchor.constraint(equalTo: deliveryDetailView.leadingAnchor, constant: 16),
             deliveryLogo.widthAnchor.constraint(equalToConstant: 40),
             deliveryLogo.heightAnchor.constraint(equalToConstant: 40),
-            deliveryLogo.bottomAnchor.constraint(equalTo: deliveryDetailView.bottomAnchor, constant: -14),
+//            deliveryLogo.bottomAnchor.constraint(equalTo: deliveryDetailView.bottomAnchor, constant: -14),
             
             deliveryLabel.leadingAnchor.constraint(equalTo: deliveryLogo.trailingAnchor, constant: 8),
             deliveryLabel.topAnchor.constraint(equalTo: deliveryDetailView.topAnchor, constant: 8),
@@ -120,7 +171,28 @@ class DeliveryMenuVC: UIViewController {
             selectAddressIcon.trailingAnchor.constraint(equalTo: deliveryDetailView.trailingAnchor, constant: -24),
             
             descriptionText.topAnchor.constraint(equalTo: deliveryAdress.bottomAnchor, constant: 4),
-            descriptionText.leadingAnchor.constraint(equalTo: deliveryLogo.trailingAnchor, constant: 8)
+            descriptionText.leadingAnchor.constraint(equalTo: deliveryLogo.trailingAnchor, constant: 8),
+            
+            storePickerView.topAnchor.constraint(equalTo: descriptionText.bottomAnchor, constant: 16),
+            storePickerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            storePickerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            storePickerView.heightAnchor.constraint(equalToConstant: 40),
+            
+            storeLabel.topAnchor.constraint(equalTo: storePickerView.topAnchor, constant: 9.5),
+            storeLabel.leadingAnchor.constraint(equalTo: storePickerView.leadingAnchor, constant: 16),
+            storeLabel.bottomAnchor.constraint(equalTo: storePickerView.bottomAnchor, constant: -9.5),
+            
+            divider.centerYAnchor.constraint(equalTo: storeLabel.centerYAnchor),
+            divider.widthAnchor.constraint(equalToConstant: 1),
+            divider.heightAnchor.constraint(equalToConstant: 24),
+            divider.leadingAnchor.constraint(equalTo: storeLabel.trailingAnchor, constant: 8),
+            
+            dropDownButton.centerYAnchor.constraint(equalTo: divider.centerYAnchor),
+            dropDownButton.trailingAnchor.constraint(equalTo: storePickerView.trailingAnchor, constant: -16),
+            
+            storeAddress.centerYAnchor.constraint(equalTo: divider.centerYAnchor),
+            storeAddress.leadingAnchor.constraint(equalTo: divider.trailingAnchor, constant: 8),
+            storeAddress.trailingAnchor.constraint(equalTo: dropDownButton.leadingAnchor, constant: -40)
         ])
     }
     
