@@ -9,36 +9,7 @@ import UIKit
 
 class StorePickupMenuVC: UIViewController {
     
-    private let headerView: UIView = {
-        let headerView = UIView()
-        headerView.translatesAutoresizingMaskIntoConstraints = false
-        return headerView
-    }()
-    
-    private let backIcon: UIButton = {
-        let backIcon = UIButton()
-        backIcon.translatesAutoresizingMaskIntoConstraints = false
-        backIcon.tintColor = UIColor(hex: Colors.titleText)
-        return backIcon
-    }()
-    
-    private let headerTitle: UILabel = {
-        let headerTitle = UILabel()
-        headerTitle.text = "Store pickup"
-        headerTitle.font = UIFont.systemFont(ofSize: 18, weight: .bold)
-        headerTitle.textColor = UIColor(hex: Colors.titleText)
-        headerTitle.translatesAutoresizingMaskIntoConstraints = false
-        return headerTitle
-    }()
-    
-    private let searchIcon: UIButton = {
-        let searchButton = UIButton()
-        searchButton.translatesAutoresizingMaskIntoConstraints = false
-        searchButton.tintColor = UIColor(hex: Colors.titleText)
-        return searchButton
-    }()
-    
-    private let actionButtonsView = ActionButtonsView()
+    private let header = CustomNavHeader(title: "Store pickup")
     
     // current pickup store view
     private let currentPickupStoreView: UIView = {
@@ -101,21 +72,12 @@ class StorePickupMenuVC: UIViewController {
         super.viewDidLoad()
         
         setupUI()
-        configureBackButton()
         configureTableHeader()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.isNavigationBarHidden = true
-    }
-    
-    private func configureBackButton() {
-        backIcon.addTarget(self, action: #selector(goBack), for: .touchUpInside)
-    }
-    
-    @objc private func goBack() {
-        navigationController?.popViewController(animated: true)
     }
     
     private func configureTableHeader() {
@@ -152,50 +114,31 @@ class StorePickupMenuVC: UIViewController {
     
     private func setupUI() {
         view.backgroundColor = .white
-        view.addSubview(headerView)
-        
-        backIcon.setImage(Images.backIcon, for: .normal)
-        searchIcon.setImage(Images.searchIcon, for: .normal)
-        
-        headerView.addSubview(backIcon)
-        headerView.addSubview(headerTitle)
-        headerView.addSubview(searchIcon)
-        headerView.addSubview(actionButtonsView)
-        
-        actionButtonsView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(header)
+        header.translatesAutoresizingMaskIntoConstraints = false
+        header.delegate = self
         
         view.addSubview(tableView)
         tableView.delegate = self
         tableView.dataSource = self
         
         NSLayoutConstraint.activate([
-            headerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            headerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            headerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            header.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            header.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            header.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
-            backIcon.topAnchor.constraint(equalTo: headerView.topAnchor, constant: 21),
-            backIcon.bottomAnchor.constraint(equalTo: headerView.bottomAnchor, constant: -21),
-            backIcon.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 24),
-            
-            headerTitle.leadingAnchor.constraint(equalTo: backIcon.trailingAnchor, constant: 16),
-            headerTitle.centerYAnchor.constraint(equalTo: backIcon.centerYAnchor),
-            
-            actionButtonsView.topAnchor.constraint(equalTo: headerView.topAnchor, constant: 21),
-            actionButtonsView.bottomAnchor.constraint(equalTo: headerView.bottomAnchor, constant: -21),
-            actionButtonsView.trailingAnchor.constraint(equalTo: headerView.trailingAnchor, constant: -16),
-            actionButtonsView.widthAnchor.constraint(equalToConstant: 64),
-            actionButtonsView.heightAnchor.constraint(equalToConstant: 24),
-            
-            searchIcon.centerYAnchor.constraint(equalTo: actionButtonsView.centerYAnchor),
-            searchIcon.trailingAnchor.constraint(equalTo: actionButtonsView.leadingAnchor, constant: -11),
-            
-            tableView.topAnchor.constraint(equalTo: headerView.bottomAnchor),
+            tableView.topAnchor.constraint(equalTo: header.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
+}
 
+extension StorePickupMenuVC: CustomNavHeaderDelegate {
+    func didTapBack() {
+        navigationController?.popViewController(animated: true)
+    }
 }
 
 extension StorePickupMenuVC: UITableViewDelegate, UITableViewDataSource {
