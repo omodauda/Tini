@@ -46,7 +46,9 @@ class HomeVC: UIViewController {
     }
 
     private func goToDeliveryScreen() {
-        print("Go to delivery screen")
+        let deliveryMenuVC = DeliveryMenuVC()
+        deliveryMenuVC.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(deliveryMenuVC, animated: false)
     }
     
     private func setupUI() {
