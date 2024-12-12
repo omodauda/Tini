@@ -36,41 +36,7 @@ class HomeHeader: UIView {
         return label
     }()
     
-    private let actionView: UIStackView = {
-        let actionView = UIStackView()
-        actionView.axis = .horizontal
-        actionView.backgroundColor = UIColor(hex: Colors.tetiary)
-        actionView.layer.cornerRadius = 12
-        actionView.translatesAutoresizingMaskIntoConstraints = false
-        actionView.alignment = .center
-        actionView.distribution = .equalSpacing
-        actionView.spacing = 8
-        actionView.isLayoutMarginsRelativeArrangement = true
-        actionView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 4, leading: 10, bottom: 4, trailing: 10)
-        return actionView
-    }()
-    
-    private let moreButton: UIButton = {
-        let moreButton = UIButton()
-        moreButton.translatesAutoresizingMaskIntoConstraints = false
-        moreButton.tintColor = .black
-        return moreButton
-    }()
-    
-    private let divider: UIView = {
-        let divider = UIView()
-        divider.backgroundColor = UIColor.black
-        divider.widthAnchor.constraint(equalToConstant: 0.35).isActive = true
-        divider.heightAnchor.constraint(equalToConstant: 16).isActive = true
-        return divider
-    }()
-    
-    private let closeButton: UIButton = {
-        let closeButton = UIButton()
-        closeButton.translatesAutoresizingMaskIntoConstraints = false
-        closeButton.tintColor = .black
-        return closeButton
-    }()
+    private let actionButtonsView = ActionButtonsView()
     
     override init(frame: CGRect) {
         super.init(frame: .zero)
@@ -82,26 +48,13 @@ class HomeHeader: UIView {
     }
     
     private func setup() {
-//        backgroundColor = .white
         
         addSubview(logoImageView)
         addSubview(welcomeLabel)
         addSubview(nameLabel)
-        addSubview(actionView)
+        addSubview(actionButtonsView)
         
-        actionView.addArrangedSubview(moreButton)
-        actionView.addArrangedSubview(divider)
-        actionView.addArrangedSubview(closeButton)
-        
-        closeButton.setImage(Images.Home.closeIcon, for: .normal)
-        moreButton.setImage(Images.Home.moreIcon, for: .normal)
-        
-        NSLayoutConstraint.activate([
-            moreButton.widthAnchor.constraint(equalToConstant: 13),
-            moreButton.heightAnchor.constraint(equalToConstant: 13),
-            closeButton.widthAnchor.constraint(equalToConstant: 13),
-            closeButton.heightAnchor.constraint(equalToConstant: 13)
-        ])
+        actionButtonsView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             logoImageView.topAnchor.constraint(equalTo: topAnchor, constant: 16),
@@ -115,10 +68,10 @@ class HomeHeader: UIView {
             nameLabel.leadingAnchor.constraint(equalTo: logoImageView.trailingAnchor, constant: 12),
             nameLabel.topAnchor.constraint(equalTo: welcomeLabel.bottomAnchor),
             
-            actionView.topAnchor.constraint(equalTo: topAnchor, constant: 16),
-            actionView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            actionView.widthAnchor.constraint(equalToConstant: 64),
-            actionView.heightAnchor.constraint(equalToConstant: 24)
+            actionButtonsView.topAnchor.constraint(equalTo: topAnchor, constant: 16),
+            actionButtonsView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            actionButtonsView.widthAnchor.constraint(equalToConstant: 64),
+            actionButtonsView.heightAnchor.constraint(equalToConstant: 24)
         ])
     }
     
