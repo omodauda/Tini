@@ -125,11 +125,22 @@ class DeliveryMenuVC: UIViewController {
         super.viewDidLoad()
         setupUI()
         configureTableHeader()
+        configureSelectAddressIcon()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.isNavigationBarHidden = true
+    }
+    
+    private func configureSelectAddressIcon() {
+        selectAddressIcon.addTarget(self, action: #selector(goToAddressList), for: .touchUpInside)
+    }
+    
+    @objc private func goToAddressList() {
+        let vc = AddressListVC()
+        vc.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(vc, animated: true)
     }
     
     private func configureTableHeader() {

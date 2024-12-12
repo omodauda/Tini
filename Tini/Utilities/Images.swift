@@ -42,4 +42,7 @@ struct Images {
         static let smokyBurger = UIImage(named: "SmokyBurger")
         static let robusta = UIImage(named: "Robusta")
     }
+    
+    static let addressIcon = UIImage(named: "AddressIcon")
+    static let liveLocationIcon = UIImage(named: "LiveLocationIcon")
 }

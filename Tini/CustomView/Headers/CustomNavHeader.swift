@@ -65,6 +65,7 @@ class CustomNavHeader: UIView {
     }
     
     private func setupUI() {
+        backgroundColor = .white
         backIcon.setImage(Images.backIcon, for: .normal)
         searchIcon.setImage(Images.searchIcon, for: .normal)
         
