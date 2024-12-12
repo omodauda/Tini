@@ -167,7 +167,7 @@ class DeliveryMenuVC: UIViewController {
             deliveryAdress.leadingAnchor.constraint(equalTo: deliveryLogo.trailingAnchor, constant: 8),
             deliveryAdress.trailingAnchor.constraint(equalTo: selectAddressIcon.leadingAnchor, constant: -25),
             
-            selectAddressIcon.centerYAnchor.constraint(equalTo: deliveryDetailView.centerYAnchor),
+            selectAddressIcon.centerYAnchor.constraint(equalTo: deliveryAdress.centerYAnchor),
             selectAddressIcon.trailingAnchor.constraint(equalTo: deliveryDetailView.trailingAnchor, constant: -24),
             
             descriptionText.topAnchor.constraint(equalTo: deliveryAdress.bottomAnchor, constant: 4),
