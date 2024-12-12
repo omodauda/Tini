@@ -44,6 +44,7 @@ class StorePickupMenuVC: UIViewController {
     private let currentPickupStoreView: UIView = {
         let currentPickupStoreView = UIView()
         currentPickupStoreView.translatesAutoresizingMaskIntoConstraints = false
+        currentPickupStoreView.backgroundColor = .white
         return currentPickupStoreView
     }()
     
@@ -77,7 +78,23 @@ class StorePickupMenuVC: UIViewController {
         let selectStoreIcon = UIButton()
         selectStoreIcon.translatesAutoresizingMaskIntoConstraints = false
         selectStoreIcon.tintColor = UIColor(hex: Colors.titleText)
+        selectStoreIcon.setImage(Images.rightIcon, for: .normal)
         return selectStoreIcon
+    }()
+    
+    // table view
+    var menuList = ProductsListViewModel()
+    
+    private let tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.register(MenuListTableViewCell.self, forCellReuseIdentifier: MenuListTableViewCell.identifier)
+        tableView.separatorStyle = .none
+        tableView.backgroundColor = .white
+        tableView.showsVerticalScrollIndicator = false
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.register(MenuListTableSectionHeaderView.self, forHeaderFooterViewReuseIdentifier: MenuListTableSectionHeaderView.identifier)
+        tableView.tableHeaderView?.backgroundColor = .white
+        return tableView
     }()
 
     override func viewDidLoad() {
@@ -85,6 +102,7 @@ class StorePickupMenuVC: UIViewController {
         
         setupUI()
         configureBackButton()
+        configureTableHeader()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -98,6 +116,38 @@ class StorePickupMenuVC: UIViewController {
     
     @objc private func goBack() {
         navigationController?.popViewController(animated: true)
+    }
+    
+    private func configureTableHeader() {
+        currentPickupStoreView.layoutIfNeeded()
+        tableView.tableHeaderView = currentPickupStoreView
+        
+        currentPickupStoreView.addSubview(storeLogo)
+        currentPickupStoreView.addSubview(pickupLabel)
+        currentPickupStoreView.addSubview(storeAddress)
+        currentPickupStoreView.addSubview(selectStoreIcon)
+        
+        NSLayoutConstraint.activate([
+            currentPickupStoreView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            currentPickupStoreView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            currentPickupStoreView.heightAnchor.constraint(equalToConstant: 62),
+            
+            storeLogo.topAnchor.constraint(equalTo: currentPickupStoreView.topAnchor, constant: 8),
+            storeLogo.leadingAnchor.constraint(equalTo: currentPickupStoreView.leadingAnchor, constant: 16),
+            storeLogo.widthAnchor.constraint(equalToConstant: 40),
+            storeLogo.heightAnchor.constraint(equalToConstant: 40),
+            storeLogo.bottomAnchor.constraint(equalTo: currentPickupStoreView.bottomAnchor, constant: -14),
+            
+            pickupLabel.leadingAnchor.constraint(equalTo: storeLogo.trailingAnchor, constant: 8),
+            pickupLabel.topAnchor.constraint(equalTo: currentPickupStoreView.topAnchor, constant: 8),
+            
+            storeAddress.topAnchor.constraint(equalTo: pickupLabel.bottomAnchor, constant: 4),
+            storeAddress.leadingAnchor.constraint(equalTo: storeLogo.trailingAnchor, constant: 8),
+            
+            selectStoreIcon.centerYAnchor.constraint(equalTo: currentPickupStoreView.centerYAnchor),
+            selectStoreIcon.trailingAnchor.constraint(equalTo: currentPickupStoreView.trailingAnchor, constant: -24),
+            selectStoreIcon.leadingAnchor.constraint(equalTo: storeAddress.trailingAnchor, constant: 16),
+        ])
     }
     
     private func setupUI() {
@@ -114,14 +164,9 @@ class StorePickupMenuVC: UIViewController {
         
         actionButtonsView.translatesAutoresizingMaskIntoConstraints = false
         
-        // store details view
-        view.addSubview(currentPickupStoreView)
-        selectStoreIcon.setImage(Images.rightIcon, for: .normal)
-        
-        currentPickupStoreView.addSubview(storeLogo)
-        currentPickupStoreView.addSubview(pickupLabel)
-        currentPickupStoreView.addSubview(storeAddress)
-        currentPickupStoreView.addSubview(selectStoreIcon)
+        view.addSubview(tableView)
+        tableView.delegate = self
+        tableView.dataSource = self
         
         NSLayoutConstraint.activate([
             headerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -144,27 +189,46 @@ class StorePickupMenuVC: UIViewController {
             searchIcon.centerYAnchor.constraint(equalTo: actionButtonsView.centerYAnchor),
             searchIcon.trailingAnchor.constraint(equalTo: actionButtonsView.leadingAnchor, constant: -11),
             
-            currentPickupStoreView.topAnchor.constraint(equalTo: headerView.bottomAnchor),
-            currentPickupStoreView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            currentPickupStoreView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            
-            storeLogo.topAnchor.constraint(equalTo: currentPickupStoreView.topAnchor, constant: 8),
-            storeLogo.leadingAnchor.constraint(equalTo: currentPickupStoreView.leadingAnchor, constant: 16),
-            storeLogo.widthAnchor.constraint(equalToConstant: 40),
-            storeLogo.heightAnchor.constraint(equalToConstant: 40),
-            storeLogo.bottomAnchor.constraint(equalTo: currentPickupStoreView.bottomAnchor, constant: -14),
-            
-            pickupLabel.leadingAnchor.constraint(equalTo: storeLogo.trailingAnchor, constant: 8),
-            pickupLabel.topAnchor.constraint(equalTo: currentPickupStoreView.topAnchor, constant: 8),
-            
-            storeAddress.topAnchor.constraint(equalTo: pickupLabel.bottomAnchor, constant: 4),
-            storeAddress.leadingAnchor.constraint(equalTo: storeLogo.trailingAnchor, constant: 8),
-            
-            selectStoreIcon.centerYAnchor.constraint(equalTo: currentPickupStoreView.centerYAnchor),
-            selectStoreIcon.trailingAnchor.constraint(equalTo: currentPickupStoreView.trailingAnchor, constant: -24),
-            selectStoreIcon.leadingAnchor.constraint(equalTo: storeAddress.trailingAnchor, constant: 16)
-            
+            tableView.topAnchor.constraint(equalTo: headerView.bottomAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
 
+}
+
+extension StorePickupMenuVC: UITableViewDelegate, UITableViewDataSource {
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return menuList.productsList.count
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return menuList.productsList[section].products.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: MenuListTableViewCell.identifier, for: indexPath) as? MenuListTableViewCell else { return UITableViewCell() }
+        let product = menuList.productsList[indexPath.section].products[indexPath.row]
+        cell.configure(product: product)
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 84
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        guard let sectionHeader = tableView.dequeueReusableHeaderFooterView(withIdentifier: MenuListTableSectionHeaderView.identifier) as? MenuListTableSectionHeaderView else {
+            return nil
+        }
+        let sectionTitle = menuList.productsList[section].title
+        sectionHeader.configure(title: sectionTitle)
+        return sectionHeader
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 35
+    }
 }
