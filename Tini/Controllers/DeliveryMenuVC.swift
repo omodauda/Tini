@@ -127,6 +127,11 @@ class DeliveryMenuVC: UIViewController {
         configureTableHeader()
         configureSelectAddressIcon()
     }
+    
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        deliveryDetailView.layoutIfNeeded()
+    }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -140,11 +145,11 @@ class DeliveryMenuVC: UIViewController {
     @objc private func goToAddressList() {
         let vc = AddressListVC()
         vc.hidesBottomBarWhenPushed = true
+        
         navigationController?.pushViewController(vc, animated: true)
     }
     
     private func configureTableHeader() {
-        deliveryDetailView.layoutIfNeeded()
         tableView.tableHeaderView = deliveryDetailView
         
         deliveryDetailView.addSubview(deliveryLogo)
@@ -169,7 +174,6 @@ class DeliveryMenuVC: UIViewController {
             deliveryLogo.leadingAnchor.constraint(equalTo: deliveryDetailView.leadingAnchor, constant: 16),
             deliveryLogo.widthAnchor.constraint(equalToConstant: 40),
             deliveryLogo.heightAnchor.constraint(equalToConstant: 40),
-//            deliveryLogo.bottomAnchor.constraint(equalTo: deliveryDetailView.bottomAnchor, constant: -14),
             
             deliveryLabel.leadingAnchor.constraint(equalTo: deliveryLogo.trailingAnchor, constant: 8),
             deliveryLabel.topAnchor.constraint(equalTo: deliveryDetailView.topAnchor, constant: 8),

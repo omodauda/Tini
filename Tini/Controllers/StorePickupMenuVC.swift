@@ -76,13 +76,18 @@ class StorePickupMenuVC: UIViewController {
         configureTableHeader()
     }
     
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        currentPickupStoreView.layoutIfNeeded()
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.isNavigationBarHidden = true
     }
     
     private func configureTableHeader() {
-        currentPickupStoreView.layoutIfNeeded()
+//        currentPickupStoreView.layoutIfNeeded()
         tableView.tableHeaderView = currentPickupStoreView
         
         currentPickupStoreView.addSubview(storeLogo)
@@ -99,7 +104,6 @@ class StorePickupMenuVC: UIViewController {
             storeLogo.leadingAnchor.constraint(equalTo: currentPickupStoreView.leadingAnchor, constant: 16),
             storeLogo.widthAnchor.constraint(equalToConstant: 40),
             storeLogo.heightAnchor.constraint(equalToConstant: 40),
-            storeLogo.bottomAnchor.constraint(equalTo: currentPickupStoreView.bottomAnchor, constant: -14),
             
             pickupLabel.leadingAnchor.constraint(equalTo: storeLogo.trailingAnchor, constant: 8),
             pickupLabel.topAnchor.constraint(equalTo: currentPickupStoreView.topAnchor, constant: 8),

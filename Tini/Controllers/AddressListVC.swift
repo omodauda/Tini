@@ -8,6 +8,13 @@
 import UIKit
 
 class AddressListVC: UIViewController {
+    
+    private let headerWrapper: UIView = {
+        let headerWrapper = UIView()
+        headerWrapper.translatesAutoresizingMaskIntoConstraints = false
+        headerWrapper.backgroundColor = .white
+        return headerWrapper
+    }()
 
     private let header = CustomNavHeader(title: "Deliver to")
     
@@ -65,8 +72,10 @@ class AddressListVC: UIViewController {
     private func setupUI() {
         view.backgroundColor = UIColor(hex: Colors.background)
         
+        view.addSubview(headerWrapper)
+        
+        headerWrapper.addSubview(header)
         header.delegate = self
-        view.addSubview(header)
         header.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(addressBookView)
@@ -76,9 +85,14 @@ class AddressListVC: UIViewController {
         addressBookView.addSubview(arrowRightIcon)
         
         NSLayoutConstraint.activate([
+            headerWrapper.topAnchor.constraint(equalTo: view.topAnchor),
+            headerWrapper.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            headerWrapper.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            headerWrapper.heightAnchor.constraint(equalToConstant: 100),
+            
             header.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            header.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            header.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            header.leadingAnchor.constraint(equalTo: headerWrapper.leadingAnchor),
+            header.trailingAnchor.constraint(equalTo: headerWrapper.trailingAnchor),
             
             addressBookView.topAnchor.constraint(equalTo: header.bottomAnchor, constant: 16),
             addressBookView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),

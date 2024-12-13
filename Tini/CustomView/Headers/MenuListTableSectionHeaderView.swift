@@ -34,6 +34,9 @@ class MenuListTableSectionHeaderView: UITableViewHeaderFooterView {
     }
     
     private func setupUI() {
+        backgroundView = UIView()
+        backgroundView?.backgroundColor = .white
+    
         addSubview(titleLabel)
         
         NSLayoutConstraint.activate([
