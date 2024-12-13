@@ -45,4 +45,6 @@ struct Images {
     
     static let addressIcon = UIImage(named: "AddressIcon")
     static let liveLocationIcon = UIImage(named: "LiveLocationIcon")
+    static let editIcon = UIImage(named: "EditIcon")
+    static let addIcon = UIImage(named: "AddIcon")
 }
