@@ -78,8 +78,8 @@ class DeliveryAddressTableViewCell: UITableViewCell {
         
         NSLayoutConstraint.activate([
             cellView.topAnchor.constraint(equalTo: topAnchor),
-            cellView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            cellView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            cellView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            cellView.trailingAnchor.constraint(equalTo: trailingAnchor),
             cellView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12),
             
             locationIcon.topAnchor.constraint(equalTo: cellView.topAnchor, constant: 10),

@@ -17,7 +17,7 @@ class AddressListVC: UIViewController {
         headerWrapper.backgroundColor = .white
         return headerWrapper
     }()
-
+    
     private let header = CustomNavHeader(title: "Deliver to")
     
     private let addressBookView: UIView = {
@@ -80,16 +80,14 @@ class AddressListVC: UIViewController {
         let footer = UIView()
         footer.backgroundColor = .white
         footer.layer.cornerRadius = 8
-//        footer.translatesAutoresizingMaskIntoConstraints = false
         return footer
     }()
     
-    private let footerIcon: UIImageView = {
-        let footerIcon = UIImageView()
-        footerIcon.image = Images.addIcon
-        footerIcon.tintColor = UIColor(hex: Colors.primary)
-        footerIcon.translatesAutoresizingMaskIntoConstraints = false
-        return footerIcon
+    private let footerBtn: UIButton = {
+        let footerBtn = UIButton()
+        footerBtn.setImage(Images.addIcon, for: .normal)
+        footerBtn.translatesAutoresizingMaskIntoConstraints = false
+        return footerBtn
     }()
     
     private let footerText: UILabel = {
@@ -116,7 +114,7 @@ class AddressListVC: UIViewController {
         setupUI()
         configureTableHeader()
         configureTableFooter()
-//        configureFooterBtn()
+        configureFooterBtn()
     }
     
     override func viewWillLayoutSubviews() {
@@ -147,32 +145,32 @@ class AddressListVC: UIViewController {
     
     private func configureTableFooter() {
         tableView.tableFooterView = footerView
-        tableView.tableFooterView?.backgroundColor = .white
-        tableView.tableFooterView?.layer.cornerRadius = 8
-
-        footerView.addSubview(footerIcon)
+        
+        footerView.addSubview(footerBtn)
         footerView.addSubview(footerText)
         
         NSLayoutConstraint.activate([
+            footerBtn.topAnchor.constraint(equalTo: footerView.topAnchor, constant: 13),
+            footerBtn.leadingAnchor.constraint(equalTo: footerView.leadingAnchor, constant: 21),
+            footerBtn.widthAnchor.constraint(equalToConstant: 14),
+            footerBtn.heightAnchor.constraint(equalToConstant: 14),
             
-            footerIcon.topAnchor.constraint(equalTo: footerView.topAnchor, constant: 13),
-            footerIcon.leadingAnchor.constraint(equalTo: footerView.leadingAnchor, constant: 21),
-            footerIcon.widthAnchor.constraint(equalToConstant: 14),
-            
-            footerText.centerYAnchor.constraint(equalTo: footerIcon.centerYAnchor),
-            footerText.leadingAnchor.constraint(equalTo: footerIcon.trailingAnchor, constant: 13),
+            footerText.centerYAnchor.constraint(equalTo: footerBtn.centerYAnchor),
+            footerText.leadingAnchor.constraint(equalTo: footerBtn
+                .trailingAnchor, constant: 13),
         ])
+        footerView.frame = CGRect(x: 0, y: 0, width: tableView.frame.width, height: 40)
     }
     
-//    private func configureFooterBtn() {
-//        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(addNewPressed))
-//        footerView.addGestureRecognizer(tapGesture)
-//        footerView.isUserInteractionEnabled = true
-//    }
-//    
-//    @objc private func addNewPressed() {
-//        print("I was tapped")
-//    }
+        private func configureFooterBtn() {
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(addNewPressed))
+            footerView.addGestureRecognizer(tapGesture)
+            footerView.isUserInteractionEnabled = true
+        }
+    
+        @objc private func addNewPressed() {
+            print("I was tapped")
+        }
     
     private func setupUI() {
         view.backgroundColor = UIColor(hex: Colors.background)
@@ -223,8 +221,8 @@ class AddressListVC: UIViewController {
             arrowRightIcon.trailingAnchor.constraint(equalTo: addressBookView.trailingAnchor, constant: -24),
             
             tableView.topAnchor.constraint(equalTo: addressBookView.bottomAnchor, constant: 16),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
@@ -255,15 +253,5 @@ extension AddressListVC: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 59
-    }
-    
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return 12
-    }
-    
-    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        let spacer = UIView()
-        spacer.backgroundColor = .clear
-        return spacer
     }
 }
