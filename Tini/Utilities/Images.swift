@@ -47,4 +47,7 @@ struct Images {
     static let liveLocationIcon = UIImage(named: "LiveLocationIcon")
     static let editIcon = UIImage(named: "EditIcon")
     static let addIcon = UIImage(named: "AddIcon")
+    static let trashIcon = UIImage(named: "TrashIcon")
+    static let storeIcon = UIImage(named: "StoreIcon")
+    static let favIcon = UIImage(systemName: "heart.fill")
 }
