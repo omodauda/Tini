@@ -48,11 +48,11 @@ class CustomNavHeader: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    convenience init(title: String) {
+    convenience init(title: String, showRightIcon: Bool, rightIcon: UIImage?) {
         self.init(frame: .zero)
         headerTitle.text = title
         
-        setupUI()
+        setupUI(rightIconVisible: showRightIcon, rightIcon: rightIcon)
         configureBackButton()
     }
     
@@ -64,34 +64,37 @@ class CustomNavHeader: UIView {
         delegate?.didTapBack()
     }
     
-    private func setupUI() {
+    private func setupUI(rightIconVisible: Bool = true, rightIcon: UIImage?) {
         backgroundColor = .white
         backIcon.setImage(Images.backIcon, for: .normal)
-        searchIcon.setImage(Images.searchIcon, for: .normal)
+        searchIcon.setImage((rightIcon != nil) ? rightIcon! : Images.searchIcon, for: .normal)
         
         addSubview(backIcon)
         addSubview(headerTitle)
-        addSubview(searchIcon)
         addSubview(actionButtonsView)
-        
         actionButtonsView.translatesAutoresizingMaskIntoConstraints = false
         
+        if rightIconVisible {
+            addSubview(searchIcon)
+            searchIcon.centerYAnchor.constraint(equalTo: actionButtonsView.centerYAnchor).isActive = true
+            searchIcon.trailingAnchor.constraint(equalTo: actionButtonsView.leadingAnchor, constant: -11).isActive = true
+        }
+        
         NSLayoutConstraint.activate([
-            backIcon.topAnchor.constraint(equalTo: topAnchor, constant: 21),
-            backIcon.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -21),
+            backIcon.topAnchor.constraint(equalTo: topAnchor, constant: 16),
+            backIcon.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16),
             backIcon.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 24),
+//            backIcon.widthAnchor.constraint(equalToConstant: 24),
+//            backIcon.heightAnchor.constraint(equalToConstant: 24),
             
             headerTitle.leadingAnchor.constraint(equalTo: backIcon.trailingAnchor, constant: 16),
             headerTitle.centerYAnchor.constraint(equalTo: backIcon.centerYAnchor),
             
-            actionButtonsView.topAnchor.constraint(equalTo: topAnchor, constant: 21),
-            actionButtonsView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -21),
+            actionButtonsView.topAnchor.constraint(equalTo: topAnchor, constant: 16),
+            actionButtonsView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16),
             actionButtonsView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
             actionButtonsView.widthAnchor.constraint(equalToConstant: 64),
-            actionButtonsView.heightAnchor.constraint(equalToConstant: 24),
-            
-            searchIcon.centerYAnchor.constraint(equalTo: actionButtonsView.centerYAnchor),
-            searchIcon.trailingAnchor.constraint(equalTo: actionButtonsView.leadingAnchor, constant: -11),
+//            actionButtonsView.heightAnchor.constraint(equalToConstant: 24)
         ])
     }
     
