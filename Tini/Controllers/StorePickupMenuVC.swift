@@ -9,7 +9,7 @@ import UIKit
 
 class StorePickupMenuVC: UIViewController {
     
-    private let header = CustomNavHeader(title: "Store pickup")
+    private let header = CustomNavHeader(title: "Store pickup", showRightIcon: true, rightIcon: nil)
     
     // current pickup store view
     private let currentPickupStoreView: UIView = {
@@ -74,6 +74,7 @@ class StorePickupMenuVC: UIViewController {
         
         setupUI()
         configureTableHeader()
+        configureSelectStore()
     }
     
     override func viewWillLayoutSubviews() {
@@ -115,6 +116,16 @@ class StorePickupMenuVC: UIViewController {
             selectStoreIcon.trailingAnchor.constraint(equalTo: currentPickupStoreView.trailingAnchor, constant: -24),
             selectStoreIcon.leadingAnchor.constraint(equalTo: storeAddress.trailingAnchor, constant: 16),
         ])
+    }
+    
+    private func configureSelectStore() {
+        selectStoreIcon.addTarget(self, action: #selector(handleSelectStore), for: .touchUpInside)
+    }
+    
+    @objc private func handleSelectStore() {
+        let vc = SelectStoreVC()
+        vc.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(vc, animated: false)
     }
     
     private func setupUI() {
