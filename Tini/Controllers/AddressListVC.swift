@@ -18,7 +18,7 @@ class AddressListVC: UIViewController {
         return headerWrapper
     }()
     
-    private let header = CustomNavHeader(title: "Deliver to")
+    private let header = CustomNavHeader(title: "Deliver to", showRightIcon: false, rightIcon: nil)
     
     private let addressBookView: UIView = {
         let addressBookView = UIView()
@@ -162,15 +162,17 @@ class AddressListVC: UIViewController {
         footerView.frame = CGRect(x: 0, y: 0, width: tableView.frame.width, height: 40)
     }
     
-        private func configureFooterBtn() {
-            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(addNewPressed))
-            footerView.addGestureRecognizer(tapGesture)
-            footerView.isUserInteractionEnabled = true
-        }
+    private func configureFooterBtn() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(addNewPressed))
+        footerView.addGestureRecognizer(tapGesture)
+        footerView.isUserInteractionEnabled = true
+    }
     
-        @objc private func addNewPressed() {
-            print("I was tapped")
-        }
+    @objc private func addNewPressed() {
+        let vc = NewAddressVC()
+        vc.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(vc, animated: false)
+    }
     
     private func setupUI() {
         view.backgroundColor = UIColor(hex: Colors.background)
