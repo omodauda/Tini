@@ -47,7 +47,7 @@ class CustomButton: UIButton {
     
     private func configure() {
         configuration = .plain()
-        layer.cornerRadius = 16
+        layer.cornerRadius = 20
         translatesAutoresizingMaskIntoConstraints = false
     }
     
