@@ -9,7 +9,7 @@ import UIKit
 
 class DeliveryMenuVC: UIViewController {
 
-    private let header = CustomNavHeader(title: "Delivery")
+    private let header = CustomNavHeader(title: "Delivery", showRightIcon: true, rightIcon: nil)
     
     private let deliveryDetailView: UIView = {
         let deliveryDetailView = UIView()
