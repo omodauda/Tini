@@ -9,6 +9,8 @@ import UIKit
 
 class StorePickupMenuVC: UIViewController {
     
+    var menuList = ProductsListViewModel()
+    
     private let header = CustomNavHeader(title: "Store pickup", showRightIcon: true, rightIcon: nil)
     
     // current pickup store view
@@ -53,9 +55,6 @@ class StorePickupMenuVC: UIViewController {
         return selectStoreIcon
     }()
     
-    // table view
-    var menuList = ProductsListViewModel()
-    
     private let tableView: UITableView = {
         let tableView = UITableView()
         tableView.register(MenuListTableViewCell.self, forCellReuseIdentifier: MenuListTableViewCell.identifier)
@@ -71,7 +70,7 @@ class StorePickupMenuVC: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        menuList.loadSections()
         setupUI()
         configureTableHeader()
         configureSelectStore()
@@ -152,6 +151,12 @@ class StorePickupMenuVC: UIViewController {
 }
 
 extension StorePickupMenuVC: CustomNavHeaderDelegate {
+    func didTapSearch() {
+        let vc = SearchProductVC()
+        vc.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(vc, animated: false)
+    }
+    
     func didTapBack() {
         navigationController?.popViewController(animated: true)
     }
@@ -160,16 +165,16 @@ extension StorePickupMenuVC: CustomNavHeaderDelegate {
 extension StorePickupMenuVC: UITableViewDelegate, UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return menuList.productsList.count
+        return menuList.sections.count
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return menuList.productsList[section].products.count
+        return menuList.sections[section].products.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: MenuListTableViewCell.identifier, for: indexPath) as? MenuListTableViewCell else { return UITableViewCell() }
-        let product = menuList.productsList[indexPath.section].products[indexPath.row]
+        let product = menuList.sections[indexPath.section].products[indexPath.row]
         cell.configure(product: product)
         return cell
     }
@@ -182,7 +187,7 @@ extension StorePickupMenuVC: UITableViewDelegate, UITableViewDataSource {
         guard let sectionHeader = tableView.dequeueReusableHeaderFooterView(withIdentifier: MenuListTableSectionHeaderView.identifier) as? MenuListTableSectionHeaderView else {
             return nil
         }
-        let sectionTitle = menuList.productsList[section].title
+        let sectionTitle = menuList.sections[section].title
         sectionHeader.configure(title: sectionTitle)
         return sectionHeader
     }

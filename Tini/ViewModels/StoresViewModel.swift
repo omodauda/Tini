@@ -20,7 +20,7 @@ class StoresViewModel {
     
     var sections: [StoresGroup] = []
     
-    func loadSetions() {
+    func loadSections() {
         let favorites = allStores.filter { $0.isFavorite }
         let others = allStores.filter { !$0.isFavorite }
         
@@ -35,7 +35,7 @@ class StoresViewModel {
     
     func searchStores(with query: String) {
         if query.isEmpty {
-            loadSetions()
+            loadSections()
         } else {
             let filteredFavorites = allStores.filter { $0.isFavorite && $0.name.lowercased().contains(query.lowercased()) }
             let filteredOthers = allStores.filter { !$0.isFavorite && $0.name.lowercased().contains(query.lowercased()) }

@@ -8,6 +8,8 @@
 import UIKit
 
 class DeliveryMenuVC: UIViewController {
+    
+    var menuList = ProductsListViewModel()
 
     private let header = CustomNavHeader(title: "Delivery", showRightIcon: true, rightIcon: nil)
     
@@ -105,9 +107,6 @@ class DeliveryMenuVC: UIViewController {
         return storeAddress
     }()
     
-    // table view
-    var menuList = ProductsListViewModel()
-    
     private let tableView: UITableView = {
         let tableView = UITableView()
         tableView.register(MenuListTableViewCell.self, forCellReuseIdentifier: MenuListTableViewCell.identifier)
@@ -123,6 +122,7 @@ class DeliveryMenuVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        menuList.loadSections()
         setupUI()
         configureTableHeader()
         configureSelectAddressIcon()
@@ -236,6 +236,8 @@ class DeliveryMenuVC: UIViewController {
 }
 
 extension DeliveryMenuVC: CustomNavHeaderDelegate {
+    func didTapSearch() {}
+    
     func didTapBack() {
         navigationController?.popViewController(animated: true)
     }
@@ -244,16 +246,16 @@ extension DeliveryMenuVC: CustomNavHeaderDelegate {
 extension DeliveryMenuVC: UITableViewDelegate, UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return menuList.productsList.count
+        return menuList.sections.count
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return menuList.productsList[section].products.count
+        return menuList.sections[section].products.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: MenuListTableViewCell.identifier, for: indexPath) as? MenuListTableViewCell else { return UITableViewCell() }
-        let product = menuList.productsList[indexPath.section].products[indexPath.row]
+        let product = menuList.sections[indexPath.section].products[indexPath.row]
         cell.configure(product: product)
         return cell
     }
@@ -266,7 +268,7 @@ extension DeliveryMenuVC: UITableViewDelegate, UITableViewDataSource {
         guard let sectionHeader = tableView.dequeueReusableHeaderFooterView(withIdentifier: MenuListTableSectionHeaderView.identifier) as? MenuListTableSectionHeaderView else {
             return nil
         }
-        let sectionTitle = menuList.productsList[section].title
+        let sectionTitle = menuList.sections[section].title
         sectionHeader.configure(title: sectionTitle)
         return sectionHeader
     }
