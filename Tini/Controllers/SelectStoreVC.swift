@@ -50,7 +50,7 @@ class SelectStoreVC: UIViewController {
         super.viewDidLoad()
         setupUI()
         createDismissKeyboardTapGesture()
-        storesViewModel.loadSetions()
+        storesViewModel.loadSections()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -123,6 +123,8 @@ class SelectStoreVC: UIViewController {
 }
 
 extension SelectStoreVC: CustomNavHeaderDelegate {
+    func didTapSearch() {}
+    
     func didTapBack() {
         navigationController?.popViewController(animated: true)
     }

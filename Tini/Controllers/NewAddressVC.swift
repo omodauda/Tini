@@ -322,6 +322,8 @@ class NewAddressVC: UIViewController {
 }
 
 extension NewAddressVC: CustomNavHeaderDelegate {
+    func didTapSearch() {}
+    
     func didTapBack() {
         navigationController?.popViewController(animated: true)
     }

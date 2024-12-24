@@ -231,6 +231,7 @@ class AddressListVC: UIViewController {
 }
 
 extension AddressListVC: CustomNavHeaderDelegate {
+    func didTapSearch() {}
     
     func didTapBack() {
         navigationController?.popViewController(animated: true)

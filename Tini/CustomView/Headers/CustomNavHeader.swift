@@ -9,6 +9,7 @@ import UIKit
 
 protocol CustomNavHeaderDelegate: AnyObject {
     func didTapBack()
+    func didTapSearch()
 }
 
 class CustomNavHeader: UIView {
@@ -54,6 +55,7 @@ class CustomNavHeader: UIView {
         
         setupUI(rightIconVisible: showRightIcon, rightIcon: rightIcon)
         configureBackButton()
+        configureSearchButton()
     }
     
     private func configureBackButton() {
@@ -62,6 +64,14 @@ class CustomNavHeader: UIView {
     
     @objc private func goBack() {
         delegate?.didTapBack()
+    }
+    
+    private func configureSearchButton() {
+        searchIcon.addTarget(self, action: #selector(didTapSearch), for: .touchUpInside)
+    }
+    
+    @objc private func didTapSearch() {
+        delegate?.didTapSearch()
     }
     
     private func setupUI(rightIconVisible: Bool = true, rightIcon: UIImage?) {
