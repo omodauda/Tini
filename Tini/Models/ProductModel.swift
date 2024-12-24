@@ -12,6 +12,7 @@ struct Product {
     let price: Double
     let image: UIImage
     let isAvailable: Bool
+    let isFavorite: Bool
 }
 
 struct ProductGroup {
