@@ -63,9 +63,10 @@ class SelectStoreTableViewCell: UITableViewCell {
     func configure(store: StoreModel) {
         storeName.text = store.name
         storeAddress.text = store.address
-        
         if store.isFavorite {
             favIcon.image = Images.favIcon
+        } else {
+            favIcon.image = UIImage()
         }
     }
     
