@@ -50,4 +50,5 @@ struct Images {
     static let trashIcon = UIImage(named: "TrashIcon")
     static let storeIcon = UIImage(named: "StoreIcon")
     static let favIcon = UIImage(systemName: "heart.fill")
+    static let emptyStateSvg = UIImage(named: "EmptyStateSvg")
 }
