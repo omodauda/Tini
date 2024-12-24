@@ -28,6 +28,8 @@ class SelectStoreVC: UIViewController {
         searchBar.searchTextField.layer.cornerRadius = 4
         searchBar.layer.borderWidth = 1
         searchBar.layer.borderColor = UIColor(hex: "#DDDDE3").cgColor
+        searchBar.searchTextField.autocapitalizationType = .none
+        searchBar.searchTextField.autocorrectionType = .no
         return searchBar
     }()
     
@@ -41,6 +43,8 @@ class SelectStoreVC: UIViewController {
         table.register(SelectStoreTableSectionHeaderView.self, forHeaderFooterViewReuseIdentifier: SelectStoreTableSectionHeaderView.identifier)
         return table
     }()
+    
+    private let emptyStateView = EmptyStateView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -59,6 +63,17 @@ class SelectStoreVC: UIViewController {
         view.addGestureRecognizer(tap)
     }
     
+    private func updateView() {
+        if storesViewModel.sections.isEmpty {
+            tableView.isHidden = true
+            emptyStateView.isHidden = false
+        } else {
+            tableView.isHidden = false
+            emptyStateView.isHidden = true
+        }
+        tableView.reloadData()
+    }
+    
     private func setupUI() {
         view.backgroundColor = UIColor(hex: Colors.background)
         view.addSubview(headerWrapper)
@@ -68,10 +83,15 @@ class SelectStoreVC: UIViewController {
         header.translatesAutoresizingMaskIntoConstraints = false
         
         headerWrapper.addSubview(searchBar)
+        searchBar.delegate = self
         
         view.addSubview(tableView)
         tableView.delegate = self
         tableView.dataSource = self
+        
+        view.addSubview(emptyStateView)
+        emptyStateView.isHidden = true
+        emptyStateView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             headerWrapper.topAnchor.constraint(equalTo: view.topAnchor),
@@ -88,10 +108,16 @@ class SelectStoreVC: UIViewController {
             searchBar.bottomAnchor.constraint(equalTo: headerWrapper.bottomAnchor, constant: -16),
             searchBar.heightAnchor.constraint(equalToConstant: 40),
             
-            tableView.topAnchor.constraint(equalTo: headerWrapper.bottomAnchor, constant: 0),
+            tableView.topAnchor.constraint(equalTo: headerWrapper.bottomAnchor, constant: 16),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            emptyStateView.topAnchor.constraint(equalTo: headerWrapper.bottomAnchor),
+            emptyStateView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            emptyStateView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            emptyStateView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            
         ])
     }
 }
@@ -132,5 +158,17 @@ extension SelectStoreVC: UITableViewDelegate, UITableViewDataSource {
         let title = storesViewModel.sections[section].title
         sectionHeader.configure(title: title)
         return sectionHeader
+    }
+}
+
+extension SelectStoreVC: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if !searchText.isEmpty {
+            tableView.sectionHeaderHeight = 0
+        } else {
+            tableView.sectionHeaderHeight = 24
+        }
+        storesViewModel.searchStores(with: searchText)
+        updateView()
     }
 }
