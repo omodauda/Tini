@@ -30,6 +30,7 @@ class SelectStoreVC: UIViewController {
         searchBar.layer.borderColor = UIColor(hex: "#DDDDE3").cgColor
         searchBar.searchTextField.autocapitalizationType = .none
         searchBar.searchTextField.autocorrectionType = .no
+        searchBar.setBackgroundImage(UIImage(), for: .any, barMetrics: .default)
         return searchBar
     }()
     

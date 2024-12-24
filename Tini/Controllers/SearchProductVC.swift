@@ -51,10 +51,13 @@ class SearchProductVC: UIViewController {
         searchBar.placeholder = "What are you craving for?"
         searchBar.searchTextField.backgroundColor = .white
         searchBar.searchTextField.layer.cornerRadius = 4
+        searchBar.setBackgroundImage(UIImage(), for: .any, barMetrics: .default)
         searchBar.layer.borderWidth = 1
         searchBar.layer.borderColor = UIColor(hex: "#DDDDE3").cgColor
         searchBar.searchTextField.autocapitalizationType = .none
         searchBar.searchTextField.autocorrectionType = .no
+        searchBar.searchTextField.textColor = UIColor(hex: Colors.titleText)
+        searchBar.isTranslucent = false
         return searchBar
     }()
     
