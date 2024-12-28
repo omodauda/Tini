@@ -236,7 +236,11 @@ class DeliveryMenuVC: UIViewController {
 }
 
 extension DeliveryMenuVC: CustomNavHeaderDelegate {
-    func didTapSearch() {}
+    func didTapSearch() {
+        let vc = SearchProductVC()
+        vc.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(vc, animated: false)
+    }
     
     func didTapBack() {
         navigationController?.popViewController(animated: true)
@@ -257,6 +261,7 @@ extension DeliveryMenuVC: UITableViewDelegate, UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: MenuListTableViewCell.identifier, for: indexPath) as? MenuListTableViewCell else { return UITableViewCell() }
         let product = menuList.sections[indexPath.section].products[indexPath.row]
         cell.configure(product: product)
+        cell.selectionStyle = .none
         return cell
     }
     
@@ -275,5 +280,11 @@ extension DeliveryMenuVC: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 35
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let vc = ProductDetailVC()
+        vc.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(vc, animated: false)
     }
 }
