@@ -9,7 +9,9 @@ import UIKit
 
 class ProductDetailVC: UIViewController {
     
-    private let product: Product
+    private let product: Product!
+    
+    private var selectedSize: ProductSize?
     
     private let headerWrapper: UIView = {
         let view = UIView()
@@ -99,6 +101,8 @@ class ProductDetailVC: UIViewController {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.showsVerticalScrollIndicator = false
+        scrollView.isScrollEnabled = true
+        scrollView.contentInset.bottom = 16
         return scrollView
     }()
     
@@ -115,6 +119,8 @@ class ProductDetailVC: UIViewController {
         return card
     }()
     
+    private let sizeSelectionView = ProductSizeSelection()
+    
     init(product: Product) {
         self.product = product
         super.init(nibName: nil, bundle: nil)
@@ -128,6 +134,7 @@ class ProductDetailVC: UIViewController {
         super.viewDidLoad()
         setupUI()
         configureBackButton()
+        configureSizeView()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -142,7 +149,11 @@ class ProductDetailVC: UIViewController {
     @objc private func backButtonTapped() {
         navigationController?.popViewController(animated: true)
     }
-
+    
+    private func configureSizeView() {
+        sizeSelectionView.configure(with: product.sizes)
+    }
+    
     private func setupUI() {
         view.backgroundColor = UIColor(hex: Colors.background)
         
@@ -167,6 +178,10 @@ class ProductDetailVC: UIViewController {
         scrollView.addSubview(contentView)
         contentView.addSubview(productCard)
         productCard.translatesAutoresizingMaskIntoConstraints = false
+        
+        contentView.addSubview(sizeSelectionView)
+        sizeSelectionView.translatesAutoresizingMaskIntoConstraints = false
+        sizeSelectionView.delegate = self
         
         NSLayoutConstraint.activate([
             headerWrapper.topAnchor.constraint(equalTo: view.topAnchor),
@@ -210,6 +225,9 @@ class ProductDetailVC: UIViewController {
             productCard.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             productCard.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             
+            sizeSelectionView.topAnchor.constraint(equalTo: productCard.bottomAnchor, constant: 16),
+            sizeSelectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            sizeSelectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             
             footerView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             footerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -240,4 +258,11 @@ class ProductDetailVC: UIViewController {
             
         ])
     }
+}
+
+extension ProductDetailVC: ProductSizeSelectionDelegate {
+    func didSelectSize(_ size: ProductSize) {
+        print(size.name)
+        selectedSize = size
+    }    
 }
