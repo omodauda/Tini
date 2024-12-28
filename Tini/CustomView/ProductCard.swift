@@ -73,7 +73,7 @@ class ProductCard: UIView {
     private func configure(with product: Product) {
         imageView.image = product.image
         nameLabel.text = product.name
-        priceLabel.text = String(product.price)
+        priceLabel.text = String(product.basePrice)
         
         if product.isFavorite {
             favBtn.setImage(Images.favIcon, for: .normal)

@@ -55,7 +55,7 @@ class MenuListTableViewCell: UITableViewCell {
     func configure(product: Product) {
         productImageView.image = product.image
         productName.text = product.name
-        productPrice.text = String(product.price)
+        productPrice.text = String(product.basePrice)
         
         let alpha: CGFloat = product.isAvailable ? 1 : 0.3
         productImageView.alpha = alpha

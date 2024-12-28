@@ -8,11 +8,28 @@
 import UIKit
 
 struct Product {
+    let id: String
     let name: String
-    let price: Double
+    let description: String
+    let basePrice: Double
     let image: UIImage
+    let sizes: [ProductSize]
+    let toppings: [ProductTopping]?
+    let maxToppings: Int?
     let isAvailable: Bool
     let isFavorite: Bool
+}
+
+struct ProductSize {
+    let id: String
+    let name: String
+    let priceModifier: Double
+}
+
+struct ProductTopping {
+    let id: String
+    let name: String
+    let price: Double
 }
 
 struct ProductGroup {
