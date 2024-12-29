@@ -9,9 +9,11 @@ import UIKit
 
 class ProductDetailVC: UIViewController {
     
-    private let product: Product!
+    private let product: Product
     
     private var selectedSize: ProductSize?
+    
+    private var selectedTopping: ProductTopping?
     
     private let headerWrapper: UIView = {
         let view = UIView()
@@ -102,7 +104,8 @@ class ProductDetailVC: UIViewController {
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.showsVerticalScrollIndicator = false
         scrollView.isScrollEnabled = true
-        scrollView.contentInset.bottom = 16
+        scrollView.delaysContentTouches = false
+        scrollView.canCancelContentTouches = true
         return scrollView
     }()
     
@@ -121,6 +124,28 @@ class ProductDetailVC: UIViewController {
     
     private let sizeSelectionView = ProductSizeSelection()
     
+    private let toppingSelectView = SelectToppingView()
+    
+    private let noteView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .white
+        view.layer.cornerRadius = 8
+        return view
+    }()
+    
+    private let noteInput: UITextView = {
+        let textView = UITextView()
+        textView.translatesAutoresizingMaskIntoConstraints = false
+        textView.font = .systemFont(ofSize: 14, weight: .regular)
+        textView.textColor = UIColor(hex: Colors.titleText)
+        textView.textContainerInset = UIEdgeInsets(top: 10, left: 16, bottom: 16, right: 16)
+        textView.layer.cornerRadius = 4
+        textView.layer.borderWidth = 1
+        textView.layer.borderColor = UIColor(hex: "#DDDDE3").cgColor
+        return textView
+    }()
+    
     init(product: Product) {
         self.product = product
         super.init(nibName: nil, bundle: nil)
@@ -132,9 +157,11 @@ class ProductDetailVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        createDismissKeyboardTapGesture()
         setupUI()
         configureBackButton()
         configureSizeView()
+        configureSelectToppingView()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -152,6 +179,18 @@ class ProductDetailVC: UIViewController {
     
     private func configureSizeView() {
         sizeSelectionView.configure(with: product.sizes)
+    }
+    
+    private func configureSelectToppingView() {
+        if let toppings = product.toppings {
+            toppingSelectView.configure(with: toppings)
+        }
+    }
+    
+    func createDismissKeyboardTapGesture() {
+        let tap = UITapGestureRecognizer(target: self.view, action: #selector(UIView.endEditing))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
     }
     
     private func setupUI() {
@@ -179,10 +218,18 @@ class ProductDetailVC: UIViewController {
         contentView.addSubview(productCard)
         productCard.translatesAutoresizingMaskIntoConstraints = false
         
-        contentView.addSubview(sizeSelectionView)
-        sizeSelectionView.translatesAutoresizingMaskIntoConstraints = false
-        sizeSelectionView.delegate = self
+//        contentView.addSubview(sizeSelectionView)
+//        sizeSelectionView.translatesAutoresizingMaskIntoConstraints = false
+//        sizeSelectionView.delegate = self
         
+        contentView.addSubview(toppingSelectView)
+        toppingSelectView.translatesAutoresizingMaskIntoConstraints = false
+        toppingSelectView.delegate = self
+        
+        contentView.addSubview(noteView)
+        noteView.addSubview(noteInput)
+//        noteInput.delegate = self
+
         NSLayoutConstraint.activate([
             headerWrapper.topAnchor.constraint(equalTo: view.topAnchor),
             headerWrapper.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -219,15 +266,29 @@ class ProductDetailVC: UIViewController {
             contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
             contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
-            contentView.heightAnchor.constraint(equalTo: scrollView.heightAnchor),
             
             productCard.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
             productCard.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             productCard.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             
-            sizeSelectionView.topAnchor.constraint(equalTo: productCard.bottomAnchor, constant: 16),
-            sizeSelectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            sizeSelectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+//            sizeSelectionView.topAnchor.constraint(equalTo: productCard.bottomAnchor, constant: 16),
+//            sizeSelectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+//            sizeSelectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+//            
+            toppingSelectView.topAnchor.constraint(equalTo: productCard.bottomAnchor, constant: 16),
+            toppingSelectView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            toppingSelectView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            
+            noteView.topAnchor.constraint(equalTo: toppingSelectView.bottomAnchor, constant: 12),
+            noteView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            noteView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            noteView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
+            
+            noteInput.topAnchor.constraint(equalTo: noteView.topAnchor, constant: 16),
+            noteInput.leadingAnchor.constraint(equalTo: noteView.leadingAnchor, constant: 16),
+            noteInput.trailingAnchor.constraint(equalTo: noteView.trailingAnchor, constant: -16),
+            noteInput.bottomAnchor.constraint(equalTo: noteView.bottomAnchor, constant: -16),
+            noteInput.heightAnchor.constraint(equalToConstant: 88),
             
             footerView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             footerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -262,7 +323,20 @@ class ProductDetailVC: UIViewController {
 
 extension ProductDetailVC: ProductSizeSelectionDelegate {
     func didSelectSize(_ size: ProductSize) {
-        print(size.name)
         selectedSize = size
     }    
+}
+
+extension ProductDetailVC: SelectToppingViewDelegate {
+    func didSelectTopping(_ topping: ProductTopping) {
+        print(topping.name)
+        selectedTopping = topping
+    }
+}
+
+extension ProductDetailVC: UIGestureRecognizerDelegate {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        // Allow both gesture recognizers to work simultaneously
+        return true
+    }
 }
