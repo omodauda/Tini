@@ -52,4 +52,5 @@ struct Images {
     static let favIcon = UIImage(systemName: "heart.fill")
     static let favOutlineIcon = UIImage(systemName: "heart")
     static let emptyStateSvg = UIImage(named: "EmptyStateSvg")
+    static let checkBox = UIImage(systemName: "checkmark.square.fill")
 }
