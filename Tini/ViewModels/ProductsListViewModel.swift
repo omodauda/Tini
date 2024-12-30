@@ -32,11 +32,11 @@ class ProductsListViewModel {
             id: "1",
             name: "Pure Black",
             description: "Well-crafted coffee with a rich flavor and smooth texture.",
-            basePrice: 5900,
+            basePrice: 59.00,
             image: Images.Products.pureBlack!,
             sizes: [
-                ProductSize(id: "small", name: "Small", priceModifier: 1000),
-                ProductSize(id: "medium", name: "Medium", priceModifier: 1200)
+                ProductSize(id: "small", name: "Small", priceModifier: 10.00),
+                ProductSize(id: "medium", name: "Medium", priceModifier: 12.00)
             ],
             toppings: nil,
             maxToppings: nil,
@@ -47,16 +47,16 @@ class ProductsListViewModel {
             id: "2",
             name: "Latte",
             description: "A creamy blend of coffee and milk.",
-            basePrice: 5900,
+            basePrice: 59.00,
             image: Images.Products.latte!,
             sizes: [
-                ProductSize(id: "small", name: "Small", priceModifier: 1000),
-                ProductSize(id: "medium", name: "Medium", priceModifier: 1200),
-                ProductSize(id: "large", name: "Large", priceModifier: 1500)
+                ProductSize(id: "small", name: "Small", priceModifier: 10.00),
+                ProductSize(id: "medium", name: "Medium", priceModifier: 12.00),
+                ProductSize(id: "large", name: "Large", priceModifier: 15.00)
             ],
             toppings: [
-                ProductTopping(id: "extra_espresso", name: "Extra Espresso Shot", price: 1000),
-                ProductTopping(id: "whipped_cream", name: "Whipped Cream", price: 500)
+                ProductTopping(id: "extra_espresso", name: "Extra Espresso Shot", price: 10.00),
+                ProductTopping(id: "whipped_cream", name: "Whipped Cream", price: 5.00)
             ],
             maxToppings: 2,
             isAvailable: true,
@@ -66,15 +66,15 @@ class ProductsListViewModel {
             id: "3",
             name: "Cappuccino",
             description: "Dark, rich espresso under a smoothed and stretched layer of thick milk foam.",
-            basePrice: 6900,
+            basePrice: 69.00,
             image: Images.Products.capuccino!,
             sizes: [
-                ProductSize(id: "small", name: "Small", priceModifier: 0),
-                ProductSize(id: "large", name: "Large", priceModifier: 1000)
+                ProductSize(id: "small", name: "Small", priceModifier: 0.00),
+                ProductSize(id: "large", name: "Large", priceModifier: 10.00)
             ],
             toppings: [
-                ProductTopping(id: "chocolate_sprinkles", name: "Chocolate Sprinkles", price: 500),
-                ProductTopping(id: "cinnamon", name: "Cinnamon", price: 500)
+                ProductTopping(id: "chocolate_sprinkles", name: "Chocolate Sprinkles", price: 5.00),
+                ProductTopping(id: "cinnamon", name: "Cinnamon", price: 5.00)
             ],
             maxToppings: 2,
             isAvailable: true,
@@ -84,11 +84,11 @@ class ProductsListViewModel {
             id: "4",
             name: "Arabica 1kg",
             description: "Premium Arabica coffee beans for a rich flavor.",
-            basePrice: 6900,
+            basePrice: 69.00,
             image: Images.Products.arabica!,
             sizes: [
-                ProductSize(id: "small", name: "Small", priceModifier: 0),
-                ProductSize(id: "large", name: "Large", priceModifier: 1000)
+                ProductSize(id: "small", name: "Small", priceModifier: 5.00),
+                ProductSize(id: "large", name: "Large", priceModifier: 10.00)
             ],
             toppings: nil,
             maxToppings: nil,
@@ -99,11 +99,11 @@ class ProductsListViewModel {
             id: "5",
             name: "Hawaiian Pizza",
             description: "Delicious pizza topped with pineapple and ham.",
-            basePrice: 10999,
+            basePrice: 109.99,
             image: Images.Products.hawalianPizza!,
             sizes: [
-                ProductSize(id: "small", name: "Small", priceModifier: 0),
-                ProductSize(id: "large", name: "Large", priceModifier: 1000)
+                ProductSize(id: "small", name: "Small", priceModifier: 5.00),
+                ProductSize(id: "large", name: "Large", priceModifier: 10.00)
             ],
             toppings: nil,
             maxToppings: nil,
@@ -114,11 +114,11 @@ class ProductsListViewModel {
             id: "6",
             name: "Smoky Burger",
             description: "Juicy beef burger with a smoky barbecue sauce.",
-            basePrice: 9600,
+            basePrice: 96.00,
             image: Images.Products.smokyBurger!,
             sizes: [
-                ProductSize(id: "small", name: "Small", priceModifier: 0),
-                ProductSize(id: "large", name: "Large", priceModifier: 1000)
+                ProductSize(id: "small", name: "Small", priceModifier: 0.00),
+                ProductSize(id: "large", name: "Large", priceModifier: 10.00)
             ],
             toppings: nil,
             maxToppings: nil,
@@ -130,11 +130,11 @@ class ProductsListViewModel {
             id: "7",
             name: "Robusta 1kg",
             description: "Bold and rich Robusta coffee beans.",
-            basePrice: 6900,
+            basePrice: 69.00,
             image: Images.Products.robusta!,
             sizes: [
-                ProductSize(id: "small", name: "Small", priceModifier: 0),
-                ProductSize(id: "large", name: "Large", priceModifier: 1000)
+                ProductSize(id: "small", name: "Small", priceModifier: 0.00),
+                ProductSize(id: "large", name: "Large", priceModifier: 10.00)
             ],
             toppings: nil,
             maxToppings: nil,
@@ -146,11 +146,11 @@ class ProductsListViewModel {
             id: "1",
             name: "Pure Black",
             description: "Well-crafted coffee with a rich flavor and smooth texture.",
-            basePrice: 5900,
+            basePrice: 59.00,
             image: Images.Products.pureBlack!,
             sizes: [
-                ProductSize(id: "small", name: "Small", priceModifier: 1000),
-                ProductSize(id: "medium", name: "Medium", priceModifier: 1200)
+                ProductSize(id: "small", name: "Small", priceModifier: 10.00),
+                ProductSize(id: "medium", name: "Medium", priceModifier: 12.00)
             ],
             toppings: nil,
             maxToppings: nil,
@@ -161,16 +161,16 @@ class ProductsListViewModel {
             id: "2",
             name: "Latte",
             description: "A creamy blend of coffee and milk.",
-            basePrice: 5900,
+            basePrice: 59.00,
             image: Images.Products.latte!,
             sizes: [
-                ProductSize(id: "small", name: "Small", priceModifier: 1000),
-                ProductSize(id: "medium", name: "Medium", priceModifier: 1200),
-                ProductSize(id: "large", name: "Large", priceModifier: 1500)
+                ProductSize(id: "small", name: "Small", priceModifier: 10.00),
+                ProductSize(id: "medium", name: "Medium", priceModifier: 12.00),
+                ProductSize(id: "large", name: "Large", priceModifier: 15.00)
             ],
             toppings: [
-                ProductTopping(id: "extra_espresso", name: "Extra Espresso Shot", price: 1000),
-                ProductTopping(id: "whipped_cream", name: "Whipped Cream", price: 500)
+                ProductTopping(id: "extra_espresso", name: "Extra Espresso Shot", price: 10.00),
+                ProductTopping(id: "whipped_cream", name: "Whipped Cream", price: 5.00)
             ],
             maxToppings: 2,
             isAvailable: true,
@@ -180,15 +180,15 @@ class ProductsListViewModel {
             id: "3",
             name: "Cappuccino",
             description: "Dark, rich espresso under a smoothed and stretched layer of thick milk foam.",
-            basePrice: 6900,
+            basePrice: 69.00,
             image: Images.Products.capuccino!,
             sizes: [
-                ProductSize(id: "small", name: "Small", priceModifier: 0),
-                ProductSize(id: "large", name: "Large", priceModifier: 1000)
+                ProductSize(id: "small", name: "Small", priceModifier: 0.00),
+                ProductSize(id: "large", name: "Large", priceModifier: 10.00)
             ],
             toppings: [
                 ProductTopping(id: "chocolate_sprinkles", name: "Chocolate Sprinkles", price: 500),
-                ProductTopping(id: "cinnamon", name: "Cinnamon", price: 500)
+                ProductTopping(id: "cinnamon", name: "Cinnamon", price: 5.00)
             ],
             maxToppings: 2,
             isAvailable: true,
@@ -198,11 +198,11 @@ class ProductsListViewModel {
             id: "4",
             name: "Arabica 1kg",
             description: "Premium Arabica coffee beans for a rich flavor.",
-            basePrice: 6900,
+            basePrice: 69.00,
             image: Images.Products.arabica!,
             sizes: [
-                ProductSize(id: "small", name: "Small", priceModifier: 0),
-                ProductSize(id: "large", name: "Large", priceModifier: 1000)
+                ProductSize(id: "small", name: "Small", priceModifier: 0.00),
+                ProductSize(id: "large", name: "Large", priceModifier: 10.00)
             ],
             toppings: nil,
             maxToppings: nil,
@@ -213,11 +213,11 @@ class ProductsListViewModel {
             id: "5",
             name: "Hawaiian Pizza",
             description: "Delicious pizza topped with pineapple and ham.",
-            basePrice: 10999,
+            basePrice: 109.99,
             image: Images.Products.hawalianPizza!,
             sizes: [
-                ProductSize(id: "small", name: "Small", priceModifier: 0),
-                ProductSize(id: "large", name: "Large", priceModifier: 1000)
+                ProductSize(id: "small", name: "Small", priceModifier: 0.00),
+                ProductSize(id: "large", name: "Large", priceModifier: 10.00)
             ],
             toppings: nil,
             maxToppings: nil,
@@ -228,11 +228,11 @@ class ProductsListViewModel {
             id: "6",
             name: "Smoky Burger",
             description: "Juicy beef burger with a smoky barbecue sauce.",
-            basePrice: 9600,
+            basePrice: 96.00,
             image: Images.Products.smokyBurger!,
             sizes: [
-                ProductSize(id: "small", name: "Small", priceModifier: 0),
-                ProductSize(id: "large", name: "Large", priceModifier: 1000)
+                ProductSize(id: "small", name: "Small", priceModifier: 0.00),
+                ProductSize(id: "large", name: "Large", priceModifier: 10.00)
             ],
             toppings: nil,
             maxToppings: nil,
@@ -243,11 +243,11 @@ class ProductsListViewModel {
             id: "7",
             name: "Robusta 1kg",
             description: "Bold and rich Robusta coffee beans.",
-            basePrice: 6900,
+            basePrice: 69.00,
             image: Images.Products.robusta!,
             sizes: [
-                ProductSize(id: "small", name: "Small", priceModifier: 0),
-                ProductSize(id: "large", name: "Large", priceModifier: 1000)
+                ProductSize(id: "small", name: "Small", priceModifier: 0.00),
+                ProductSize(id: "large", name: "Large", priceModifier: 10.00)
             ],
             toppings: nil,
             maxToppings: nil,
