@@ -8,7 +8,7 @@
 import UIKit
 
 protocol ProductSizeSelectionDelegate: AnyObject {
-    func didSelectSize(_ size: ProductSize)
+    func didSelectSize(_ size: ProductSize?)
 }
 
 class ProductSizeSelection: UIView {
@@ -44,6 +44,14 @@ class ProductSizeSelection: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    //    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+    //            let hitView = super.hitTest(point, with: event)
+    //            if let hitView = hitView, hitView.isDescendant(of: self) {
+    //                return hitView
+    //            }
+    //            return nil
+    //        }
     
     func configure(with sizes: [ProductSize]) {
         self.sizes = sizes
@@ -141,6 +149,9 @@ class ProductSizeSelection: UIView {
         sizeView.tag = sizes.firstIndex { $0.id == size.id } ?? 0
         
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didTapSize))
+        tapGestureRecognizer.cancelsTouchesInView = false
+        //        tapGestureRecognizer.delegate = self
+        
         sizeView.addGestureRecognizer(tapGestureRecognizer)
         return sizeView
     }
@@ -148,9 +159,13 @@ class ProductSizeSelection: UIView {
     @objc private func didTapSize(_ sender: UITapGestureRecognizer) {
         if let sizeView = sender.view {
             let selected = sizes[sizeView.tag]
-            selectedSize = selected
-            delegate?.didSelectSize(selected)
-            
+            if selected.id == selectedSize?.id {
+                selectedSize = nil
+                delegate?.didSelectSize(nil)
+            } else {
+                selectedSize = selected
+                delegate?.didSelectSize(selected)
+            }
             updateSelectedSizeView()
         }
     }
@@ -162,7 +177,7 @@ class ProductSizeSelection: UIView {
                 let innerRadio = outerRadio.subviews.first(where: { $0.layer.cornerRadius == 6 }),
                 let sizeIndex = sizes.indices.first(where: { sizes[$0].id == sizes[view.tag].id }) else { continue }
             
-                let isSelected = sizes[sizeIndex].id == selectedSize?.id
+            let isSelected = sizes[sizeIndex].id == selectedSize?.id
             
             // Update colors based on selection
             outerRadio.layer.borderColor = UIColor(hex: isSelected ? Colors.primary : "#DDDDE3").cgColor
@@ -191,3 +206,9 @@ class ProductSizeSelection: UIView {
     }
     
 }
+
+//extension ProductSizeSelection: UIGestureRecognizerDelegate {
+//    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+//        return true
+//    }
+//}
