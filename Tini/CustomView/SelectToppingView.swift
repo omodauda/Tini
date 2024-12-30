@@ -8,7 +8,7 @@
 import UIKit
 
 protocol SelectToppingViewDelegate: AnyObject {
-    func didSelectTopping(_ topping: ProductTopping)
+    func didSelectTopping(_ topping: ProductTopping?)
 }
 
 class SelectToppingView: UIView {
@@ -55,13 +55,13 @@ class SelectToppingView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-            let hitView = super.hitTest(point, with: event)
-            if let hitView = hitView, hitView.isDescendant(of: self) {
-                return hitView
-            }
-            return nil
-        }
+//    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+//            let hitView = super.hitTest(point, with: event)
+//            if let hitView = hitView, hitView.isDescendant(of: self) {
+//                return hitView
+//            }
+//            return nil
+//        }
     
     func configure(with toppings: [ProductTopping]) {
         self.toppings = toppings
@@ -148,25 +148,27 @@ class SelectToppingView: UIView {
         
 //        toppingView.tag = toppings.firstIndex { $0.id == topping.id } ?? 0
         if let index = toppings.firstIndex(where: { $0.id == topping.id }) {
-            print(index)
             toppingView.tag = index
         }
         
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didTapTopping(_:)))
         tapGestureRecognizer.cancelsTouchesInView = false
-        tapGestureRecognizer.delegate = self
+//        tapGestureRecognizer.delegate = self
         
         toppingView.addGestureRecognizer(tapGestureRecognizer)
         return toppingView
     }
     
     @objc private func didTapTopping(_ sender: UITapGestureRecognizer) {
-//        print("i tapped topping")
         if let toppingView = sender.view {
             let selected = toppings[toppingView.tag]
-            selectedTopping = selected
-            delegate?.didSelectTopping(selected)
-            
+            if selected.id == selectedTopping?.id {
+                selectedTopping = nil
+                delegate?.didSelectTopping(nil)
+            } else {
+                selectedTopping = selected
+                delegate?.didSelectTopping(selected)
+            }
             updateSelectedToppingView()
         }
     }
@@ -205,8 +207,8 @@ class SelectToppingView: UIView {
     }
 }
 
-extension SelectToppingView: UIGestureRecognizerDelegate {
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        return true
-    }
-}
+//extension SelectToppingView: UIGestureRecognizerDelegate {
+//    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+//        return true
+//    }
+//}
