@@ -31,7 +31,7 @@ class ProductDetailVC: UIViewController {
     private let backIconWrapper: UIButton = {
         let view = UIButton()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .systemGray5
+        view.backgroundColor = .systemGray
         view.layer.cornerRadius = 16
         return view
     }()
@@ -122,6 +122,14 @@ class ProductDetailVC: UIViewController {
         return card
     }()
     
+    private let stackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .vertical
+        stackView.spacing = 12
+        return stackView
+    }()
+    
     private let sizeSelectionView = ProductSizeSelection()
     
     private let toppingSelectView = SelectToppingView()
@@ -143,6 +151,7 @@ class ProductDetailVC: UIViewController {
         textView.layer.cornerRadius = 4
         textView.layer.borderWidth = 1
         textView.layer.borderColor = UIColor(hex: "#DDDDE3").cgColor
+        textView.backgroundColor = .white
         return textView
     }()
     
@@ -160,8 +169,7 @@ class ProductDetailVC: UIViewController {
         createDismissKeyboardTapGesture()
         setupUI()
         configureBackButton()
-        configureSizeView()
-        configureSelectToppingView()
+        configureStackView()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -175,6 +183,16 @@ class ProductDetailVC: UIViewController {
     
     @objc private func backButtonTapped() {
         navigationController?.popViewController(animated: true)
+    }
+    
+    private func configureStackView() {
+        stackView.addArrangedSubview(sizeSelectionView)
+        configureSizeView()
+        
+        if product.toppings != nil {
+            stackView.addArrangedSubview(toppingSelectView)
+            configureSelectToppingView()
+        }
     }
     
     private func configureSizeView() {
@@ -218,13 +236,7 @@ class ProductDetailVC: UIViewController {
         contentView.addSubview(productCard)
         productCard.translatesAutoresizingMaskIntoConstraints = false
         
-//        contentView.addSubview(sizeSelectionView)
-//        sizeSelectionView.translatesAutoresizingMaskIntoConstraints = false
-//        sizeSelectionView.delegate = self
-        
-        contentView.addSubview(toppingSelectView)
-        toppingSelectView.translatesAutoresizingMaskIntoConstraints = false
-        toppingSelectView.delegate = self
+        contentView.addSubview(stackView)
         
         contentView.addSubview(noteView)
         noteView.addSubview(noteInput)
@@ -271,15 +283,11 @@ class ProductDetailVC: UIViewController {
             productCard.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             productCard.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             
-//            sizeSelectionView.topAnchor.constraint(equalTo: productCard.bottomAnchor, constant: 16),
-//            sizeSelectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-//            sizeSelectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-//            
-            toppingSelectView.topAnchor.constraint(equalTo: productCard.bottomAnchor, constant: 16),
-            toppingSelectView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            toppingSelectView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            stackView.topAnchor.constraint(equalTo: productCard.bottomAnchor, constant: 16),
+            stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             
-            noteView.topAnchor.constraint(equalTo: toppingSelectView.bottomAnchor, constant: 12),
+            noteView.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 12),
             noteView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             noteView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             noteView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
@@ -322,21 +330,20 @@ class ProductDetailVC: UIViewController {
 }
 
 extension ProductDetailVC: ProductSizeSelectionDelegate {
-    func didSelectSize(_ size: ProductSize) {
+    func didSelectSize(_ size: ProductSize?) {
         selectedSize = size
-    }    
+    }
 }
 
 extension ProductDetailVC: SelectToppingViewDelegate {
-    func didSelectTopping(_ topping: ProductTopping) {
-        print(topping.name)
+    func didSelectTopping(_ topping: ProductTopping?) {
         selectedTopping = topping
     }
 }
 
-extension ProductDetailVC: UIGestureRecognizerDelegate {
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        // Allow both gesture recognizers to work simultaneously
-        return true
-    }
-}
+//extension ProductDetailVC: UIGestureRecognizerDelegate {
+//    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+//        // Allow both gesture recognizers to work simultaneously
+//        return true
+//    }
+//}
