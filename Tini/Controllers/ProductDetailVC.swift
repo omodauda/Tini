@@ -15,6 +15,17 @@ class ProductDetailVC: UIViewController {
     
     private var selectedTopping: ProductTopping?
     
+    private var quantity = 1
+    
+    private var total: Double  {
+        let itemPrice = product.basePrice
+        let sizePrice = selectedSize?.priceModifier ?? 0.0
+        let toppingPrice = selectedTopping?.price ?? 0.0
+        
+        let total = (itemPrice * Double(quantity)) + sizePrice + toppingPrice
+        return total
+    }
+    
     private let headerWrapper: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -31,7 +42,7 @@ class ProductDetailVC: UIViewController {
     private let backIconWrapper: UIButton = {
         let view = UIButton()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .systemGray
+        view.backgroundColor = UIColor(hex: "#DDDDE3")
         view.layer.cornerRadius = 16
         return view
     }()
@@ -62,6 +73,7 @@ class ProductDetailVC: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.cornerRadius = 20
         button.layer.borderColor = UIColor(hex: "#DDDDE3").cgColor
+        button.tintColor = UIColor(hex: "#DDDDE3")
         button.layer.borderWidth = 1
         return button
     }()
@@ -75,12 +87,12 @@ class ProductDetailVC: UIViewController {
         return view
     }()
     
-    private let quantityLabel: UILabel = {
+    private lazy var quantityLabel: UILabel = {
         let label = UILabel()
         label.textColor = UIColor(hex: Colors.titleText)
         label.font = .systemFont(ofSize: 16, weight: .regular)
         label.textAlignment = .center
-        label.text = "1"
+        label.text = String(quantity)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -90,12 +102,13 @@ class ProductDetailVC: UIViewController {
         button.setImage(UIImage(systemName: "plus"), for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.cornerRadius = 20
-        button.layer.borderColor = UIColor(hex: "#DDDDE3").cgColor
+        button.layer.borderColor = UIColor(hex: Colors.primary).cgColor
+        button.tintColor = UIColor(hex: Colors.primary)
         button.layer.borderWidth = 1
         return button
     }()
     
-    private let addToCartBtn = CustomButton(title: "Add to Cart", backgroundColor: UIColor(hex: Colors.primary), image: nil)
+    private lazy var addToCartBtn = CustomButton(title: "Add to Cart - \(total)", backgroundColor: UIColor(hex: Colors.primary), image: nil)
     
     private let actionButtonsView = ActionButtonsView()
     
@@ -147,12 +160,24 @@ class ProductDetailVC: UIViewController {
         textView.translatesAutoresizingMaskIntoConstraints = false
         textView.font = .systemFont(ofSize: 14, weight: .regular)
         textView.textColor = UIColor(hex: Colors.titleText)
-        textView.textContainerInset = UIEdgeInsets(top: 10, left: 16, bottom: 16, right: 16)
+        textView.textContainerInset = UIEdgeInsets(top: 10, left: 16, bottom: 34, right: 16)
         textView.layer.cornerRadius = 4
         textView.layer.borderWidth = 1
         textView.layer.borderColor = UIColor(hex: "#DDDDE3").cgColor
         textView.backgroundColor = .white
+        textView.text = "Your note"
+        textView.textColor = UIColor(hex: Colors.secondary)
         return textView
+    }()
+    
+    private let wordCountLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = .systemFont(ofSize: 12, weight: .regular)
+        label.textColor = UIColor(hex: Colors.secondary)
+        label.textAlignment = .right
+        label.text = "(0/100)"
+        return label
     }()
     
     init(product: Product) {
@@ -170,6 +195,7 @@ class ProductDetailVC: UIViewController {
         setupUI()
         configureBackButton()
         configureStackView()
+        configureFooterBtns()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -186,10 +212,12 @@ class ProductDetailVC: UIViewController {
     }
     
     private func configureStackView() {
+        sizeSelectionView.delegate = self
         stackView.addArrangedSubview(sizeSelectionView)
         configureSizeView()
         
         if product.toppings != nil {
+            toppingSelectView.delegate = self
             stackView.addArrangedSubview(toppingSelectView)
             configureSelectToppingView()
         }
@@ -209,6 +237,40 @@ class ProductDetailVC: UIViewController {
         let tap = UITapGestureRecognizer(target: self.view, action: #selector(UIView.endEditing))
         tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
+    }
+    
+    private func configureFooterBtns() {
+        increaseButton.addTarget(self, action: #selector(increaseQty), for: .touchUpInside)
+        
+        decreaseButton.addTarget(self, action: #selector(decreaseQty), for: .touchUpInside)
+    }
+    
+    @objc private func increaseQty() {
+        quantity = quantity + 1
+        quantityLabel.text = String(quantity)
+        if quantity == 2 {
+            decreaseButton.isEnabled = true
+            decreaseButton.tintColor = UIColor(hex: Colors.primary)
+            decreaseButton.layer.borderColor = UIColor(hex: Colors.primary).cgColor
+        }
+        updateCartBtn()
+    }
+    
+    @objc private func decreaseQty() {
+        if quantity > 1 {
+            quantity = quantity - 1
+            quantityLabel.text = String(quantity)
+            if quantity == 1 {
+                decreaseButton.isEnabled = false
+                decreaseButton.tintColor = UIColor(hex: "#DDDDE3")
+                decreaseButton.layer.borderColor = UIColor(hex: "#DDDDE3").cgColor
+            }
+        }
+        updateCartBtn()
+    }
+    
+    private func updateCartBtn() {
+        addToCartBtn.setTitle("Add to cart - \(total)", for: .normal)
     }
     
     private func setupUI() {
@@ -240,7 +302,9 @@ class ProductDetailVC: UIViewController {
         
         contentView.addSubview(noteView)
         noteView.addSubview(noteInput)
-//        noteInput.delegate = self
+        noteInput.delegate = self
+        
+        noteView.addSubview(wordCountLabel)
 
         NSLayoutConstraint.activate([
             headerWrapper.topAnchor.constraint(equalTo: view.topAnchor),
@@ -298,6 +362,9 @@ class ProductDetailVC: UIViewController {
             noteInput.bottomAnchor.constraint(equalTo: noteView.bottomAnchor, constant: -16),
             noteInput.heightAnchor.constraint(equalToConstant: 88),
             
+            wordCountLabel.bottomAnchor.constraint(equalTo: noteView.bottomAnchor, constant: -32),
+            wordCountLabel.trailingAnchor.constraint(equalTo: noteView.trailingAnchor, constant: -32),
+            
             footerView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             footerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             footerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -332,12 +399,41 @@ class ProductDetailVC: UIViewController {
 extension ProductDetailVC: ProductSizeSelectionDelegate {
     func didSelectSize(_ size: ProductSize?) {
         selectedSize = size
+//        print("size.price: \(String(selectedSize?.priceModifier ?? 0))")
+//        print("total: \(total)")
+        updateCartBtn()
     }
 }
 
 extension ProductDetailVC: SelectToppingViewDelegate {
     func didSelectTopping(_ topping: ProductTopping?) {
         selectedTopping = topping
+        updateCartBtn()
+    }
+}
+
+extension ProductDetailVC: UITextViewDelegate {
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        textView.text = ""
+        textView.textColor = .black
+    }
+    
+    func textViewDidChange(_ textView: UITextView) {
+        wordCountLabel.text = "(\(textView.text.count)/100)"
+    }
+    
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        // get the current text, or use an empty string if that failed
+        let currentText = textView.text ?? ""
+
+        // attempt to read the range they are trying to change, or exit if we can't
+        guard let stringRange = Range(range, in: currentText) else { return false }
+
+        // add their new text to the existing text
+        let updatedText = currentText.replacingCharacters(in: stringRange, with: text)
+
+        // make sure the result is under 16 characters
+        return updatedText.count <= 100
     }
 }
 
