@@ -243,6 +243,8 @@ class ProductDetailVC: UIViewController {
         increaseButton.addTarget(self, action: #selector(increaseQty), for: .touchUpInside)
         
         decreaseButton.addTarget(self, action: #selector(decreaseQty), for: .touchUpInside)
+        
+        addToCartBtn.addTarget(self, action: #selector(handleAddToCart), for: .touchUpInside)
     }
     
     @objc private func increaseQty() {
@@ -271,6 +273,19 @@ class ProductDetailVC: UIViewController {
     
     private func updateCartBtn() {
         addToCartBtn.setTitle("Add to cart - \(total)", for: .normal)
+    }
+    
+    @objc private func handleAddToCart() {
+        let cartItemView = ProductAddedToCartView(total: total, quantity: quantity, productName: product.name)
+        cartItemView.delegate = self
+        cartItemView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(cartItemView)
+        
+        NSLayoutConstraint.activate([
+            cartItemView.bottomAnchor.constraint(equalTo: footerView.topAnchor, constant: -8),
+            cartItemView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            cartItemView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
+        ])
     }
     
     private func setupUI() {
@@ -399,8 +414,6 @@ class ProductDetailVC: UIViewController {
 extension ProductDetailVC: ProductSizeSelectionDelegate {
     func didSelectSize(_ size: ProductSize?) {
         selectedSize = size
-//        print("size.price: \(String(selectedSize?.priceModifier ?? 0))")
-//        print("total: \(total)")
         updateCartBtn()
     }
 }
@@ -437,9 +450,10 @@ extension ProductDetailVC: UITextViewDelegate {
     }
 }
 
-//extension ProductDetailVC: UIGestureRecognizerDelegate {
-//    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-//        // Allow both gesture recognizers to work simultaneously
-//        return true
-//    }
-//}
+extension ProductDetailVC: ProductAddedToCartViewDelegate {
+    func didTap() {
+        let vc = CartVC()
+        vc.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(vc, animated: false)
+    }
+}
