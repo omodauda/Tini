@@ -146,6 +146,8 @@ class CartVC: UIViewController {
     private func updatePrices() {
         totalPriceValue.text = String(format: "%.2f", cartViewModel.cartTotal)
         shippingFeeValue.text = String(format: "%.2f", cartViewModel.shippingFee)
+        let totalPrice = String(format: "%.2f", cartViewModel.cartTotal + cartViewModel.shippingFee)
+        payBtn.setTitle("Pay \(totalPrice)", for: .normal)
     }
     
     private func setupUI() {
