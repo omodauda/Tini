@@ -12,7 +12,8 @@ struct CartItemModel {
     let productName: String
     let size: String
     let amount: Double
-    let quantity: Int
+    var quantity: Int
     let addOns: [String]?
+    var totalPrice: Double
 }
 
