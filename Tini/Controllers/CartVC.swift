@@ -7,7 +7,14 @@
 
 import UIKit
 
+enum DeliveryType {
+    case pickup
+    case delivery
+}
+
 class CartVC: UIViewController {
+    
+    private let deliveryType: DeliveryType
     
     private let cartViewModel = CartViewModel()
     
@@ -22,7 +29,6 @@ class CartVC: UIViewController {
     
     private let deliveryLabel: UILabel = {
         let deliveryLabel = UILabel()
-        deliveryLabel.text = "Shipping details"
         deliveryLabel.font = .systemFont(ofSize: 16, weight: .bold)
         deliveryLabel.textColor = UIColor(hex: Colors.titleText)
         deliveryLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -38,6 +44,7 @@ class CartVC: UIViewController {
     }()
     
     private let cartDeliveryView = CartDeliveryView()
+    private let cartPickupView = CartPickupView()
     
     private let orderDetailsLabel: UILabel = {
         let orderDetailsLabel = UILabel()
@@ -62,6 +69,8 @@ class CartVC: UIViewController {
         tableView.separatorStyle = .none
         tableView.register(CartItemCell.self, forCellReuseIdentifier: CartItemCell.identifier)
         tableView.layer.cornerRadius = 8
+        tableView.showsVerticalScrollIndicator = false
+        tableView.backgroundColor = .clear
         return tableView
     }()
     
@@ -131,16 +140,59 @@ class CartVC: UIViewController {
     }()
     
     private let payBtn = CustomButton(title: "Pay", backgroundColor: UIColor(hex: Colors.primary), image: nil)
+    
+    init(deliveryType: DeliveryType) {
+        self.deliveryType = deliveryType
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        configureDeliveryDetailView()
         updatePrices()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.isNavigationBarHidden = true
+    }
+    
+    private func configureDeliveryDetailView() {
+        
+        if deliveryType == .delivery {
+            deliveryLabel.text = "Shipping details"
+            
+            let cartDeliveryView = CartDeliveryView()
+            deliveryDetailView.addSubview(cartDeliveryView)
+            cartDeliveryView.translatesAutoresizingMaskIntoConstraints = false
+            cartDeliveryView.delegate = self
+            
+            NSLayoutConstraint.activate([
+                cartDeliveryView.topAnchor.constraint(equalTo: deliveryDetailView.topAnchor, constant: 16),
+                cartDeliveryView.leadingAnchor.constraint(equalTo: deliveryDetailView.leadingAnchor, constant: 16),
+                cartDeliveryView.trailingAnchor.constraint(equalTo: deliveryDetailView.trailingAnchor, constant: -16),
+                cartDeliveryView.bottomAnchor.constraint(equalTo: deliveryDetailView.bottomAnchor, constant: -16),
+            ])
+        } else if deliveryType == .pickup {
+            deliveryLabel.text = "Pickup details"
+            
+            let cartPickupView = CartPickupView()
+            deliveryDetailView.addSubview(cartPickupView)
+            cartPickupView.translatesAutoresizingMaskIntoConstraints = false
+            cartPickupView.delegate = self
+            
+            NSLayoutConstraint.activate([
+                cartPickupView.topAnchor.constraint(equalTo: deliveryDetailView.topAnchor, constant: 16),
+                cartPickupView.leadingAnchor.constraint(equalTo: deliveryDetailView.leadingAnchor, constant: 16),
+                cartPickupView.trailingAnchor.constraint(equalTo: deliveryDetailView.trailingAnchor, constant: -16),
+                cartPickupView.bottomAnchor.constraint(equalTo: deliveryDetailView.bottomAnchor, constant: -16),
+            ])
+        }
     }
     
     private func updatePrices() {
@@ -160,9 +212,6 @@ class CartVC: UIViewController {
         
         view.addSubview(deliveryLabel)
         view.addSubview(deliveryDetailView)
-        deliveryDetailView.addSubview(cartDeliveryView)
-        cartDeliveryView.translatesAutoresizingMaskIntoConstraints = false
-        cartDeliveryView.delegate = self
         
         view.addSubview(orderDetailsLabel)
         view.addSubview(orderDetailView)
@@ -198,11 +247,6 @@ class CartVC: UIViewController {
             deliveryDetailView.topAnchor.constraint(equalTo: deliveryLabel.bottomAnchor, constant: 8),
             deliveryDetailView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             deliveryDetailView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            
-            cartDeliveryView.topAnchor.constraint(equalTo: deliveryDetailView.topAnchor, constant: 16),
-            cartDeliveryView.leadingAnchor.constraint(equalTo: deliveryDetailView.leadingAnchor, constant: 16),
-            cartDeliveryView.trailingAnchor.constraint(equalTo: deliveryDetailView.trailingAnchor, constant: -16),
-            cartDeliveryView.bottomAnchor.constraint(equalTo: deliveryDetailView.bottomAnchor, constant: -16),
             
             orderDetailsLabel.topAnchor.constraint(equalTo: deliveryDetailView.bottomAnchor, constant: 16),
             orderDetailsLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
@@ -264,7 +308,11 @@ extension CartVC: CustomNavHeaderDelegate {
     func didTapSearch() {}
 }
 
-extension CartVC: CartDeliveryViewDelegate {
+extension CartVC: CartDeliveryViewDelegate, CartPickupViewDelegate {
+    func didTapTime() {
+        print("select time")
+    }
+    
     func didTapDeliveryAddress() {
         let vc = AddressListVC()
         vc.hidesBottomBarWhenPushed = true
