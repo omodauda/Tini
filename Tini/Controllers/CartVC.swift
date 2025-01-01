@@ -74,9 +74,8 @@ class CartVC: UIViewController {
         return totalPriceLabel
     }()
     
-    private let totalPriceValue: UILabel = {
+    private lazy var totalPriceValue: UILabel = {
         let totalPriceValue = UILabel()
-        totalPriceValue.text = "319.00"
         totalPriceValue.font = .systemFont(ofSize: 14, weight: .bold)
         totalPriceValue.textColor = UIColor(hex: "#28282B")
         totalPriceValue.translatesAutoresizingMaskIntoConstraints = false
@@ -92,9 +91,8 @@ class CartVC: UIViewController {
         return shippingFeeLabel
     }()
     
-    private let shippingFeeValue: UILabel = {
+    private lazy var shippingFeeValue: UILabel = {
         let shippingFeeValue = UILabel()
-        shippingFeeValue.text = "15.00"
         shippingFeeValue.font = .systemFont(ofSize: 14, weight: .bold)
         shippingFeeValue.textColor = UIColor(hex: "#28282B")
         shippingFeeValue.translatesAutoresizingMaskIntoConstraints = false
@@ -137,11 +135,17 @@ class CartVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        updatePrices()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.isNavigationBarHidden = true
+    }
+    
+    private func updatePrices() {
+        totalPriceValue.text = String(format: "%.2f", cartViewModel.cartTotal)
+        shippingFeeValue.text = String(format: "%.2f", cartViewModel.shippingFee)
     }
     
     private func setupUI() {
@@ -277,10 +281,29 @@ extension CartVC: UITableViewDelegate, UITableViewDataSource {
         }
         let cartItem = cartViewModel.cartItems[indexPath.row]
         cell.configure(with: cartItem)
+        cell.delegate = self
         return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 144
+    }
+}
+
+extension CartVC: CartItemCellDelegate {
+    func didTapIncreaseQty(_ cell: CartItemCell) {
+        if let indexPath = tableView.indexPath(for: cell) {
+            cartViewModel.increaseQty(for: indexPath.row)
+            tableView.reloadData()
+            updatePrices()
+        }
+    }
+    
+    func didTapDecreaseQty(_ cell: CartItemCell) {
+        if let indexPath = tableView.indexPath(for: cell) {
+            cartViewModel.decreaseQty(for: indexPath.row)
+            tableView.reloadData()
+            updatePrices()
+        }
     }
 }
