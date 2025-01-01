@@ -136,6 +136,7 @@ class CartItemCell: UITableViewCell {
     private func setupUI() {
         selectionStyle = .none
         contentView.isUserInteractionEnabled = true
+        backgroundColor = .clear
         
         addSubview(productImage)
         addSubview(productName)
