@@ -7,9 +7,16 @@
 
 import UIKit
 
+protocol CartItemCellDelegate: AnyObject {
+    func didTapIncreaseQty(_ cell: CartItemCell)
+    func didTapDecreaseQty(_ cell: CartItemCell)
+}
+
 class CartItemCell: UITableViewCell {
     
     static let identifier = "CartItemCell"
+    
+    weak var delegate: CartItemCellDelegate?
     
     private let productImage: UIImageView = {
         let image = UIImageView()
@@ -103,18 +110,27 @@ class CartItemCell: UITableViewCell {
     
     private func configureButtons() {
         increaseButton.addTarget(self, action: #selector(increase), for: .touchUpInside)
+        decreaseButton.addTarget(self, action: #selector(decrease), for: .touchUpInside)
     }
     
     @objc func increase() {
-        print("increase btn pressed")
+        delegate?.didTapIncreaseQty(self)
+    }
+    
+    @objc func decrease() {
+        delegate?.didTapDecreaseQty(self)
     }
     
     func configure(with item: CartItemModel) {
         productImage.image = item.productImage
         productName.text = item.productName
         size.text = "Size: \(item.size)"
-        amount.text = String(item.amount)
+        amount.text = String(item.totalPrice)
         quantityLabel.text = String(item.quantity)
+        
+        decreaseButton.isEnabled = item.quantity > 1
+        decreaseButton.tintColor = item.quantity > 1 ? UIColor(hex: Colors.primary) : UIColor(hex: Colors.tetiary)
+        decreaseButton.layer.borderColor = item.quantity > 1 ? UIColor(hex: Colors.primary).cgColor : UIColor(hex: Colors.tetiary).cgColor
     }
     
     private func setupUI() {
