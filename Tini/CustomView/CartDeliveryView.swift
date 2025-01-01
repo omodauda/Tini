@@ -88,15 +88,6 @@ class CartDeliveryView: UIView {
         return descriptionText
     }()
     
-//    private let rightIcon: UIImageView = {
-//        let icon = UIImageView()
-//        icon.image = Images.rightIcon
-//        icon.contentMode = .scaleAspectFit
-//        icon.translatesAutoresizingMaskIntoConstraints = false
-//        icon.tintColor = UIColor(hex: Colors.secondary)
-//        return icon
-//    }()
-    
     private let rightIcon: UIButton = {
         let icon = UIButton()
         icon.setImage(Images.rightIcon, for: .normal)
@@ -104,7 +95,6 @@ class CartDeliveryView: UIView {
         icon.translatesAutoresizingMaskIntoConstraints = false
         return icon
     }()
-    
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -135,7 +125,6 @@ class CartDeliveryView: UIView {
         addSubview(rightIcon)
         addSubview(deliveryAddress)
         addSubview(descriptionText)
-        
         
         NSLayoutConstraint.activate([
             storeLogo.topAnchor.constraint(equalTo: topAnchor),
@@ -173,9 +162,7 @@ class CartDeliveryView: UIView {
             
             descriptionText.topAnchor.constraint(equalTo: deliveryAddress.bottomAnchor, constant: 4),
             descriptionText.leadingAnchor.constraint(equalTo: locationLogo.trailingAnchor, constant: 12),
-            descriptionText.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8),
-            
+            descriptionText.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8)
         ])
     }
-    
 }
