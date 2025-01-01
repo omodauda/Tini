@@ -9,6 +9,8 @@ import UIKit
 
 class ProductDetailVC: UIViewController {
     
+    private let deliveryType: DeliveryType
+    
     private let product: Product
     
     private var selectedSize: ProductSize?
@@ -180,8 +182,9 @@ class ProductDetailVC: UIViewController {
         return label
     }()
     
-    init(product: Product) {
+    init(product: Product, deliveryType: DeliveryType) {
         self.product = product
+        self.deliveryType = deliveryType
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -452,7 +455,7 @@ extension ProductDetailVC: UITextViewDelegate {
 
 extension ProductDetailVC: ProductAddedToCartViewDelegate {
     func didTap() {
-        let vc = CartVC()
+        let vc = CartVC(deliveryType: deliveryType)
         vc.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(vc, animated: false)
     }
