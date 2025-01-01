@@ -54,4 +54,5 @@ struct Images {
     static let emptyStateSvg = UIImage(named: "EmptyStateSvg")
     static let checkBox = UIImage(systemName: "checkmark.square.fill")
     static let cartIcon = UIImage(systemName: "cart")
+    static let couponIcon = UIImage(named: "CouponIcon")
 }
