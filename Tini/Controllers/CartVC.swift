@@ -243,7 +243,6 @@ class CartVC: UIViewController {
     private func updatePrices() {
         totalPriceValue.text = String(format: "%.2f", cartViewModel.cartPrice)
         shippingFeeValue.text = String(format: "%.2f", cartViewModel.shippingFee)
-//        let totalPrice = String(format: "%.2f", cartViewModel.cartPrice + cartViewModel.shippingFee)
         let totalPrice = String(format: "%.2f", cartViewModel.cartTotal)
         payBtn.setTitle("Pay \(totalPrice)", for: .normal)
     }
@@ -347,10 +346,8 @@ class CartVC: UIViewController {
             shippingFeeLabel.topAnchor.constraint(equalTo: totalPriceLabel.bottomAnchor, constant: 16),
             shippingFeeLabel.leadingAnchor.constraint(equalTo: orderDetailView.leadingAnchor, constant: 16),
             
-            
             shippingFeeValue.topAnchor.constraint(equalTo: totalPriceValue.bottomAnchor, constant: 16),
             shippingFeeValue.trailingAnchor.constraint(equalTo: orderDetailView.trailingAnchor, constant: -16),
-//            shippingFeeValue.bottomAnchor.constraint(equalTo: orderDetailView.bottomAnchor, constant: -16),
             
             promotionLabel.topAnchor.constraint(equalTo: shippingFeeLabel.bottomAnchor, constant: 16),
             promotionLabel.leadingAnchor.constraint(equalTo: orderDetailView.leadingAnchor, constant: 16),
@@ -444,9 +441,16 @@ extension CartVC: CartItemCellDelegate {
     
     func didTapDecreaseQty(_ cell: CartItemCell) {
         if let indexPath = tableView.indexPath(for: cell) {
-            cartViewModel.decreaseQty(for: indexPath.row)
-            tableView.reloadData()
-            updatePrices()
+            if cartViewModel.cartItems[indexPath.row].quantity == 1 {
+                let vc = DeleteCartItemVC(at: indexPath.row)
+                vc.delegate = self
+                vc.modalPresentationStyle = .overCurrentContext
+                present(vc, animated: true)
+            } else {
+                cartViewModel.decreaseQty(for: indexPath.row)
+                tableView.reloadData()
+                updatePrices()
+            }
         }
     }
 }
@@ -454,5 +458,14 @@ extension CartVC: CartItemCellDelegate {
 extension CartVC: ApplyCouponVCDelegate {
     func didApplyCoupon(_ code: String) {
         applyCoupon(code: code)
+    }
+}
+
+extension CartVC: DeleteCartItemVCDelegate {
+    func didTapDeleteCartItem(index: Int) {
+        cartViewModel.deleteCartItem(at: index)
+        tableView.reloadData()
+        updatePrices()
+        dismiss(animated: true)
     }
 }
