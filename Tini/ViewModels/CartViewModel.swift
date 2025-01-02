@@ -53,4 +53,8 @@ class CartViewModel {
     func removeCoupon() {
         isCouponApplied = false
     }
+    
+    func deleteCartItem(at index: Int) {
+        cartItems.remove(at: index)
+    }
 }
