@@ -9,10 +9,11 @@ import Foundation
 
 class CartViewModel {
     
-    var cartItems: [CartItemModel] = [
-        .init(productImage: Images.Products.capuccino!, productName: "Capuccino", size: "Small", amount: 69.00, quantity: 1, addOns: nil, totalPrice: 69.00),
-        .init(productImage: Images.Products.smokyBurger!, productName: "Smoky burger", size: "Small", amount: 250.00, quantity: 1, addOns: ["Double-patty", "Emmento"], totalPrice: 250.00),
-    ]
+    static let shared = CartViewModel()
+    
+    private init() {}
+
+    var cartItems: [CartItemModel] = []
     var isCouponApplied: Bool = false
     let couponPrice = 20.00
     
@@ -56,5 +57,14 @@ class CartViewModel {
     
     func deleteCartItem(at index: Int) {
         cartItems.remove(at: index)
+    }
+    
+    func addItemToCart(item: CartItemModel) {
+        let existingItemIndex = cartItems.firstIndex(where: {$0.productName == item.productName})
+        if existingItemIndex != nil {
+            increaseQty(for: existingItemIndex!)
+        } else {
+            cartItems.append(item)
+        }
     }
 }
