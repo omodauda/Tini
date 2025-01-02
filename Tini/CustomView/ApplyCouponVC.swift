@@ -7,7 +7,13 @@
 
 import UIKit
 
+protocol ApplyCouponVCDelegate: AnyObject {
+    func didApplyCoupon(_ code: String)
+}
+
 class ApplyCouponVC: UIViewController {
+    
+    weak var delegate: ApplyCouponVCDelegate?
     
     private let modalView: UIView = {
         let view = UIView()
@@ -88,7 +94,9 @@ class ApplyCouponVC: UIViewController {
     }
     
     @objc private func applyCoupon() {
-        print("apply")
+        if couponTextField.text != nil {
+            delegate?.didApplyCoupon(couponTextField.text!)
+        }
     }
     
     private func setupUI() {
