@@ -18,6 +18,8 @@ class CartVC: UIViewController {
     
     private let cartViewModel = CartViewModel()
     
+    private var isCouponApplied: Bool = false
+    
     private let headerWrapper: UIView = {
         let headerWrapper = UIView()
         headerWrapper.translatesAutoresizingMaskIntoConstraints = false
@@ -108,6 +110,25 @@ class CartVC: UIViewController {
         return shippingFeeValue
     }()
     
+    private let promotionLabel: UILabel = {
+        let promotionLabel = UILabel()
+        promotionLabel.text = "Promotion"
+        promotionLabel.font = .systemFont(ofSize: 14, weight: .regular)
+        promotionLabel.textColor = UIColor(hex: Colors.titleText)
+        promotionLabel.translatesAutoresizingMaskIntoConstraints = false
+        promotionLabel.isHidden = true
+        return promotionLabel
+    }()
+    
+    private let promotionValue: UILabel = {
+        let promotionValue = UILabel()
+        promotionValue.font = .systemFont(ofSize: 14, weight: .bold)
+        promotionValue.textColor = UIColor(hex: "#00AB56")
+        promotionValue.translatesAutoresizingMaskIntoConstraints = false
+        promotionValue.isHidden = true
+        return promotionValue
+    }()
+    
     private let footer: UIView = {
         let footer = UIView()
         footer.translatesAutoresizingMaskIntoConstraints = false
@@ -129,6 +150,14 @@ class CartVC: UIViewController {
         couponLabel.textColor = UIColor(hex: "#28282B")
         couponLabel.translatesAutoresizingMaskIntoConstraints = false
         return couponLabel
+    }()
+    
+    private let couponStatusIcon: UIImageView = {
+        let couponStatusIcon = UIImageView()
+        couponStatusIcon.translatesAutoresizingMaskIntoConstraints = false
+        couponStatusIcon.isHidden = true
+        couponStatusIcon.tintColor = UIColor(hex: "#00AB56")
+        return couponStatusIcon
     }()
     
     private let rightIcon: UIButton = {
@@ -201,16 +230,50 @@ class CartVC: UIViewController {
     }
     
     @objc private func didTapApplyCoupon() {
+        isCouponApplied ? removeCoupon() : openCouponModal()
+    }
+    
+    private func openCouponModal() {
         let couponVC = ApplyCouponVC()
+        couponVC.delegate = self
         couponVC.modalPresentationStyle = .overCurrentContext
         present(couponVC, animated: true)
     }
     
     private func updatePrices() {
-        totalPriceValue.text = String(format: "%.2f", cartViewModel.cartTotal)
+        totalPriceValue.text = String(format: "%.2f", cartViewModel.cartPrice)
         shippingFeeValue.text = String(format: "%.2f", cartViewModel.shippingFee)
-        let totalPrice = String(format: "%.2f", cartViewModel.cartTotal + cartViewModel.shippingFee)
+//        let totalPrice = String(format: "%.2f", cartViewModel.cartPrice + cartViewModel.shippingFee)
+        let totalPrice = String(format: "%.2f", cartViewModel.cartTotal)
         payBtn.setTitle("Pay \(totalPrice)", for: .normal)
+    }
+    
+    private func applyCoupon(code: String) {
+//        print(code)
+        dismiss(animated: true)
+        isCouponApplied = true
+        promotionLabel.isHidden = false
+        promotionValue.isHidden = false
+        promotionValue.text = "-\(cartViewModel.couponPrice)"
+        couponLabel.text = code.uppercased()
+        couponStatusIcon.isHidden = false
+        couponStatusIcon.image = Images.checkBoxCircle
+        rightIcon.setImage(Images.closeIcon, for: .normal)
+        
+        cartViewModel.applyCoupon()
+        updatePrices()
+    }
+    
+    private func removeCoupon() {
+        isCouponApplied = false
+        promotionLabel.isHidden = true
+        promotionValue.isHidden = true
+        couponLabel.text = "Apply coupon"
+        couponStatusIcon.isHidden = true
+        rightIcon.setImage(Images.rightIcon, for: .normal)
+        
+        cartViewModel.removeCoupon()
+        updatePrices()
     }
     
     private func setupUI() {
@@ -234,10 +297,13 @@ class CartVC: UIViewController {
         orderDetailView.addSubview(totalPriceValue)
         orderDetailView.addSubview(shippingFeeLabel)
         orderDetailView.addSubview(shippingFeeValue)
+        orderDetailView.addSubview(promotionLabel)
+        orderDetailView.addSubview(promotionValue)
         
         view.addSubview(footer)
         footer.addSubview(couponIcon)
         footer.addSubview(couponLabel)
+        footer.addSubview(couponStatusIcon)
         footer.addSubview(rightIcon)
         footer.addSubview(payBtn)
         
@@ -280,11 +346,19 @@ class CartVC: UIViewController {
             
             shippingFeeLabel.topAnchor.constraint(equalTo: totalPriceLabel.bottomAnchor, constant: 16),
             shippingFeeLabel.leadingAnchor.constraint(equalTo: orderDetailView.leadingAnchor, constant: 16),
-            shippingFeeLabel.bottomAnchor.constraint(equalTo: orderDetailView.bottomAnchor, constant: -16),
             
-            shippingFeeValue.topAnchor.constraint(equalTo: totalPriceLabel.bottomAnchor, constant: 16),
+            
+            shippingFeeValue.topAnchor.constraint(equalTo: totalPriceValue.bottomAnchor, constant: 16),
             shippingFeeValue.trailingAnchor.constraint(equalTo: orderDetailView.trailingAnchor, constant: -16),
-            shippingFeeValue.bottomAnchor.constraint(equalTo: orderDetailView.bottomAnchor, constant: -16),
+//            shippingFeeValue.bottomAnchor.constraint(equalTo: orderDetailView.bottomAnchor, constant: -16),
+            
+            promotionLabel.topAnchor.constraint(equalTo: shippingFeeLabel.bottomAnchor, constant: 16),
+            promotionLabel.leadingAnchor.constraint(equalTo: orderDetailView.leadingAnchor, constant: 16),
+            promotionLabel.bottomAnchor.constraint(equalTo: orderDetailView.bottomAnchor, constant: -16),
+            
+            promotionValue.topAnchor.constraint(equalTo: shippingFeeValue.bottomAnchor, constant: 16),
+            promotionValue.trailingAnchor.constraint(equalTo: orderDetailView.trailingAnchor, constant: -16),
+            promotionValue.bottomAnchor.constraint(equalTo: orderDetailView.bottomAnchor, constant: -16),
             
             footer.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             footer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -295,8 +369,13 @@ class CartVC: UIViewController {
             couponIcon.widthAnchor.constraint(equalToConstant: 20),
             couponIcon.heightAnchor.constraint(equalToConstant: 16),
             
-            couponLabel.topAnchor.constraint(equalTo: footer.topAnchor, constant: 9),
+            couponLabel.centerYAnchor.constraint(equalTo: couponIcon.centerYAnchor),
             couponLabel.leadingAnchor.constraint(equalTo: couponIcon.trailingAnchor, constant: 10),
+            
+            couponStatusIcon.centerYAnchor.constraint(equalTo: couponLabel.centerYAnchor),
+            couponStatusIcon.leadingAnchor.constraint(equalTo: couponLabel.trailingAnchor, constant: 6),
+            couponStatusIcon.widthAnchor.constraint(equalToConstant: 13),
+            couponStatusIcon.heightAnchor.constraint(equalToConstant: 13),
             
             rightIcon.topAnchor.constraint(equalTo: footer.topAnchor, constant: 13),
             rightIcon.trailingAnchor.constraint(equalTo: footer.trailingAnchor, constant: -24),
@@ -369,5 +448,11 @@ extension CartVC: CartItemCellDelegate {
             tableView.reloadData()
             updatePrices()
         }
+    }
+}
+
+extension CartVC: ApplyCouponVCDelegate {
+    func didApplyCoupon(_ code: String) {
+        applyCoupon(code: code)
     }
 }
