@@ -17,9 +17,9 @@ class ModalHeaderView: UIView {
     
     weak var delegate: ModalHeaderViewDelegate?
     
-    private let titleLabel: UILabel = {
+    private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Pickup Time"
+        label.text = title
         label.font = .systemFont(ofSize: 16, weight: .bold)
         label.textColor = UIColor(hex: Colors.titleText)
         label.translatesAutoresizingMaskIntoConstraints = false
