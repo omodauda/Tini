@@ -60,6 +60,7 @@ class PickupTimeVC: UIViewController {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.separatorStyle = .none
         tableView.showsVerticalScrollIndicator = false
+        tableView.backgroundColor = .clear
 //        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
         return tableView
     }()
@@ -70,6 +71,7 @@ class PickupTimeVC: UIViewController {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.separatorStyle = .none
         tableView.showsVerticalScrollIndicator = false
+        tableView.backgroundColor = .clear
 //        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
         return tableView
     }()
