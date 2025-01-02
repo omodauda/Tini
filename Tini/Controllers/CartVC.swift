@@ -311,6 +311,9 @@ extension CartVC: CustomNavHeaderDelegate {
 extension CartVC: CartDeliveryViewDelegate, CartPickupViewDelegate {
     func didTapTime() {
         print("select time")
+        let timeVC = PickupTimeVC()
+        timeVC.modalPresentationStyle = .overCurrentContext
+        present(timeVC, animated: true)
     }
     
     func didTapDeliveryAddress() {
