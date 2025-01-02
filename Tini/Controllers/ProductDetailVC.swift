@@ -19,6 +19,8 @@ class ProductDetailVC: UIViewController {
     
     private var quantity = 1
     
+    private let cartViewModel = CartViewModel.shared
+    
     private var total: Double  {
         let itemPrice = product.basePrice
         let sizePrice = selectedSize?.priceModifier ?? 0.0
@@ -182,6 +184,8 @@ class ProductDetailVC: UIViewController {
         return label
     }()
     
+    private lazy var cartItemView = ProductAddedToCartView(total: total, quantity: quantity, productName: product.name)
+    
     init(product: Product, deliveryType: DeliveryType) {
         self.product = product
         self.deliveryType = deliveryType
@@ -279,16 +283,23 @@ class ProductDetailVC: UIViewController {
     }
     
     @objc private func handleAddToCart() {
-        let cartItemView = ProductAddedToCartView(total: total, quantity: quantity, productName: product.name)
+        // add to cart view model
+        let item = CartItemModel(productImage: product.image, productName: product.name, size: selectedSize?.name, amount: product.basePrice, quantity: quantity, addOns: nil, totalPrice: total)
+        cartViewModel.addItemToCart(item: item)
+        
+        view.addSubview(cartItemView)
         cartItemView.delegate = self
         cartItemView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(cartItemView)
         
         NSLayoutConstraint.activate([
             cartItemView.bottomAnchor.constraint(equalTo: footerView.topAnchor, constant: -8),
             cartItemView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             cartItemView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
         ])
+    }
+    
+    private func hideProductInCartView() {
+        cartItemView.removeFromSuperview()
     }
     
     private func setupUI() {
@@ -458,5 +469,6 @@ extension ProductDetailVC: ProductAddedToCartViewDelegate {
         let vc = CartVC(deliveryType: deliveryType)
         vc.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(vc, animated: false)
+        hideProductInCartView()
     }
 }
