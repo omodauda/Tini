@@ -131,9 +131,9 @@ class CartVC: UIViewController {
         return couponLabel
     }()
     
-    private let rightIcon: UIImageView = {
-        let rightIcon = UIImageView()
-        rightIcon.image = Images.rightIcon
+    private let rightIcon: UIButton = {
+        let rightIcon = UIButton()
+        rightIcon.setImage(Images.rightIcon, for: .normal)
         rightIcon.translatesAutoresizingMaskIntoConstraints = false
         rightIcon.tintColor = UIColor(hex: Colors.secondary)
         return rightIcon
@@ -154,6 +154,7 @@ class CartVC: UIViewController {
         super.viewDidLoad()
         setupUI()
         configureDeliveryDetailView()
+        configureRightIcon()
         updatePrices()
     }
     
@@ -193,6 +194,16 @@ class CartVC: UIViewController {
                 cartPickupView.bottomAnchor.constraint(equalTo: deliveryDetailView.bottomAnchor, constant: -16),
             ])
         }
+    }
+    
+    private func configureRightIcon() {
+        rightIcon.addTarget(self, action: #selector(didTapApplyCoupon), for: .touchUpInside)
+    }
+    
+    @objc private func didTapApplyCoupon() {
+        let couponVC = ApplyCouponVC()
+        couponVC.modalPresentationStyle = .overCurrentContext
+        present(couponVC, animated: true)
     }
     
     private func updatePrices() {
