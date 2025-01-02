@@ -55,8 +55,8 @@ class CartItemCell: UITableViewCell {
         button.setImage(UIImage(systemName: "minus"), for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.cornerRadius = 20
-        button.layer.borderColor = UIColor(hex: "#DDDDE3").cgColor
-        button.tintColor = UIColor(hex: "#DDDDE3")
+        button.layer.borderColor = UIColor(hex: Colors.primary).cgColor
+        button.tintColor = UIColor(hex: Colors.primary)
         button.layer.borderWidth = 1
         return button
     }()
@@ -127,10 +127,6 @@ class CartItemCell: UITableViewCell {
         size.text = "Size: \(item.size)"
         amount.text = String(item.totalPrice)
         quantityLabel.text = String(item.quantity)
-        
-        decreaseButton.isEnabled = item.quantity > 1
-        decreaseButton.tintColor = item.quantity > 1 ? UIColor(hex: Colors.primary) : UIColor(hex: Colors.tetiary)
-        decreaseButton.layer.borderColor = item.quantity > 1 ? UIColor(hex: Colors.primary).cgColor : UIColor(hex: Colors.tetiary).cgColor
     }
     
     private func setupUI() {
