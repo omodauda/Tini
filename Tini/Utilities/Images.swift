@@ -56,4 +56,5 @@ struct Images {
     static let cartIcon = UIImage(systemName: "cart")
     static let couponIcon = UIImage(named: "CouponIcon")
     static let clockIcon = UIImage(systemName: "clock.fill")
+    static let closeIcon = UIImage(systemName: "xmark")
 }
