@@ -124,7 +124,7 @@ class CartItemCell: UITableViewCell {
     func configure(with item: CartItemModel) {
         productImage.image = item.productImage
         productName.text = item.productName
-        size.text = "Size: \(item.size)"
+        size.text = "Size: \(item.size ?? "")"
         amount.text = String(item.totalPrice)
         quantityLabel.text = String(item.quantity)
     }
