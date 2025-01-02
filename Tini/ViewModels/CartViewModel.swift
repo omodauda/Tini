@@ -13,8 +13,10 @@ class CartViewModel {
         .init(productImage: Images.Products.capuccino!, productName: "Capuccino", size: "Small", amount: 69.00, quantity: 1, addOns: nil, totalPrice: 69.00),
         .init(productImage: Images.Products.smokyBurger!, productName: "Smoky burger", size: "Small", amount: 250.00, quantity: 1, addOns: ["Double-patty", "Emmento"], totalPrice: 250.00),
     ]
+    var isCouponApplied: Bool = false
+    let couponPrice = 20.00
     
-    var cartTotal: Double {
+    var cartPrice: Double {
         var total: Double = 0.0
         
         for item in cartItems {
@@ -24,7 +26,11 @@ class CartViewModel {
     }
     
     var shippingFee: Double {
-        return (5 / 100) * cartTotal
+        return (5 / 100) * cartPrice
+    }
+    
+    var cartTotal: Double {
+        return cartPrice + shippingFee - (isCouponApplied ? couponPrice : 0.0)
     }
     
     func increaseQty(for index: Int) {
@@ -38,5 +44,13 @@ class CartViewModel {
         cartItems[index].quantity -= 1
         let itemPrice = cartItems[index].amount
         cartItems[index].totalPrice -= itemPrice
+    }
+    
+    func applyCoupon() {
+        isCouponApplied = true
+    }
+    
+    func removeCoupon() {
+        isCouponApplied = false
     }
 }
