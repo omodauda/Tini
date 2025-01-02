@@ -16,7 +16,7 @@ class CartVC: UIViewController {
     
     private let deliveryType: DeliveryType
     
-    private let cartViewModel = CartViewModel()
+    private let cartViewModel = CartViewModel.shared
     
     private var isCouponApplied: Bool = false
     
@@ -245,6 +245,8 @@ class CartVC: UIViewController {
         shippingFeeValue.text = String(format: "%.2f", cartViewModel.shippingFee)
         let totalPrice = String(format: "%.2f", cartViewModel.cartTotal)
         payBtn.setTitle("Pay \(totalPrice)", for: .normal)
+        payBtn.isEnabled = cartViewModel.cartTotal > 0
+        rightIcon.isEnabled = cartViewModel.cartTotal > 0
     }
     
     private func applyCoupon(code: String) {
