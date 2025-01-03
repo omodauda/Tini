@@ -339,11 +339,11 @@ class ProductDetailVC: UIViewController {
             headerWrapper.topAnchor.constraint(equalTo: view.topAnchor),
             headerWrapper.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             headerWrapper.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            headerWrapper.heightAnchor.constraint(equalToConstant: 120),
             
             header.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             header.leadingAnchor.constraint(equalTo: headerWrapper.leadingAnchor),
             header.trailingAnchor.constraint(equalTo: headerWrapper.trailingAnchor),
+            header.bottomAnchor.constraint(equalTo: headerWrapper.bottomAnchor),
             
             backIconWrapper.topAnchor.constraint(equalTo: header.topAnchor, constant: 12),
             backIconWrapper.leadingAnchor.constraint(equalTo: header.leadingAnchor, constant: 16),
