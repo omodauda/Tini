@@ -9,7 +9,7 @@ import UIKit
 
 class DeliveryMenuVC: UIViewController {
     
-    var menuList = ProductsListViewModel()
+    private let menuList = ProductsListViewModel.shared
 
     private let header = CustomNavHeader(title: "Delivery", showRightIcon: true, rightIcon: nil)
     

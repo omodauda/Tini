@@ -116,7 +116,6 @@ class CartVC: UIViewController {
         promotionLabel.font = .systemFont(ofSize: 14, weight: .regular)
         promotionLabel.textColor = UIColor(hex: Colors.titleText)
         promotionLabel.translatesAutoresizingMaskIntoConstraints = false
-        promotionLabel.isHidden = true
         return promotionLabel
     }()
     
@@ -125,7 +124,6 @@ class CartVC: UIViewController {
         promotionValue.font = .systemFont(ofSize: 14, weight: .bold)
         promotionValue.textColor = UIColor(hex: "#00AB56")
         promotionValue.translatesAutoresizingMaskIntoConstraints = false
-        promotionValue.isHidden = true
         return promotionValue
     }()
     
@@ -243,6 +241,7 @@ class CartVC: UIViewController {
     private func updatePrices() {
         totalPriceValue.text = String(format: "%.2f", cartViewModel.cartPrice)
         shippingFeeValue.text = String(format: "%.2f", cartViewModel.shippingFee)
+        promotionValue.text = isCouponApplied ? String(format: "%.2f", cartViewModel.couponPrice) : "0.00"
         let totalPrice = String(format: "%.2f", cartViewModel.cartTotal)
         payBtn.setTitle("Pay \(totalPrice)", for: .normal)
         payBtn.isEnabled = cartViewModel.cartTotal > 0
@@ -253,8 +252,6 @@ class CartVC: UIViewController {
 //        print(code)
         dismiss(animated: true)
         isCouponApplied = true
-        promotionLabel.isHidden = false
-        promotionValue.isHidden = false
         promotionValue.text = "-\(cartViewModel.couponPrice)"
         couponLabel.text = code.uppercased()
         couponStatusIcon.isHidden = false
@@ -267,8 +264,6 @@ class CartVC: UIViewController {
     
     private func removeCoupon() {
         isCouponApplied = false
-        promotionLabel.isHidden = true
-        promotionValue.isHidden = true
         couponLabel.text = "Apply coupon"
         couponStatusIcon.isHidden = true
         rightIcon.setImage(Images.rightIcon, for: .normal)
