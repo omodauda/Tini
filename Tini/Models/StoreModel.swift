@@ -11,6 +11,8 @@ struct StoreModel {
     let name: String
     let address: String
     let isFavorite: Bool
+    let workingHours: String
+    let phone: String
 }
 
 struct StoresGroup {
