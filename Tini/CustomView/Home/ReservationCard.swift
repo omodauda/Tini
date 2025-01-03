@@ -60,14 +60,32 @@ class ReservationCard: UIView {
     
     private let reserveTableButton = CustomButton(title: "Reserve a table", backgroundColor: nil, image: UIImage(systemName: "calendar"))
     private let reservationsButton = CustomButton(title: "My reservations", backgroundColor: nil, image: nil)
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    
+    init(showBtns: Bool) {
+        super.init(frame: .zero)
         setupUI()
+        configureBtns(showBtns)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func configureBtns(_ showBtns: Bool) {
+        if showBtns {
+            addSubview(buttonGroup)
+            buttonGroup.addArrangedSubview(reserveTableButton)
+            buttonGroup.addArrangedSubview(reservationsButton)
+            
+            NSLayoutConstraint.activate([
+                buttonGroup.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+                buttonGroup.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+                buttonGroup.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 8),
+                buttonGroup.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16)
+            ])
+        } else {
+            stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16).isActive = true
+        }
     }
     
     private func setupUI() {
@@ -81,10 +99,6 @@ class ReservationCard: UIView {
         stackView.addArrangedSubview(textView)
         stackView.addArrangedSubview(imageView)
         
-        addSubview(buttonGroup)
-        buttonGroup.addArrangedSubview(reserveTableButton)
-        buttonGroup.addArrangedSubview(reservationsButton)
-        
         NSLayoutConstraint.activate([
             title.centerYAnchor.constraint(equalTo: textView.centerYAnchor),
             title.leadingAnchor.constraint(equalTo: textView.leadingAnchor),
@@ -96,17 +110,8 @@ class ReservationCard: UIView {
             
             stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            stackView.topAnchor.constraint(equalTo: topAnchor, constant: 16),
-            
-            buttonGroup.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            buttonGroup.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            buttonGroup.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 8),
-            buttonGroup.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16)
+            stackView.topAnchor.constraint(equalTo: topAnchor, constant: 16)
         ])
     }
     
-}
-
-#Preview {
-    ReservationCard()
 }
