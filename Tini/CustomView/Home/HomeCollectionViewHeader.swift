@@ -37,7 +37,7 @@ class HomeCollectionViewHeader: UICollectionReusableView {
     
     private let deliveryView = DeliveryCardInfoView(image: Images.Home.deliveryImage!, title: "Delivery", desc: "Always on time")
     
-    private let reservationCard = ReservationCard()
+    private let reservationCard = ReservationCard(showBtns: true)
     private let title: UILabel = {
         let title = UILabel()
         title.text = "Promotion campaign"
@@ -104,10 +104,6 @@ class HomeCollectionViewHeader: UICollectionReusableView {
             stackView.trailingAnchor.constraint(equalTo: trailingAnchor),
             stackView.heightAnchor.constraint(equalToConstant: 154),
             
-            pickupView.heightAnchor.constraint(equalToConstant: 122),
-            
-            deliveryView.heightAnchor.constraint(equalToConstant: 122),
-            
             divider.widthAnchor.constraint(equalToConstant: 1),
             divider.heightAnchor.constraint(equalToConstant: 48),
             divider.centerXAnchor.constraint(equalTo: stackView.centerXAnchor),
@@ -116,7 +112,6 @@ class HomeCollectionViewHeader: UICollectionReusableView {
             reservationCard.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 16),
             reservationCard.leadingAnchor.constraint(equalTo: leadingAnchor),
             reservationCard.trailingAnchor.constraint(equalTo: trailingAnchor),
-            reservationCard.heightAnchor.constraint(equalToConstant: 154),
             
             title.topAnchor.constraint(equalTo: reservationCard.bottomAnchor, constant: 24),
             title.leadingAnchor.constraint(equalTo: leadingAnchor),
