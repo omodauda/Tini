@@ -23,7 +23,6 @@ class SelectStoreVC: UIViewController {
     private let searchBar: UISearchBar = {
         let searchBar = UISearchBar()
         searchBar.translatesAutoresizingMaskIntoConstraints = false
-        searchBar.placeholder = "Search store"
         searchBar.searchTextField.backgroundColor = .white
         searchBar.layer.cornerRadius = 4
         searchBar.layer.borderWidth = 1
@@ -32,6 +31,7 @@ class SelectStoreVC: UIViewController {
         searchBar.searchTextField.autocorrectionType = .no
         searchBar.setBackgroundImage(UIImage(), for: .any, barMetrics: .default)
         searchBar.searchTextField.textColor = UIColor(hex: Colors.titleText)
+        searchBar.searchTextField.attributedPlaceholder = NSAttributedString(string: "Search store", attributes: [NSAttributedString.Key.foregroundColor: UIColor(hex: Colors.secondary)])
         return searchBar
     }()
     

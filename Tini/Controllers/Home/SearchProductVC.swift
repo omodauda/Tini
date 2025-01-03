@@ -48,7 +48,6 @@ class SearchProductVC: UIViewController {
     private let searchBar: UISearchBar = {
         let searchBar = UISearchBar()
         searchBar.translatesAutoresizingMaskIntoConstraints = false
-        searchBar.placeholder = "What are you craving for?"
         searchBar.searchTextField.backgroundColor = .white
         searchBar.layer.cornerRadius = 4
         searchBar.setBackgroundImage(UIImage(), for: .any, barMetrics: .default)
@@ -57,7 +56,7 @@ class SearchProductVC: UIViewController {
         searchBar.searchTextField.autocapitalizationType = .none
         searchBar.searchTextField.autocorrectionType = .no
         searchBar.searchTextField.textColor = UIColor(hex: Colors.titleText)
-        searchBar.isTranslucent = false
+        searchBar.searchTextField.attributedPlaceholder = NSAttributedString(string: "What are you craving for?", attributes: [NSAttributedString.Key.foregroundColor: UIColor(hex: Colors.secondary)])
         return searchBar
     }()
     
