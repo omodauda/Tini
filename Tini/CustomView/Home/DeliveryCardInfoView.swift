@@ -62,7 +62,8 @@ class DeliveryCardInfoView: UIView {
             titleLabel.centerXAnchor.constraint(equalTo: imageView.centerXAnchor),
             
             desc.topAnchor.constraint(equalTo: titleLabel.bottomAnchor),
-            desc.centerXAnchor.constraint(equalTo: titleLabel.centerXAnchor)
+            desc.centerXAnchor.constraint(equalTo: titleLabel.centerXAnchor),
+            desc.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
         
     }
