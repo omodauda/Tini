@@ -150,6 +150,13 @@ extension StoresVC: UITableViewDelegate, UITableViewDataSource {
         sectionHeader.configure(title: title)
         return sectionHeader
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let store = storesViewModel.sections[indexPath.section].stores[indexPath.row]
+        let vc = StoreDetailsVC(store: store)
+        vc.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(vc, animated: false)
+    }
 }
 
 extension StoresVC: UISearchBarDelegate {
