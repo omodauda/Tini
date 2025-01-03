@@ -65,8 +65,9 @@ class SearchStoreVC: UIViewController {
     }
     
     func createDismissKeyboardTapGesture() {
-        let tap = UITapGestureRecognizer(target: self.view, action: #selector(UIView.endEditing))
-        view.addGestureRecognizer(tap)
+        let tapGesture = UITapGestureRecognizer(target: self.view, action: #selector(UIView.endEditing))
+        tapGesture.cancelsTouchesInView = false
+        view.addGestureRecognizer(tapGesture)
     }
     
     private func updateView() {
@@ -167,6 +168,13 @@ extension SearchStoreVC: UITableViewDelegate, UITableViewDataSource {
         let title = storesViewModel.sections[section].title
         sectionHeader.configure(title: title)
         return sectionHeader
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let store = storesViewModel.sections[indexPath.section].stores[indexPath.row]
+        let vc = StoreDetailsVC(store: store)
+        vc.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(vc, animated: false)
     }
 }
 
