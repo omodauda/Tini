@@ -62,6 +62,7 @@ class SelectStoreVC: UIViewController {
     
     func createDismissKeyboardTapGesture() {
         let tap = UITapGestureRecognizer(target: self.view, action: #selector(UIView.endEditing))
+        tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
     }
     
@@ -162,6 +163,12 @@ extension SelectStoreVC: UITableViewDelegate, UITableViewDataSource {
         let title = storesViewModel.sections[section].title
         sectionHeader.configure(title: title)
         return sectionHeader
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let store = storesViewModel.sections[indexPath.section].stores[indexPath.row]
+        let vc = StoreDetailsVC(store: store)
+        navigationController?.pushViewController(vc, animated: false)
     }
 }
 
