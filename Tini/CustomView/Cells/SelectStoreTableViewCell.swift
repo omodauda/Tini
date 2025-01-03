@@ -72,6 +72,7 @@ class SelectStoreTableViewCell: UITableViewCell {
     
     private func setupUI() {
         backgroundColor = .clear
+        selectionStyle = .none
         
         addSubview(cellView)
         cellView.addSubview(storeLogo)
