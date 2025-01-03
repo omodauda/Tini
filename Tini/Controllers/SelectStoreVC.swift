@@ -9,7 +9,7 @@ import UIKit
 
 class SelectStoreVC: UIViewController {
     
-    private let storesViewModel = StoresViewModel()
+    private let storesViewModel = StoresViewModel.shared
     
     private let headerWrapper: UIView = {
         let headerWrapper = UIView()
@@ -25,7 +25,7 @@ class SelectStoreVC: UIViewController {
         searchBar.translatesAutoresizingMaskIntoConstraints = false
         searchBar.placeholder = "Search store"
         searchBar.searchTextField.backgroundColor = .white
-        searchBar.searchTextField.layer.cornerRadius = 4
+        searchBar.layer.cornerRadius = 4
         searchBar.layer.borderWidth = 1
         searchBar.layer.borderColor = UIColor(hex: "#DDDDE3").cgColor
         searchBar.searchTextField.autocapitalizationType = .none

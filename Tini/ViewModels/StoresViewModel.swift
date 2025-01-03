@@ -8,6 +8,11 @@
 import Foundation
 
 class StoresViewModel {
+    
+    static let shared = StoresViewModel()
+    
+    private init() {}
+    
     private let allStores: [StoreModel] = [
         StoreModel(name: "SB Han Thuyen", address: "11-13 Han Thuyen, D1, HCM city", isFavorite: true),
         StoreModel(name: "SB Nguyen Van Troi SB Nguyen Van Troi SB Nguyen Van Troi", address: "117 Nguyen Dinh Chieu, D3, HCM city", isFavorite: true),

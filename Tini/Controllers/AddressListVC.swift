@@ -9,7 +9,7 @@ import UIKit
 
 class AddressListVC: UIViewController {
     
-    private let deliveryAddressViewModel = DeliveryAddressViewModel()
+    private let deliveryAddressViewModel = DeliveryAddressViewModel.shared
     
     private let headerWrapper: UIView = {
         let headerWrapper = UIView()

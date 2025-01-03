@@ -9,7 +9,7 @@ import UIKit
 
 class SearchProductVC: UIViewController {
     
-    private var menuList = ProductsListViewModel()
+    private let menuList = ProductsListViewModel.shared
     
     private let headerWrapper: UIView = {
         let headerWrapper = UIView()
@@ -50,7 +50,7 @@ class SearchProductVC: UIViewController {
         searchBar.translatesAutoresizingMaskIntoConstraints = false
         searchBar.placeholder = "What are you craving for?"
         searchBar.searchTextField.backgroundColor = .white
-        searchBar.searchTextField.layer.cornerRadius = 4
+        searchBar.layer.cornerRadius = 4
         searchBar.setBackgroundImage(UIImage(), for: .any, barMetrics: .default)
         searchBar.layer.borderWidth = 1
         searchBar.layer.borderColor = UIColor(hex: "#DDDDE3").cgColor

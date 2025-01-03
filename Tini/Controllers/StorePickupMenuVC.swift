@@ -9,7 +9,7 @@ import UIKit
 
 class StorePickupMenuVC: UIViewController {
     
-    var menuList = ProductsListViewModel()
+    private let menuList = ProductsListViewModel.shared
     
     private let header = CustomNavHeader(title: "Store pickup", showRightIcon: true, rightIcon: nil)
     

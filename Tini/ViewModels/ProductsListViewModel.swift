@@ -9,6 +9,10 @@ import UIKit
 
 class ProductsListViewModel {
     
+    static let shared = ProductsListViewModel()
+    
+    private init() {}
+    
 //    private let allProducts: [Product] = [
 //        .init(id: "1", name: "Pure black", price: 59.00, image: Images.Products.pureBlack!, isAvailable: true, isFavorite: true),
 //        .init(name: "Latte", price: 59.00, image: Images.Products.latte!, isAvailable: true, isFavorite: true),
