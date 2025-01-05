@@ -60,4 +60,5 @@ struct Images {
     static let checkBoxCircle = UIImage(systemName: "checkmark.circle.fill")
     static let storeImage = UIImage(named: "StoreImage")
     static let phoneIcon = UIImage(systemName: "phone.fill")
+    static let emptyOrdersSvg = UIImage(named: "EmptyOrderSvg")
 }
