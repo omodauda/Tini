@@ -10,7 +10,7 @@ import Foundation
 struct StoreModel {
     let name: String
     let address: String
-    let isFavorite: Bool
+    var isFavorite: Bool
     let workingHours: String
     let phone: String
 }
