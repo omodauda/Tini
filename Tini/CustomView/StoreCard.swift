@@ -7,8 +7,14 @@
 
 import UIKit
 
+protocol StoreCardDelegate: AnyObject {
+    func didTapFavBtn()
+}
+
 class StoreCard: UIView {
 
+    weak var delegate: StoreCardDelegate?
+    
     private let imagePlaceholder: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -68,6 +74,14 @@ class StoreCard: UIView {
             favBtn.setImage(Images.favOutlineIcon, for: .normal)
             favBtn.tintColor = UIColor(hex: Colors.secondary)
         }
+    }
+    
+    private func configureFavBtn() {
+        favBtn.addTarget(self, action: #selector(didTapFavBtn), for: .touchUpInside)
+    }
+    
+    @objc private func didTapFavBtn() {
+        delegate?.didTapFavBtn()
     }
     
     private func setupUI() {
