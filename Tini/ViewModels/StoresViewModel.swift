@@ -13,10 +13,10 @@ class StoresViewModel {
     
     private init() {}
     
-    private let allStores: [StoreModel] = [
-        StoreModel(name: "SB Han Thuyen", address: "11-13 Han Thuyen, D1, HCM city", isFavorite: true, workingHours: "07:00 - 22:00", phone: "08141637335"),
-        StoreModel(name: "SB Nguyen Van Troi SB Nguyen Van Troi SB Nguyen Van Troi", address: "117 Nguyen Dinh Chieu, D3, HCM city", isFavorite: true, workingHours: "07:00 - 22:00", phone: "08141637335"),
-        StoreModel(name: "SB Phan Xich Long", address: "214-216 Phan Xich Long, D.Phu Nhuan 214-216 Phan Xich Long, D.Phu Nhuan", isFavorite: true, workingHours: "07:00 - 22:00", phone: "08141637335"),
+    private var allStores: [StoreModel] = [
+        StoreModel(name: "SB Han Thuyen", address: "11-13 Han Thuyen, D1, HCM city", isFavorite: false, workingHours: "07:00 - 22:00", phone: "08141637335"),
+        StoreModel(name: "SB Nguyen Van Troi SB Nguyen Van Troi SB Nguyen Van Troi", address: "117 Nguyen Dinh Chieu, D3, HCM city", isFavorite: false, workingHours: "07:00 - 22:00", phone: "08141637335"),
+        StoreModel(name: "SB Phan Xich Long", address: "214-216 Phan Xich Long, D.Phu Nhuan 214-216 Phan Xich Long, D.Phu Nhuan", isFavorite: false, workingHours: "07:00 - 22:00", phone: "08141637335"),
         StoreModel(name: "SB Van Hanh Mall", address: "11 Su Van Hanh, D10, HCM city", isFavorite: false, workingHours: "07:00 - 22:00", phone: "08141637335"),
         StoreModel(name: "SB CMT8", address: "24 Ba Cach Mang Thang 8, D3, HCM city", isFavorite: false, workingHours: "07:00 - 22:00", phone: "08141637335"),
         StoreModel(name: "SB Leman", address: "2 Hong Ha St, D.Tan Binh, HCM city", isFavorite: false, workingHours: "07:00 - 22:00", phone: "08141637335"),
@@ -52,6 +52,14 @@ class StoresViewModel {
             if !filteredOthers.isEmpty {
                 sections.append(StoresGroup(title: "Other stores", stores: filteredOthers))
             }
+        }
+    }
+    
+    func toggleFavorite(store: StoreModel) {
+        let index = allStores.firstIndex(where: {$0.name == store.name})
+        if index != nil {
+            allStores[index!].isFavorite.toggle()
+            loadSections()
         }
     }
 }
