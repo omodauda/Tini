@@ -11,6 +11,8 @@ class StoreDetailsVC: UIViewController {
     
     private let store: StoreModel
     
+    private let storeViewModel = StoresViewModel.shared
+    
     private let headerWrapper: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -60,6 +62,7 @@ class StoreDetailsVC: UIViewController {
     
     private lazy var storeCard: StoreCard = {
         let card = StoreCard(store: store)
+        card.delegate = self
         card.translatesAutoresizingMaskIntoConstraints = false
         card.layer.cornerRadius = 8
         return card
@@ -199,5 +202,11 @@ class StoreDetailsVC: UIViewController {
             contactCard.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             contactCard.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         ])
+    }
+}
+
+extension StoreDetailsVC: StoreCardDelegate {
+    func didTapFavBtn() {
+        storeViewModel.toggleFavorite(store: store)
     }
 }
