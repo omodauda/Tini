@@ -55,7 +55,7 @@ class HomeTabController: UITabBarController {
         
         // Add the indicator view
         tabBar.addSubview(indicatorView)
-        indicatorView.backgroundColor = UIColor.systemBlue
+        indicatorView.backgroundColor = UIColor(hex: Colors.primary)
         indicatorView.translatesAutoresizingMaskIntoConstraints = false
         
         // Calculate the width of each tab
