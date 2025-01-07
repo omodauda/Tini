@@ -20,6 +20,10 @@ class HomeTabController: UITabBarController {
     }
     
     private func configureTabBar() {
+        
+        let appearance = UITabBarAppearance()
+        appearance.backgroundColor = UIColor.white
+        
         tabBar.tintColor = UIColor(hex: Colors.primary)
         tabBar.unselectedItemTintColor = UIColor(hex: Colors.secondary)
         tabBar.backgroundColor = UIColor.white
@@ -28,6 +32,7 @@ class HomeTabController: UITabBarController {
         tabBar.layer.shadowOffset = CGSize(width: 0, height: -2)
         tabBar.layer.shadowRadius = 4
         tabBar.layer.masksToBounds = false
+        tabBar.standardAppearance = appearance
         
         let homeVC = HomeVC()
         homeVC.title = "Home"
