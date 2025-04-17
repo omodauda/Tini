@@ -83,4 +83,11 @@ extension DeliveryOrdersVC: UITableViewDelegate, UITableViewDataSource {
         cell.configure(order: order)
         return cell
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let order = deliveryOrders[indexPath.row]
+        let vc = OrderDetailsVC(order: order)
+        vc.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(vc, animated: false)
+    }
 }

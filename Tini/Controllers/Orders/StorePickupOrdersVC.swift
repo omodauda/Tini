@@ -81,4 +81,11 @@ extension StorePickupOrdersVC: UITableViewDelegate, UITableViewDataSource {
         cell.configure(order: order)
         return cell
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let order = storePickupOrders[indexPath.row]
+        let vc = OrderDetailsVC(order: order)
+        vc.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(vc, animated: false)
+    }
 }
