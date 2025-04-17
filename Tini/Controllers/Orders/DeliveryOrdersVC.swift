@@ -9,6 +9,14 @@ import UIKit
 
 class DeliveryOrdersVC: UIViewController {
     
+    private let ordersViewModel = OrdersViewModel.shared
+    
+    var deliveryOrders: [OrderModel] {
+        return ordersViewModel.orders.filter({$0.type == .delivery})
+    }
+    
+    private let emptyView = EmptyOrderView()
+    
     let tableView: UITableView = {
         let tableView = UITableView()
         tableView.register(OrderDeliveryCell.self, forCellReuseIdentifier: OrderDeliveryCell.identifier)
@@ -25,6 +33,17 @@ class DeliveryOrdersVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        updateUI()
+    }
+    
+    func updateUI() {
+        if deliveryOrders.isEmpty {
+            tableView.isHidden = true
+            emptyView.isHidden = false
+        } else {
+            tableView.isHidden = false
+            emptyView.isHidden = true
+        }
     }
     
     private func setupUI() {
@@ -34,11 +53,19 @@ class DeliveryOrdersVC: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         
+        view.addSubview(emptyView)
+        emptyView.translatesAutoresizingMaskIntoConstraints = false
+        
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: view.topAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            emptyView.topAnchor.constraint(equalTo: view.topAnchor),
+            emptyView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            emptyView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            emptyView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
 
@@ -47,11 +74,13 @@ class DeliveryOrdersVC: UIViewController {
 extension DeliveryOrdersVC: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        10
+        return deliveryOrders.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: OrderDeliveryCell.identifier, for: indexPath) as? OrderDeliveryCell else { return UITableViewCell() }
+        let order = deliveryOrders[indexPath.row]
+        cell.configure(order: order)
         return cell
     }
 }

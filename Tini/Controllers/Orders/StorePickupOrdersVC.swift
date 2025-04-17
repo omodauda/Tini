@@ -9,24 +9,76 @@ import UIKit
 
 class StorePickupOrdersVC: UIViewController {
 
+    let ordersViewModel = OrdersViewModel.shared
+    
+    private var storePickupOrders : [OrderModel] {
+        return ordersViewModel.orders.filter({ $0.type == .pickup })
+    }
+    
     private let emptyView = EmptyOrderView()
+    
+    private let tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.register(OrderDeliveryCell.self, forCellReuseIdentifier: OrderDeliveryCell.identifier)
+        tableView.backgroundColor = UIColor(hex: Colors.background)
+        tableView.separatorStyle = .none
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.contentInset = UIEdgeInsets(top: 16, left: 0, bottom: 16, right: 0)
+        tableView.showsVerticalScrollIndicator = false
+        tableView.estimatedRowHeight = 227
+        tableView.rowHeight = UITableView.automaticDimension
+        return tableView
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        updateUI()
+    }
+    
+    func updateUI() {
+        if storePickupOrders.isEmpty {
+            tableView.isHidden = true
+            emptyView.isHidden = false
+        } else {
+            tableView.isHidden = false
+            emptyView.isHidden = true
+        }
     }
 
     private func setupUI() {
         view.backgroundColor = .white
         
+        view.addSubview(tableView)
+        tableView.delegate = self
+        tableView.dataSource = self
+        
         view.addSubview(emptyView)
         emptyView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
+            tableView.topAnchor.constraint(equalTo: view.topAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
             emptyView.topAnchor.constraint(equalTo: view.topAnchor),
             emptyView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             emptyView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             emptyView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
+    }
+}
+
+extension StorePickupOrdersVC: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return storePickupOrders.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: OrderDeliveryCell.identifier, for: indexPath) as? OrderDeliveryCell else {return UITableViewCell()}
+        let order = storePickupOrders[indexPath.row]
+        cell.configure(order: order)
+        return cell
     }
 }
