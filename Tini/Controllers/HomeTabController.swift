@@ -44,9 +44,11 @@ class HomeTabController: UITabBarController {
         storesVC.tabBarItem.image = Images.Nav.store
         let stores = UINavigationController(rootViewController: storesVC)
         
-        let order = OrderVC()
-        order.title = "Order"
-        order.tabBarItem.image = Images.Nav.order
+        let orderVC = OrderVC()
+        orderVC.title = "Order"
+        orderVC.tabBarItem.image = Images.Nav.order
+        let order = UINavigationController(rootViewController: orderVC)
+        
         
         let profile = ProfileVC()
         profile.title = "Profile"
