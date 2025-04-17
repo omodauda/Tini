@@ -90,7 +90,7 @@ class OrderDeliveryCell: UITableViewCell {
         items.textColor = UIColor(hex: Colors.titleText)
         items.font = .systemFont(ofSize: 14, weight: .regular)
         items.translatesAutoresizingMaskIntoConstraints = false
-        items.text = "Capucino (x1), Smoky hamburger (x1), Capucino (x1), Smoky hamburger (x1)"
+        items.text = ""
         items.numberOfLines = 0
         items.lineBreakMode = .byWordWrapping
         return items
@@ -112,6 +112,50 @@ class OrderDeliveryCell: UITableViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func configure(order: OrderModel) {
+        switch order.status {
+        case .received:
+            statusLabel.text = "Order received"
+            statusLabel.textColor = UIColor(hex: Colors.orange)
+            statusView.backgroundColor = UIColor(hex: Colors.lightOrange)
+        case .preparing:
+            statusLabel.text = "Preparing"
+            statusLabel.textColor = UIColor(hex: Colors.orange)
+            statusView.backgroundColor = UIColor(hex: Colors.lightOrange)
+        case .readyForPickup:
+            statusLabel.text = "Ready for pickup"
+            statusLabel.textColor = UIColor(hex: Colors.primary)
+            statusView.backgroundColor = UIColor(hex: Colors.lightPrimary)
+        case .delivering:
+            statusLabel.text = "Delivering"
+            statusLabel.textColor = UIColor(hex: Colors.primary)
+            statusView.backgroundColor = UIColor(hex: Colors.lightPrimary)
+        case .delivered:
+            statusLabel.text = "Delivered"
+            statusLabel.textColor = UIColor(hex: Colors.green)
+            statusView.backgroundColor = UIColor(hex: Colors.lightGreen)
+        case .failed:
+            statusLabel.text = "Delivery failed"
+            statusLabel.textColor = UIColor(hex: Colors.red)
+            statusView.backgroundColor = UIColor(hex: Colors.lightRed)
+        case .completed:
+            statusLabel.text = "Order completed"
+            statusLabel.textColor = UIColor(hex: Colors.green)
+            statusView.backgroundColor = UIColor(hex: Colors.lightGreen)
+        }
+        
+        if order.type == .pickup {
+            locationLogo.image = Images.clockIcon
+            deliveryAddress.text = order.deliveryDate
+        } else {
+            locationLogo.image = Images.liveLocationIcon
+            deliveryAddress.text = order.deliveryAddress
+        }
+        orderItems.text = order.items.map {"\($0.productName) (x\($0.quantity))"}.joined(separator: ", ")
+        storeAddress.text = order.storeAddress
+        orderTotal.text = "\(order.total)"
     }
     
     private func setupUI() {
