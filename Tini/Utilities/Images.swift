@@ -61,4 +61,14 @@ struct Images {
     static let storeImage = UIImage(named: "StoreImage")
     static let phoneIcon = UIImage(systemName: "phone.fill")
     static let emptyOrdersSvg = UIImage(named: "EmptyOrderSvg")
+    
+    struct Orders {
+        static let orderPreparing = UIImage(named: "OrderPreparing")
+        static let orderDelivering = UIImage(named: "OrderDelivering")
+        static let orderDelivered = UIImage(named: "OrderDelivered")
+        static let orderFailed = UIImage(named: "OrderFailed")
+        static let orderReceived = UIImage(named: "OrderReceived")
+        static let orderReadyPickup = UIImage(named: "OrderReadyPickup")
+        static let orderCompleted = UIImage(named: "OrderCompleted")
+    }
 }
