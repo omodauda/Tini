@@ -19,7 +19,7 @@ class DeliveryOrdersVC: UIViewController {
     
     let tableView: UITableView = {
         let tableView = UITableView()
-        tableView.register(OrderDeliveryCell.self, forCellReuseIdentifier: OrderDeliveryCell.identifier)
+        tableView.register(OrderItemCell.self, forCellReuseIdentifier: OrderItemCell.identifier)
         tableView.backgroundColor = UIColor(hex: Colors.background)
         tableView.separatorStyle = .none
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -78,7 +78,7 @@ extension DeliveryOrdersVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: OrderDeliveryCell.identifier, for: indexPath) as? OrderDeliveryCell else { return UITableViewCell() }
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: OrderItemCell.identifier, for: indexPath) as? OrderItemCell else { return UITableViewCell() }
         let order = deliveryOrders[indexPath.row]
         cell.configure(order: order)
         return cell

@@ -7,7 +7,7 @@
 
 import UIKit
 
-class OrderDeliveryCell: UITableViewCell {
+class OrderItemCell: UITableViewCell {
     
     static let identifier = "OrderDeliveryCell"
     
