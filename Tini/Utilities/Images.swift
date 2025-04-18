@@ -71,4 +71,6 @@ struct Images {
         static let orderReadyPickup = UIImage(named: "OrderReadyPickup")
         static let orderCompleted = UIImage(named: "OrderCompleted")
     }
+    
+    static let momo = UIImage(named: "Momo")
 }
