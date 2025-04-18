@@ -31,6 +31,7 @@ class OrderDetailsVC: UIViewController {
         scrollView.isScrollEnabled = true
         scrollView.delaysContentTouches = false
         scrollView.canCancelContentTouches = true
+        scrollView.bounces = false
         return scrollView
     }()
     
@@ -78,6 +79,41 @@ class OrderDetailsVC: UIViewController {
         return btn
     }()
     
+    private let noteView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.layer.cornerRadius = 4
+        view.layer.borderWidth = 1
+        view.layer.borderColor = UIColor(hex: "#DDDDE3").cgColor
+        return view
+    }()
+    
+    private let noteIcon: UIImageView = {
+        let imageView = UIImageView(image: UIImage(systemName: "info.circle"))
+        imageView.contentMode = .scaleAspectFit
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.tintColor = UIColor(hex: Colors.secondary)
+        return imageView
+    }()
+    
+    
+    private let noteLabel: UILabel = {
+        let fullText = "Order will be automatically completed X hours after pick up time. The store won't be responsible for your order after that time."
+        let boldText = "X hours"
+        let attributedText = NSMutableAttributedString(string: fullText)
+        let fullRange = NSString(string: fullText).range(of: boldText)
+        attributedText.addAttribute(.font, value: UIFont.boldSystemFont(ofSize: 16), range: fullRange)
+        
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = .systemFont(ofSize: 14, weight: .regular)
+        label.textColor = UIColor(hex: Colors.titleText)
+        label.numberOfLines = 0
+        
+        label.attributedText = attributedText
+        return label
+    }()
+    
     private let infoTitleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -119,6 +155,111 @@ class OrderDetailsVC: UIViewController {
         )
     }()
     
+    private let paymentInfoLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Payment info"
+        label.font = .systemFont(ofSize: 16, weight: .bold)
+        label.textColor = UIColor(hex: Colors.titleText)
+        return label
+    }()
+    
+    private let paymentInfoView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.layer.cornerRadius = 8
+        view.backgroundColor = .white
+        return view
+    }()
+    
+    private let paymentLogo: UIImageView = {
+        let logo = UIImageView()
+        logo.translatesAutoresizingMaskIntoConstraints = false
+        logo.contentMode = .scaleAspectFit
+        logo.image = Images.momo
+        return logo
+    }()
+    
+    private let paymentLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Payment method"
+        label.font = .systemFont(ofSize: 14, weight: .regular)
+        label.textColor = UIColor(hex: "#28282B")
+        return label
+    }()
+    
+    private let paymentMethod: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Momo"
+        label.font = .systemFont(ofSize: 14, weight: .bold)
+        label.textColor = UIColor(hex: "#28282B")
+        return label
+    }()
+    
+    private let pricingView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.layer.cornerRadius = 8
+        view.backgroundColor = .white
+        return view
+    }()
+    
+    private let priceLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Price"
+        label.font = .systemFont(ofSize: 14, weight: .regular)
+        label.textColor = UIColor(hex: "#28282B")
+        return label
+    }()
+    
+    private let priceValue: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "0.00"
+        label.font = .systemFont(ofSize: 14, weight: .bold)
+        label.textColor = UIColor(hex: "#28282B")
+        return label
+    }()
+    
+    private let promotionLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Promotion"
+        label.font = .systemFont(ofSize: 14, weight: .regular)
+        label.textColor = UIColor(hex: "#28282B")
+        return label
+    }()
+    
+    private let promotionValue: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "-0.00"
+        label.font = .systemFont(ofSize: 14, weight: .bold)
+        label.textColor = UIColor(hex: Colors.green)
+        return label
+    }()
+    
+    private let totalLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Total"
+        label.font = .systemFont(ofSize: 14, weight: .regular)
+        label.textColor = UIColor(hex: "#28282B")
+        return label
+    }()
+    
+    private let totalValue: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "0.00"
+        label.font = .systemFont(ofSize: 14, weight: .bold)
+        label.textColor = UIColor(hex: "#28282B")
+        return label
+    }()
+    
     init(order: OrderModel) {
         self.order = order
         super.init(nibName: nil, bundle: nil)
@@ -132,6 +273,8 @@ class OrderDetailsVC: UIViewController {
         super.viewDidLoad()
         setupUI()
         configure()
+        configureContactSupportBtn()
+        addNoteView()
         configureShippingDetailsView()
     }
     
@@ -164,7 +307,50 @@ class OrderDetailsVC: UIViewController {
             statusImg.image = Images.Orders.orderCompleted
             statusLabel.text = "Completed"
         }
+        priceValue.text = "\(order.total)"
+        promotionValue.text = "-\(order.promotion)"
+        totalValue.text = "\(order.total - order.promotion)"
         
+    }
+    
+    private func configureContactSupportBtn() {
+        contactSupportBtn.addTarget(self, action: #selector(contactSupport), for: .touchUpInside)
+    }
+    
+    @objc func contactSupport() {
+        let vc = ContactSupportVC()
+        vc.delegate = self
+        vc.modalPresentationStyle = .overCurrentContext
+        present(vc, animated: true)
+    }
+    
+    private func addNoteView() {
+        guard order.status == .readyForPickup || order.status == .completed else {
+           return NSLayoutConstraint.activate([
+            contactSupportBtn.bottomAnchor.constraint(equalTo: statusView.bottomAnchor, constant: -16),
+           ])
+        }
+        
+        statusView.addSubview(noteView)
+        noteView.addSubview(noteIcon)
+        noteView.addSubview(noteLabel)
+        
+        NSLayoutConstraint.activate([
+            noteView.topAnchor.constraint(equalTo: contactSupportBtn.bottomAnchor, constant: 18),
+            noteView.leadingAnchor.constraint(equalTo: statusView.leadingAnchor, constant: 16),
+            noteView.trailingAnchor.constraint(equalTo: statusView.trailingAnchor, constant: -16),
+            noteView.bottomAnchor.constraint(equalTo: statusView.bottomAnchor, constant: -8),
+            
+            noteIcon.topAnchor.constraint(equalTo: noteView.topAnchor, constant: 10),
+            noteIcon.leadingAnchor.constraint(equalTo: noteView.leadingAnchor, constant: 10),
+            noteIcon.widthAnchor.constraint(equalToConstant: 20),
+            noteIcon.heightAnchor.constraint(equalToConstant: 20),
+            
+            noteLabel.topAnchor.constraint(equalTo: noteView.topAnchor, constant: 10),
+            noteLabel.leadingAnchor.constraint(equalTo: noteIcon.trailingAnchor, constant: 10),
+            noteLabel.trailingAnchor.constraint(equalTo: noteView.trailingAnchor, constant: -10),
+            noteLabel.bottomAnchor.constraint(equalTo: noteView.bottomAnchor, constant: -10)
+        ])
     }
     
     private func configureShippingDetailsView() {
@@ -213,6 +399,20 @@ class OrderDetailsVC: UIViewController {
         contentView.addSubview(deliveryLabel)
         contentView.addSubview(deliveryDetailView)
         
+        contentView.addSubview(paymentInfoLabel)
+        contentView.addSubview(paymentInfoView)
+        paymentInfoView.addSubview(paymentLogo)
+        paymentInfoView.addSubview(paymentLabel)
+        paymentInfoView.addSubview(paymentMethod)
+        
+        contentView.addSubview(pricingView)
+        pricingView.addSubview(priceLabel)
+        pricingView.addSubview(priceValue)
+        pricingView.addSubview(promotionLabel)
+        pricingView.addSubview(promotionValue)
+        pricingView.addSubview(totalLabel)
+        pricingView.addSubview(totalValue)
+        
         NSLayoutConstraint.activate([
             headerWrapper.topAnchor.constraint(equalTo: view.topAnchor),
             headerWrapper.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -226,7 +426,7 @@ class OrderDetailsVC: UIViewController {
             scrollView.topAnchor.constraint(equalTo: headerWrapper.bottomAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
             contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
             contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
@@ -245,7 +445,6 @@ class OrderDetailsVC: UIViewController {
             
             contactSupportBtn.topAnchor.constraint(equalTo: statusView.topAnchor, constant: 16),
             contactSupportBtn.trailingAnchor.constraint(equalTo: statusView.trailingAnchor, constant: -16),
-            contactSupportBtn.bottomAnchor.constraint(equalTo: statusView.bottomAnchor, constant: -16),
             
             statusLabel.centerYAnchor.constraint(equalTo: contactSupportBtn.centerYAnchor),
             statusLabel.leadingAnchor.constraint(equalTo: statusView.leadingAnchor, constant: 16),
@@ -265,6 +464,53 @@ class OrderDetailsVC: UIViewController {
             deliveryDetailView.topAnchor.constraint(equalTo: deliveryLabel.bottomAnchor, constant: 8),
             deliveryDetailView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             deliveryDetailView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            
+            paymentInfoLabel.topAnchor.constraint(equalTo: deliveryDetailView.bottomAnchor, constant: 16),
+            paymentInfoLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            paymentInfoLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            
+            paymentInfoView.topAnchor.constraint(equalTo: paymentInfoLabel.bottomAnchor, constant: 8),
+            paymentInfoView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            paymentInfoView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            
+            paymentLogo.topAnchor.constraint(equalTo: paymentInfoView.topAnchor, constant: 16),
+            paymentLogo.leadingAnchor.constraint(equalTo: paymentInfoView.leadingAnchor, constant: 16),
+            paymentLogo.widthAnchor.constraint(equalToConstant: 40),
+            paymentLogo.heightAnchor.constraint(equalToConstant: 40),
+            
+            paymentLabel.topAnchor.constraint(equalTo: paymentInfoView.topAnchor, constant: 16),
+            paymentLabel.leadingAnchor.constraint(equalTo: paymentLogo.trailingAnchor, constant: 8),
+            paymentLabel.trailingAnchor.constraint(equalTo: paymentInfoView.trailingAnchor, constant: -16),
+            
+            paymentMethod.topAnchor.constraint(equalTo: paymentLabel.bottomAnchor, constant: 4),
+            paymentMethod.leadingAnchor.constraint(equalTo: paymentLogo.trailingAnchor, constant: 8),
+            paymentMethod.trailingAnchor.constraint(equalTo: paymentInfoView.trailingAnchor, constant: -16),
+            paymentMethod.bottomAnchor.constraint(equalTo: paymentInfoView.bottomAnchor, constant: -16),
+            
+            pricingView.topAnchor.constraint(equalTo: paymentInfoView.bottomAnchor, constant: 16),
+            pricingView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            pricingView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            pricingView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
+            
+            priceLabel.topAnchor.constraint(equalTo: pricingView.topAnchor, constant: 24),
+            priceLabel.leadingAnchor.constraint(equalTo: pricingView.leadingAnchor, constant: 16),
+            
+            priceValue.topAnchor.constraint(equalTo: pricingView.topAnchor, constant: 24),
+            priceValue.trailingAnchor.constraint(equalTo: pricingView.trailingAnchor, constant: -16),
+            
+            promotionLabel.topAnchor.constraint(equalTo: priceLabel.bottomAnchor, constant: 16),
+            promotionLabel.leadingAnchor.constraint(equalTo: pricingView.leadingAnchor, constant: 16),
+            
+            promotionValue.topAnchor.constraint(equalTo: priceValue.bottomAnchor, constant: 16),
+            promotionValue.trailingAnchor.constraint(equalTo: pricingView.trailingAnchor, constant: -16),
+            
+            totalLabel.topAnchor.constraint(equalTo: promotionLabel.bottomAnchor, constant: 16),
+            totalLabel.leadingAnchor.constraint(equalTo: pricingView.leadingAnchor, constant: 16),
+            totalLabel.bottomAnchor.constraint(equalTo: pricingView.bottomAnchor, constant: -24),
+            
+            totalValue.topAnchor.constraint(equalTo: promotionValue.bottomAnchor, constant: 16),
+            totalValue.trailingAnchor.constraint(equalTo: pricingView.trailingAnchor, constant: -16),
+            totalValue.bottomAnchor.constraint(equalTo: pricingView.bottomAnchor, constant: -24)
         ])
     }
     
@@ -288,6 +534,10 @@ extension OrderDetailsVC: CartPickupViewDelegate {
     func didTapTime() {
         
     }
-    
-    
+}
+
+extension OrderDetailsVC: ContactSupportDelegate {
+    func close() {
+        dismiss(animated: true)
+    }
 }
