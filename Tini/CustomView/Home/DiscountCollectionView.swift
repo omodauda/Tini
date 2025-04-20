@@ -18,6 +18,8 @@ class DiscountCollectionView: UIView {
         pageControl.currentPageIndicatorTintColor = UIColor(hex: Colors.primary)
         pageControl.layer.cornerRadius = 4
         pageControl.pageIndicatorTintColor = .lightGray
+        pageControl.preferredIndicatorImage = Images.Home.slick
+        pageControl.preferredCurrentPageIndicatorImage = Images.Home.currentPageSlick
         return pageControl
     }()
     
