@@ -24,6 +24,8 @@ struct Images {
         static let reservationImage = UIImage(named: "ReservationLogo")
         static let promoImage = UIImage(named: "PromoImage")
         static let discountImage = UIImage(named: "DiscountImage")
+        static let slick = UIImage(named: "Slick")
+        static let currentPageSlick = UIImage(named: "CurrentPageSlick")
     }
     
     static let backIcon = UIImage(systemName: "chevron.backward")
@@ -73,4 +75,9 @@ struct Images {
     }
     
     static let momo = UIImage(named: "Momo")
+    static let profileCoverImage = UIImage(named: "ProfileCoverImage")
+    static let profileAvatarImage = UIImage(named: "AvatarImage")
+    static let userCardBg = UIImage(named: "UserCardBg")
+    static let barcode = UIImage(named: "Barcode")
+    static let headset = UIImage(named: "Headset")
 }
