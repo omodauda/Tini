@@ -155,6 +155,31 @@ class OrderDetailsVC: UIViewController {
         )
     }()
     
+    private let productInfoLabel: UILabel = {
+        let orderDetailsLabel = UILabel()
+        orderDetailsLabel.text = "Product info"
+        orderDetailsLabel.font = .systemFont(ofSize: 16, weight: .bold)
+        orderDetailsLabel.textColor = UIColor(hex: Colors.titleText)
+        orderDetailsLabel.translatesAutoresizingMaskIntoConstraints = false
+        return orderDetailsLabel
+    }()
+    
+    private let productInfoView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .white
+        view.layer.cornerRadius = 8
+        return view
+    }()
+    
+    private let productStackView: UIStackView = {
+        let stack = UIStackView()
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.axis = .vertical
+        stack.spacing = 16
+        return stack
+    }()
+    
     private let paymentInfoLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -276,6 +301,7 @@ class OrderDetailsVC: UIViewController {
         configureContactSupportBtn()
         addNoteView()
         configureShippingDetailsView()
+        addProductInfoItems()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -326,9 +352,9 @@ class OrderDetailsVC: UIViewController {
     
     private func addNoteView() {
         guard order.status == .readyForPickup || order.status == .completed else {
-           return NSLayoutConstraint.activate([
-            contactSupportBtn.bottomAnchor.constraint(equalTo: statusView.bottomAnchor, constant: -16),
-           ])
+            return NSLayoutConstraint.activate([
+                contactSupportBtn.bottomAnchor.constraint(equalTo: statusView.bottomAnchor, constant: -16),
+            ])
         }
         
         statusView.addSubview(noteView)
@@ -376,6 +402,26 @@ class OrderDetailsVC: UIViewController {
         ])
     }
     
+    private func addProductInfoItems() {
+        for (index, item) in order.items.enumerated() {
+            let itemView = OrderItemView(item: item)
+            productStackView.addArrangedSubview(itemView)
+            
+            if index < order.items.count - 1 {
+                let separator = UIView()
+                separator.backgroundColor = UIColor.lightGray.withAlphaComponent(0.5)
+                separator.translatesAutoresizingMaskIntoConstraints = false
+                productStackView.addArrangedSubview(separator)
+                
+                NSLayoutConstraint.activate([
+                    separator.heightAnchor.constraint(equalToConstant: 1),
+                    separator.leadingAnchor.constraint(equalTo: productStackView.leadingAnchor),
+                    separator.trailingAnchor.constraint(equalTo: productStackView.trailingAnchor),
+                ])
+            }
+        }
+    }
+    
     func setupUI() {
         view.backgroundColor = UIColor(hex: Colors.background)
         
@@ -398,6 +444,11 @@ class OrderDetailsVC: UIViewController {
         
         contentView.addSubview(deliveryLabel)
         contentView.addSubview(deliveryDetailView)
+        
+        contentView.addSubview(productInfoLabel)
+        contentView.addSubview(productInfoView)
+        
+        productInfoView.addSubview(productStackView)
         
         contentView.addSubview(paymentInfoLabel)
         contentView.addSubview(paymentInfoView)
@@ -465,7 +516,20 @@ class OrderDetailsVC: UIViewController {
             deliveryDetailView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             deliveryDetailView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             
-            paymentInfoLabel.topAnchor.constraint(equalTo: deliveryDetailView.bottomAnchor, constant: 16),
+            productInfoLabel.topAnchor.constraint(equalTo: deliveryDetailView.bottomAnchor, constant: 16),
+            productInfoLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            productInfoLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            
+            productInfoView.topAnchor.constraint(equalTo: productInfoLabel.bottomAnchor, constant: 8),
+            productInfoView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            productInfoView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            
+            productStackView.topAnchor.constraint(equalTo: productInfoView.topAnchor, constant: 24),
+            productStackView.leadingAnchor.constraint(equalTo: productInfoView.leadingAnchor, constant: 16),
+            productStackView.trailingAnchor.constraint(equalTo: productInfoView.trailingAnchor, constant: -16),
+            productStackView.bottomAnchor.constraint(equalTo: productInfoView.bottomAnchor, constant: -16),
+            
+            paymentInfoLabel.topAnchor.constraint(equalTo: productInfoView.bottomAnchor, constant: 16),
             paymentInfoLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             paymentInfoLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             
@@ -523,16 +587,6 @@ extension OrderDetailsVC: CustomNavHeaderDelegate {
     
     func didTapBack() {
         navigationController?.popViewController(animated: true)
-    }
-}
-
-extension OrderDetailsVC: CartPickupViewDelegate {
-    func didTapDeliveryAddress() {
-        
-    }
-    
-    func didTapTime() {
-        
     }
 }
 
