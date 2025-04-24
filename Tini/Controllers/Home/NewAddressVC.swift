@@ -35,97 +35,45 @@ class NewAddressVC: UIViewController {
         return contentView
     }()
     
-    private let addresslabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = UIColor(hex: Colors.titleText)
-        label.font = .systemFont(ofSize: 14, weight: .bold)
-        label.text = "Address"
-        return label
-    }()
+    let cities = ["Hanoi", "Ho Chi Minh"]
+    let districtsByCity: [String: [String]] = [
+        "Hanoi": ["Ba Dinh", "Dong Da"],
+        "Ho Chi Minh": ["District 1", "District 3"]
+    ]
+    let wardsByDistrict: [String: [String]] = [
+        "Ba Dinh": ["Ward 1", "Ward 2"],
+        "Dong Da": ["Ward 3", "Ward 4"],
+        "District 1": ["Ward A", "Ward B"],
+        "District 3": ["Ward C", "Ward D"]
+    ]
     
-    private let addressInput = CustomInput(placeholder: "Enter your address")
+    var selectedCity: String?
+    var selectedDistrict: String?
+    var selectedWard: String?
     
-    private let addressErrorlabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = .red
-        label.font = .systemFont(ofSize: 12, weight: .regular)
-        label.text = "Address is required"
-        label.isHidden = true
-        return label
-    }()
+    struct FormField {
+        let label: UILabel
+        let input: UITextField
+        let errorLabel: UILabel
+    }
     
-    private let cities = ["Akure", "Lagos", "Ibadan"]
-    private let cityPicker: UIPickerView = {
-        let picker = UIPickerView()
-        picker.translatesAutoresizingMaskIntoConstraints = false
-        picker.backgroundColor = .white
-        return picker
-    }()
+    let addressField = FormField(
+        label: UILabel(),
+        input: CustomInput(placeholder: "Lot number, street name"),
+        errorLabel: UILabel()
+    )
+    let cityField = FormField(label: UILabel(), input: CustomInput(placeholder: "Select city"), errorLabel: UILabel())
+    let districtField = FormField(label: UILabel(), input: CustomInput(placeholder: "Select district"), errorLabel: UILabel())
+    let wardField = FormField(label: UILabel(), input: CustomInput(placeholder: "Select ward"), errorLabel: UILabel())
+    let nameField = FormField(label: UILabel(), input: CustomInput(placeholder: "Recipient's name"), errorLabel: UILabel())
+    let phoneField = FormField(label: UILabel(), input: CustomInput(placeholder: "Recipient's phone number"), errorLabel: UILabel())
     
-    private let citylabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = UIColor(hex: Colors.titleText)
-        label.font = .systemFont(ofSize: 14, weight: .bold)
-        label.text = "City"
-        return label
-    }()
+    let cityPicker = UIPickerView()
+    let districtPicker = UIPickerView()
+    let wardPicker = UIPickerView()
     
-    private let cityValue: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = UIColor(hex: Colors.titleText)
-        label.font = .systemFont(ofSize: 14, weight: .regular)
-        label.text = "Select city"
-        return label
-    }()
-    
-    private let citySelector: UIView = {
-        let selector = UIView()
-        selector.translatesAutoresizingMaskIntoConstraints = false
-        selector.layer.cornerRadius = 4
-        selector.layer.borderWidth = 1
-        selector.layer.borderColor = UIColor(hex: "#DDDDE3").cgColor
-        return selector
-    }()
-    
-    private let recipientlabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = UIColor(hex: Colors.titleText)
-        label.font = .systemFont(ofSize: 14, weight: .bold)
-        label.text = "Recipient's name"
-        return label
-    }()
-    
-    private let recipientNameInput = CustomInput(placeholder: "E.g Nguyen Van A")
-    
-    private let recipientNumberLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = UIColor(hex: Colors.titleText)
-        label.font = .systemFont(ofSize: 14, weight: .bold)
-        label.text = "Recipient's phone number"
-        return label
-    }()
-    
-    private let recipientNumberInput = CustomInput(placeholder: "10-digit phone number")
-    
-    //    private let addressInput: UITextField = {
-    //        let input = UITextField()
-    //        input.translatesAutoresizingMaskIntoConstraints = false
-    //        input.placeholder = "Enter your address"
-    //        input.font = .systemFont(ofSize: 14, weight: .regular)
-    //        input.textColor = UIColor(hex: Colors.titleText)
-    //        input.layer.borderWidth = 1
-    //        input.layer.cornerRadius = 4
-    //        input.layer.borderColor = UIColor(hex: "#DDDDE3").cgColor
-    //        input.textAlignment = .left
-    //        input.leftViewMode = .always
-    //        return input
-    //    }()
+    let toolbar = UIToolbar()
+    private var currentField: UITextField?
     
     private let footerView: UIView = {
         let footer = UIView()
@@ -142,9 +90,11 @@ class NewAddressVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        createDismissKeyboardTapGesture()
         setupUI()
-        configureCitySelector()
-        configurePickerView()
+        setInputFields()
+        setupPickers()
+        setupToolbar()
         configureSaveButton()
     }
     
@@ -153,64 +103,46 @@ class NewAddressVC: UIViewController {
         navigationController?.isNavigationBarHidden = true
     }
     
-    private func configureCitySelector() {
-        let selectIcon: UIImageView = {
-            let imageView = UIImageView()
-            imageView.image = Images.downIcon
-            imageView.tintColor = UIColor(hex: Colors.secondary)
-            imageView.translatesAutoresizingMaskIntoConstraints = false
-            return imageView
-        }()
-        
-        citySelector.addSubview(cityValue)
-        citySelector.addSubview(selectIcon)
-        
-        NSLayoutConstraint.activate([
-            selectIcon.trailingAnchor.constraint(equalTo: citySelector.trailingAnchor, constant: -16),
-            selectIcon.centerYAnchor.constraint(equalTo: citySelector.centerYAnchor),
-            selectIcon.widthAnchor.constraint(equalToConstant: 20),
-            selectIcon.heightAnchor.constraint(equalToConstant: 20),
-            
-            cityValue.topAnchor.constraint(equalTo: citySelector.topAnchor, constant: 9.5),
-            cityValue.leadingAnchor.constraint(equalTo: citySelector.leadingAnchor, constant: 16),
-            cityValue.trailingAnchor.constraint(equalTo: selectIcon.leadingAnchor, constant: -8),
-            cityValue.centerYAnchor.constraint(equalTo: citySelector.centerYAnchor)
-        ])
-        
-        let selectionTap = UITapGestureRecognizer(target: self, action: #selector(citySelectorTapped))
-        citySelector.addGestureRecognizer(selectionTap)
-        citySelector.isUserInteractionEnabled = true
-        
+    func createDismissKeyboardTapGesture() {
+        let tapGesture = UITapGestureRecognizer(target: self.view, action: #selector(UIView.endEditing))
+        tapGesture.cancelsTouchesInView = false
+        view.addGestureRecognizer(tapGesture)
     }
     
-    private func configurePickerView() {
-            cityPicker.delegate = self
-            cityPicker.dataSource = self
-        }
     
-    @objc private func citySelectorTapped() {
-        print("select city pressed")
-        let pickerViewController = UIViewController()
-        pickerViewController.modalPresentationStyle = .popover
-        pickerViewController.preferredContentSize = CGSize(width: view.frame.width, height: 200)
-        pickerViewController.view.addSubview(cityPicker)
+    @objc func validateForm() {
+        var isValid = true
         
-        NSLayoutConstraint.activate([
-            cityPicker.leadingAnchor.constraint(equalTo: pickerViewController.view.leadingAnchor),
-            cityPicker.trailingAnchor.constraint(equalTo: pickerViewController.view.trailingAnchor),
-            cityPicker.topAnchor.constraint(equalTo: pickerViewController.view.topAnchor),
-            cityPicker.bottomAnchor.constraint(equalTo: pickerViewController.view.bottomAnchor)
-        ])
-        
-        present(pickerViewController, animated: true)
-    }
-    
-    private func validateForm() -> Bool {
-        guard !addressInput.text!.isEmpty else {
-            addressErrorlabel.isHidden = false
-            return false
+        func validate(_ field: FormField, _ customCheck: (() -> Bool)? = nil, _ errorMessage: String) {
+            if let check = customCheck {
+                if !check() {
+                    field.errorLabel.text = errorMessage
+                    isValid = false
+                } else {
+                    field.errorLabel.text = ""
+                }
+            } else if field.input.text?.trimmingCharacters(in: .whitespaces).isEmpty ?? true {
+                field.errorLabel.text = errorMessage
+                isValid = false
+            } else {
+                field.errorLabel.text = ""
+            }
         }
-        return true
+        
+        validate(addressField, nil, "Address is required")
+        validate(cityField, nil, "City is required")
+        validate(districtField, nil, "District is required")
+        validate(wardField, nil, "Ward is required")
+        validate(nameField, nil, "Name is required")
+        
+        validate(phoneField, {
+            guard let text = self.phoneField.input.text else { return false }
+            return text.count == 10 && text.allSatisfy({ $0.isNumber })
+        }, "Enter a valid 10-digit phone number")
+        
+        if isValid {
+            print("✅ Form is valid. Ready to save.")
+        }
     }
     
     private func configureSaveButton() {
@@ -218,8 +150,104 @@ class NewAddressVC: UIViewController {
     }
     
     @objc private func saveButtonTapped() {
-//        print("save")
         print(validateForm())
+    }
+    
+    private func setInputFields() {
+        setupField(addressField, label: "Lot number, street name")
+        addressField.input.delegate = self
+        addressField.input.tag = 3
+        
+        setupField(cityField, label: "City")
+        
+        setupField(districtField, label: "District")
+        
+        setupField(wardField, label: "Ward")
+        
+        setupField(nameField, label: "Full name (e.g Nguyen Van A)")
+        nameField.input.delegate = self
+        nameField.input.tag = 4
+        
+        setupField(phoneField, label: "Phone number")
+        phoneField.input.delegate = self
+        phoneField.input.tag = 5
+        phoneField.input.keyboardType = .numberPad
+        
+        // Set input views
+        cityField.input.inputView = cityPicker
+        districtField.input.inputView = districtPicker
+        wardField.input.inputView = wardPicker
+
+        
+        [cityField, districtField, wardField].forEach {
+            $0.input.tintColor = .clear
+            $0.input.isUserInteractionEnabled = true
+            $0.input.rightViewMode = .always
+            $0.input.inputAccessoryView = toolbar
+//            $0.input.rightView = UIImageView(image: UIImage(systemName: "chevron.down") )
+//            $0.input.rightView?.tintColor = UIColor(hex: Colors.secondary)
+        }
+        
+        let stack = UIStackView(arrangedSubviews: [
+            makeFieldStack(addressField),
+            makeFieldStack(cityField),
+            makeFieldStack(districtField),
+            makeFieldStack(wardField),
+            makeFieldStack(nameField),
+            makeFieldStack(phoneField),
+        ])
+        stack.axis = .vertical
+        stack.spacing = 12
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        
+        contentView.addSubview(stack)
+        NSLayoutConstraint.activate([
+            stack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            stack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            stack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20),
+        ])
+    }
+    
+    func setupField(_ field: FormField, label: String) {
+        field.label.text = label
+        field.label.font = .systemFont(ofSize: 14, weight: .bold)
+        field.label.textColor = UIColor(hex: Colors.titleText)
+        
+        field.errorLabel.font = .systemFont(ofSize: 12)
+        field.errorLabel.textColor = .red
+        field.errorLabel.numberOfLines = 0
+    }
+    
+    func makeFieldStack(_ field: FormField) -> UIStackView {
+        let stack = UIStackView(arrangedSubviews: [field.label, field.input, field.errorLabel])
+        stack.axis = .vertical
+        stack.spacing = 4
+        return stack
+    }
+    
+    func setupPickers() {
+        cityPicker.delegate = self
+        cityPicker.dataSource = self
+        cityPicker.tag = 0
+        
+        districtPicker.delegate = self
+        districtPicker.dataSource = self
+        districtPicker.tag = 1
+        
+        wardPicker.delegate = self
+        wardPicker.dataSource = self
+        wardPicker.tag = 2
+    }
+    
+    func setupToolbar() {
+        toolbar.sizeToFit()
+        let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        let done = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneTapped))
+        toolbar.setItems([flexSpace, done], animated: false)
+    }
+    
+    @objc private func doneTapped() {
+        view.endEditing(true)
     }
     
     private func setupUI() {
@@ -237,19 +265,6 @@ class NewAddressVC: UIViewController {
         footerView.addSubview(saveButton)
         saveButton.translatesAutoresizingMaskIntoConstraints = false
         
-        contentView.addSubview(addresslabel)
-        contentView.addSubview(addressInput)
-        contentView.addSubview(addressErrorlabel)
-        contentView.addSubview(citylabel)
-        contentView.addSubview(citySelector)
-        contentView.addSubview(recipientlabel)
-        contentView.addSubview(recipientNameInput)
-        contentView.addSubview(recipientNumberLabel)
-        contentView.addSubview(recipientNumberInput)
-        
-        addressInput.delegate = self
-        recipientNameInput.delegate = self
-        recipientNumberInput.delegate = self
         
         NSLayoutConstraint.activate([
             headerWrapper.topAnchor.constraint(equalTo: view.topAnchor),
@@ -269,44 +284,6 @@ class NewAddressVC: UIViewController {
             contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -32),
             contentView.heightAnchor.constraint(equalTo: scrollView.heightAnchor, constant: -48),
-            
-            addresslabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
-            addresslabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            
-            addressInput.topAnchor.constraint(equalTo: addresslabel.bottomAnchor, constant: 4),
-            addressInput.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            addressInput.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            addressInput.heightAnchor.constraint(equalToConstant: 40),
-            
-            addressErrorlabel.topAnchor.constraint(equalTo: addressInput.bottomAnchor, constant: 4),
-            addressErrorlabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            addressErrorlabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            
-            citylabel.topAnchor.constraint(equalTo: addressErrorlabel.bottomAnchor, constant: 16),
-            citylabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            
-            citySelector.topAnchor.constraint(equalTo: citylabel.bottomAnchor, constant: 4),
-            citySelector.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            citySelector.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            citySelector.heightAnchor.constraint(equalToConstant: 40),
-            
-            recipientlabel.topAnchor.constraint(equalTo: citySelector.bottomAnchor, constant: 16),
-            recipientlabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            recipientlabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            
-            recipientNameInput.topAnchor.constraint(equalTo: recipientlabel.bottomAnchor, constant: 4),
-            recipientNameInput.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            recipientNameInput.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            recipientNameInput.heightAnchor.constraint(equalToConstant: 40),
-            
-            recipientNumberLabel.topAnchor.constraint(equalTo: recipientNameInput.bottomAnchor, constant: 16),
-            recipientNumberLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            recipientNumberLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            
-            recipientNumberInput.topAnchor.constraint(equalTo: recipientNumberLabel.bottomAnchor, constant: 4),
-            recipientNumberInput.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            recipientNumberInput.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            recipientNumberInput.heightAnchor.constraint(equalToConstant: 40),
             
             footerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             footerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -330,31 +307,74 @@ extension NewAddressVC: CustomNavHeaderDelegate {
 }
 
 extension NewAddressVC: UITextFieldDelegate {
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        textField.layer.borderColor = UIColor.blue.cgColor
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
     
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        textField.layer.borderColor = UIColor.lightGray.cgColor
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        switch textField.tag {
+        case 3:
+            addressField.errorLabel.text = ""
+        case 4:
+            nameField.errorLabel.text = ""
+        case 5:
+            phoneField.errorLabel.text = ""
+        default:
+            return
+        }
     }
 }
 
 extension NewAddressVC: UIPickerViewDelegate, UIPickerViewDataSource {
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return 1
-    }
+    func numberOfComponents(in pickerView: UIPickerView) -> Int { 1 }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return cities.count
+        switch pickerView.tag {
+        case 0: return cities.count
+        case 1: return districtsByCity[selectedCity ?? ""]?.count ?? 0
+        case 2: return wardsByDistrict[selectedDistrict ?? ""]?.count ?? 0
+        default: return 0
+        }
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return cities[row]
+        switch pickerView.tag {
+        case 0: return cities[row]
+        case 1: return districtsByCity[selectedCity ?? ""]?[row]
+        case 2: return wardsByDistrict[selectedDistrict ?? ""]?[row]
+        default: return nil
+        }
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        let selected = cities[row]
-        cityValue.text = selected
-        dismiss(animated: true)
+        switch pickerView.tag {
+        case 0:
+            selectedCity = cities[row]
+            cityField.input.text = selectedCity
+            cityField.errorLabel.text = ""
+            selectedDistrict = nil
+            selectedWard = nil
+            districtField.input.text = ""
+            wardField.input.text = ""
+            districtPicker.reloadAllComponents()
+            wardPicker.reloadAllComponents()
+        case 1:
+            if let districts = districtsByCity[selectedCity ?? ""] {
+                selectedDistrict = districts[row]
+                districtField.input.text = selectedDistrict
+                districtField.errorLabel.text = ""
+                selectedWard = nil
+                wardField.input.text = ""
+                wardPicker.reloadAllComponents()
+            }
+        case 2:
+            if let wards = wardsByDistrict[selectedDistrict ?? ""] {
+                selectedWard = wards[row]
+                wardField.input.text = selectedWard
+                wardField.errorLabel.text = ""
+            }
+        default: break
+        }
     }
 }
