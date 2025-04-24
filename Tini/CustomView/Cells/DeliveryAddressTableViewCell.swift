@@ -68,6 +68,7 @@ class DeliveryAddressTableViewCell: UITableViewCell {
     }
     
     private func setupUI() {
+        selectionStyle = .none
         backgroundColor = .clear
         addSubview(cellView)
         
