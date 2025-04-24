@@ -18,6 +18,7 @@ class CustomInput: UITextField {
     convenience init(placeholder: String) {
         self.init()
         configure(placeholder: placeholder)
+        setupUI()
     }
     
     required init?(coder: NSCoder) {
@@ -26,7 +27,6 @@ class CustomInput: UITextField {
     
     private func configure(placeholder: String) {
         translatesAutoresizingMaskIntoConstraints = false
-        self.placeholder = placeholder
         font = .systemFont(ofSize: 14, weight: .regular)
         textColor = UIColor(hex: Colors.titleText)
         layer.borderWidth = 1
@@ -35,6 +35,16 @@ class CustomInput: UITextField {
         textAlignment = .left
         leftViewMode = .always
         leftView = paddingView
+        attributedPlaceholder = NSAttributedString(string: placeholder, attributes: [
+            .foregroundColor: UIColor(hex: Colors.secondary),
+            .font: UIFont.systemFont(ofSize: 14, weight: .regular)
+        ])
+    }
+    
+    private func setupUI() {
+        NSLayoutConstraint.activate([
+            heightAnchor.constraint(equalToConstant: 40)
+        ])
     }
     
 }
