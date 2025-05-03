@@ -59,6 +59,7 @@ class StoreCard: UIView {
         super.init(frame: .zero)
         setupUI()
         configure(with: store)
+        configureFavBtn()
     }
     
     required init?(coder: NSCoder) {
