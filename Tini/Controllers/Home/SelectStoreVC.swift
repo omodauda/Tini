@@ -52,6 +52,7 @@ class SelectStoreVC: UIViewController {
         super.viewDidLoad()
         setupUI()
         createDismissKeyboardTapGesture()
+        configureTableRefreshControl()
         storesViewModel.loadSections()
     }
     
@@ -75,6 +76,16 @@ class SelectStoreVC: UIViewController {
             emptyStateView.isHidden = true
         }
         tableView.reloadData()
+    }
+    
+    private func configureTableRefreshControl() {
+        tableView.refreshControl = UIRefreshControl()
+        tableView.refreshControl?.addTarget(self, action: #selector(handleRefreshTable), for: .valueChanged)
+    }
+    
+    @objc func handleRefreshTable() {
+        tableView.reloadData()
+        tableView.refreshControl?.endRefreshing()
     }
     
     private func setupUI() {
