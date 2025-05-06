@@ -9,6 +9,9 @@ import Foundation
 
 struct DeliveryAddressModel {
     let address: String
+    let city: String
+    let district: String
+    let ward: String
     let recipientName: String
     let recipientPhoneNumber: String
 }
