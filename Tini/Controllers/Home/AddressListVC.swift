@@ -6,10 +6,13 @@
 //
 
 import UIKit
+import Combine
 
 class AddressListVC: UIViewController {
     
     private let deliveryAddressViewModel = DeliveryAddressViewModel.shared
+    private var cancellables = Set<AnyCancellable>()
+    private var addresses: [DeliveryAddressModel] = []
     
     private let headerWrapper: UIView = {
         let headerWrapper = UIView()
@@ -112,6 +115,10 @@ class AddressListVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        deliveryAddressViewModel.deliveryAddressPublisher.sink { [weak self] addresses in
+            self?.addresses = addresses
+            self?.tableView.reloadData()
+        }.store(in: &cancellables)
         configureTableHeader()
         configureTableFooter()
         configureFooterBtn()
@@ -242,14 +249,14 @@ extension AddressListVC: CustomNavHeaderDelegate {
 extension AddressListVC: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return deliveryAddressViewModel.deliveryAddress.count
+        return addresses.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: DeliveryAddressTableViewCell.identifier, for: indexPath) as? DeliveryAddressTableViewCell else {
             return UITableViewCell()
         }
-        let deliveryAddress = deliveryAddressViewModel.deliveryAddress[indexPath.row]
+        let deliveryAddress = addresses[indexPath.row]
         cell.configure(deliveryAddress: deliveryAddress)
         return cell
     }
