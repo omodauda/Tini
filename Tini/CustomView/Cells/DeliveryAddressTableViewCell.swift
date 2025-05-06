@@ -33,6 +33,7 @@ class DeliveryAddressTableViewCell: UITableViewCell {
         addressText.textColor = UIColor(hex: Colors.titleText)
         addressText.lineBreakMode = .byTruncatingTail
         addressText.translatesAutoresizingMaskIntoConstraints = false
+        addressText.numberOfLines = 1
         return addressText
     }()
     
@@ -44,12 +45,12 @@ class DeliveryAddressTableViewCell: UITableViewCell {
         return text
     }()
     
-    private let editButton: UIButton = {
-        let editButton = UIButton()
-        editButton.setImage(Images.editIcon, for: .normal)
-        editButton.translatesAutoresizingMaskIntoConstraints = false
-        editButton.tintColor = UIColor(hex: Colors.secondary)
-        return editButton
+    private let deleteButton: UIButton = {
+        let deleteButton = UIButton()
+        deleteButton.setImage(Images.trashIcon, for: .normal)
+        deleteButton.translatesAutoresizingMaskIntoConstraints = false
+        deleteButton.tintColor = UIColor(hex: Colors.secondary)
+        return deleteButton
     }()
     
     
@@ -63,7 +64,7 @@ class DeliveryAddressTableViewCell: UITableViewCell {
     }
     
     func configure(deliveryAddress: DeliveryAddressModel) {
-        addressText.text = deliveryAddress.address
+        addressText.text = "\(deliveryAddress.address),\(deliveryAddress.city),\(deliveryAddress.district),\(deliveryAddress.ward)"
         recipientDetailText.text = "\(deliveryAddress.recipientName) - \(deliveryAddress.recipientPhoneNumber)"
     }
     
@@ -75,7 +76,7 @@ class DeliveryAddressTableViewCell: UITableViewCell {
         cellView.addSubview(locationIcon)
         cellView.addSubview(addressText)
         cellView.addSubview(recipientDetailText)
-        cellView.addSubview(editButton)
+        cellView.addSubview(deleteButton)
         
         NSLayoutConstraint.activate([
             cellView.topAnchor.constraint(equalTo: topAnchor),
@@ -88,15 +89,16 @@ class DeliveryAddressTableViewCell: UITableViewCell {
             locationIcon.widthAnchor.constraint(equalToConstant: 16),
             locationIcon.heightAnchor.constraint(equalToConstant: 20),
             
-            editButton.centerYAnchor.constraint(equalTo: cellView.centerYAnchor),
-            editButton.trailingAnchor.constraint(equalTo: cellView.trailingAnchor, constant: -19),
+            deleteButton.centerYAnchor.constraint(equalTo: cellView.centerYAnchor),
+            deleteButton.trailingAnchor.constraint(equalTo: cellView.trailingAnchor, constant: -19),
             
             addressText.topAnchor.constraint(equalTo: topAnchor, constant: 8),
             addressText.leadingAnchor.constraint(equalTo: locationIcon.trailingAnchor, constant: 13),
-//            addressText.trailingAnchor.constraint(equalTo: editButton.leadingAnchor, constant: -11),
+            addressText.trailingAnchor.constraint(equalTo: deleteButton.leadingAnchor, constant: -48),
             
             recipientDetailText.topAnchor.constraint(equalTo: addressText.bottomAnchor, constant: 4),
-            recipientDetailText.leadingAnchor.constraint(equalTo: locationIcon.trailingAnchor, constant: 13)
+            recipientDetailText.leadingAnchor.constraint(equalTo: locationIcon.trailingAnchor, constant: 13),
+            recipientDetailText.trailingAnchor.constraint(equalTo: deleteButton.leadingAnchor, constant: -48)
         ])
     }
 
