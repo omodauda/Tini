@@ -6,12 +6,15 @@
 //
 
 import Foundation
+import Combine
 
 class StoresViewModel {
     
     static let shared = StoresViewModel()
     
-    private init() {}
+    private init() {
+        loadSections()
+    }
     
     private var allStores: [StoreModel] = [
         StoreModel(name: "SB Han Thuyen", address: "11-13 Han Thuyen, D1, HCM city", isFavorite: false, workingHours: "07:00 - 22:00", phone: "08141637335"),
@@ -23,19 +26,24 @@ class StoresViewModel {
         StoreModel(name: "SB Ibis", address: "119 Pho Quang, Phu Nhuan, HCM city", isFavorite: false, workingHours: "07:00 - 22:00", phone: "08141637335"),
     ]
     
-    var sections: [StoresGroup] = []
+    private var sectionsSubject = CurrentValueSubject<[StoresGroup], Never>([])
+    
+    var sectionsPublisher: AnyPublisher<[StoresGroup], Never> {
+        sectionsSubject.eraseToAnyPublisher()
+    }
     
     func loadSections() {
         let favorites = allStores.filter { $0.isFavorite }
         let others = allStores.filter { !$0.isFavorite }
         
-        sections = []
+        var sections: [StoresGroup] = []
         if !favorites.isEmpty {
             sections.append(StoresGroup(title: "Favorite stores", stores: favorites))
         }
         if !others.isEmpty {
             sections.append(StoresGroup(title: "Other stores", stores: others))
         }
+        sectionsSubject.send(sections)
     }
     
     func searchStores(with query: String) {
@@ -45,13 +53,14 @@ class StoresViewModel {
             let filteredFavorites = allStores.filter { $0.isFavorite && $0.name.lowercased().contains(query.lowercased()) }
             let filteredOthers = allStores.filter { !$0.isFavorite && $0.name.lowercased().contains(query.lowercased()) }
             
-            sections = []
+            var sections: [StoresGroup] = []
             if !filteredFavorites.isEmpty {
                 sections.append(StoresGroup(title: "Favorite stores", stores: filteredFavorites))
             }
             if !filteredOthers.isEmpty {
                 sections.append(StoresGroup(title: "Other stores", stores: filteredOthers))
             }
+            sectionsSubject.send(sections)
         }
     }
     
@@ -61,5 +70,9 @@ class StoresViewModel {
             allStores[index!].isFavorite.toggle()
             loadSections()
         }
+    }
+    
+    func getStore(named name: String) -> StoreModel? {
+        return allStores.first(where: { $0.name == name })
     }
 }
