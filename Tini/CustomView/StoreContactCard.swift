@@ -71,6 +71,7 @@ class StoreContactCard: UIView {
         label.font = .systemFont(ofSize: 14, weight: .bold)
         label.textColor = UIColor(hex: Colors.titleText)
         label.textAlignment = .left
+        label.numberOfLines = 0
         return label
     }()
 
@@ -110,6 +111,7 @@ class StoreContactCard: UIView {
             
             phone.topAnchor.constraint(equalTo: phoneLabel.bottomAnchor, constant: 4),
             phone.leadingAnchor.constraint(equalTo: phoneIcon.trailingAnchor, constant: 11),
+            phone.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
             
             separator.topAnchor.constraint(equalTo: phone.bottomAnchor, constant: 8),
             separator.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
@@ -126,6 +128,7 @@ class StoreContactCard: UIView {
             
             address.topAnchor.constraint(equalTo: addressLabel.bottomAnchor, constant: 4),
             address.leadingAnchor.constraint(equalTo: addressIcon.trailingAnchor, constant: 11),
+            address.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
             address.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -24),
             
         ])
