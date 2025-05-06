@@ -9,6 +9,8 @@ import UIKit
 
 class NewAddressVC: UIViewController {
     
+    private let deliveryAddressViewModel = DeliveryAddressViewModel.shared
+    
     private let headerWrapper: UIView = {
         let headerWrapper = UIView()
         headerWrapper.translatesAutoresizingMaskIntoConstraints = false
@@ -73,7 +75,6 @@ class NewAddressVC: UIViewController {
     let wardPicker = UIPickerView()
     
     let toolbar = UIToolbar()
-    private var currentField: UITextField?
     
     private let footerView: UIView = {
         let footer = UIView()
@@ -137,11 +138,19 @@ class NewAddressVC: UIViewController {
         
         validate(phoneField, {
             guard let text = self.phoneField.input.text else { return false }
-            return text.count == 10 && text.allSatisfy({ $0.isNumber })
-        }, "Enter a valid 10-digit phone number")
+            return text.count == 11 && text.allSatisfy({ $0.isNumber })
+        }, "Enter a valid 11-digit phone number")
         
         if isValid {
-            print("✅ Form is valid. Ready to save.")
+            let newAddress = DeliveryAddressModel(
+                address: addressField.input.text!,
+                city: cityField.input.text!,
+                district: districtField.input.text!,
+                ward: wardField.input.text!,
+                recipientName: nameField.input.text!,
+                recipientPhoneNumber: phoneField.input.text!)
+            deliveryAddressViewModel.addAddress(address: newAddress)
+            navigationController?.popViewController(animated: true)
         }
     }
     
@@ -150,7 +159,7 @@ class NewAddressVC: UIViewController {
     }
     
     @objc private func saveButtonTapped() {
-        print(validateForm())
+        validateForm()
     }
     
     private func setInputFields() {
@@ -184,8 +193,6 @@ class NewAddressVC: UIViewController {
             $0.input.isUserInteractionEnabled = true
             $0.input.rightViewMode = .always
             $0.input.inputAccessoryView = toolbar
-//            $0.input.rightView = UIImageView(image: UIImage(systemName: "chevron.down") )
-//            $0.input.rightView?.tintColor = UIColor(hex: Colors.secondary)
         }
         
         let stack = UIStackView(arrangedSubviews: [
