@@ -6,10 +6,13 @@
 //
 
 import UIKit
+import Combine
 
 class StoresVC: UIViewController {
 
     private let storesViewModel = StoresViewModel.shared
+    private var cancellables = Set<AnyCancellable>()
+    private var sections: [StoresGroup] = []
     
     private let headerWrapper: UIView = {
         let headerWrapper = UIView()
@@ -51,7 +54,12 @@ class StoresVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        storesViewModel.loadSections()
+        storesViewModel.sectionsPublisher
+            .receive(on: RunLoop.main)
+            .sink { [weak self] newSections in
+            self?.sections = newSections
+            self?.tableView.reloadData()
+        }.store(in: &cancellables)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -60,7 +68,7 @@ class StoresVC: UIViewController {
     }
     
     private func updateView() {
-        if storesViewModel.sections.isEmpty {
+        if sections.isEmpty {
             tableView.isHidden = true
             emptyStateView.isHidden = false
         } else {
@@ -121,18 +129,18 @@ class StoresVC: UIViewController {
 extension StoresVC: UITableViewDelegate, UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return storesViewModel.sections.count
+        return sections.count
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return storesViewModel.sections[section].stores.count
+        return sections[section].stores.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: SelectStoreTableViewCell.identifier, for: indexPath) as? SelectStoreTableViewCell else {
             return UITableViewCell()
         }
-        let store = storesViewModel.sections[indexPath.section].stores[indexPath.row]
+        let store = sections[indexPath.section].stores[indexPath.row]
         cell.configure(store: store)
         return cell
     }
@@ -145,14 +153,14 @@ extension StoresVC: UITableViewDelegate, UITableViewDataSource {
         guard let sectionHeader = tableView.dequeueReusableHeaderFooterView(withIdentifier: SelectStoreTableSectionHeaderView.identifier) as? SelectStoreTableSectionHeaderView else {
             return UITableViewHeaderFooterView()
         }
-        let title = storesViewModel.sections[section].title
+        let title = sections[section].title
         sectionHeader.configure(title: title)
         return sectionHeader
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let store = storesViewModel.sections[indexPath.section].stores[indexPath.row]
-        let vc = StoreDetailsVC(store: store)
+        let store = sections[indexPath.section].stores[indexPath.row]
+        let vc = StoreDetailsVC(storeName: store.name)
         vc.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(vc, animated: false)
     }

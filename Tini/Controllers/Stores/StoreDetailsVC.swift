@@ -6,11 +6,13 @@
 //
 
 import UIKit
+import Combine
 
 class StoreDetailsVC: UIViewController {
     
-    private let store: StoreModel
-    
+    let storeName: String
+    private var store: StoreModel?
+    private var cancellables = Set<AnyCancellable>()
     private let storeViewModel = StoresViewModel.shared
     
     private let headerWrapper: UIView = {
@@ -60,13 +62,7 @@ class StoreDetailsVC: UIViewController {
         return view
     }()
     
-    private lazy var storeCard: StoreCard = {
-        let card = StoreCard(store: store)
-        card.delegate = self
-        card.translatesAutoresizingMaskIntoConstraints = false
-        card.layer.cornerRadius = 8
-        return card
-    }()
+    private var storeCard: StoreCard?
     
     private let stackView: UIStackView = {
         let stackView = UIStackView()
@@ -91,21 +87,37 @@ class StoreDetailsVC: UIViewController {
     private let deliveryView = DeliveryCardInfoView(image: Images.Home.deliveryImage!, title: "Delivery", desc: "Always on time")
     
     private let reservationCard = ReservationCard(showBtns: false)
-    private lazy var contactCard = StoreContactCard(phone: store.phone, address: store.address)
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupUI()
-        configureBackButton()
-    }
     
-    init(store: StoreModel) {
-        self.store = store
+    private var contactCard: StoreContactCard?
+    
+    init(storeName: String) {
+        self.storeName = storeName
         super.init(nibName: nil, bundle: nil)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupUI()
+        configureBackButton()
+        
+        storeViewModel.sectionsPublisher.compactMap { sections in
+            for group in sections {
+                if let match = group.stores.first(where: {$0.name == self.storeName}) {
+                    return match
+                }
+            }
+            return nil
+        }
+        .receive(on: RunLoop.main)
+        .sink { [weak self] updatedStore in
+            self?.store = updatedStore
+            self?.updateUI()
+        }
+        .store(in: &cancellables)
     }
     
     private func configureBackButton() {
@@ -114,6 +126,41 @@ class StoreDetailsVC: UIViewController {
     
     @objc private func backButtonTapped() {
         navigationController?.popViewController(animated: true)
+    }
+    
+    private func updateUI() {
+        guard let store = store else { return }
+        
+        storeCard = StoreCard(store: store)
+        storeCard?.delegate = self
+        contactCard = StoreContactCard(phone: store.phone, address: store.address)
+        
+        if let storeCard = storeCard {
+            contentView.addSubview(storeCard)
+            storeCard.translatesAutoresizingMaskIntoConstraints = false
+            
+            NSLayoutConstraint.activate([
+                storeCard.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
+                storeCard.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+                storeCard.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+                
+                stackView.topAnchor.constraint(equalTo: storeCard.bottomAnchor, constant: 12),
+            ])
+        } else {
+            stackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16).isActive = true
+        }
+        
+        if let contactCard = contactCard {
+            contentView.addSubview(contactCard)
+            contactCard.translatesAutoresizingMaskIntoConstraints = false
+            
+            NSLayoutConstraint.activate([
+                contactCard.topAnchor.constraint(equalTo: reservationCard.bottomAnchor, constant: 12),
+                contactCard.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+                contactCard.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+                contactCard.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+            ])
+        }
     }
 
     private func setupUI() {
@@ -130,7 +177,6 @@ class StoreDetailsVC: UIViewController {
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
         
-        contentView.addSubview(storeCard)
         contentView.addSubview(stackView)
         stackView.addArrangedSubview(pickupView)
         stackView.addArrangedSubview(deliveryView)
@@ -138,9 +184,6 @@ class StoreDetailsVC: UIViewController {
         
         contentView.addSubview(reservationCard)
         reservationCard.translatesAutoresizingMaskIntoConstraints = false
-        
-        contentView.addSubview(contactCard)
-        contactCard.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             headerWrapper.topAnchor.constraint(equalTo: view.topAnchor),
@@ -179,11 +222,6 @@ class StoreDetailsVC: UIViewController {
             contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -32),
             
-            storeCard.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
-            storeCard.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            storeCard.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            
-            stackView.topAnchor.constraint(equalTo: storeCard.bottomAnchor, constant: 12),
             stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             stackView.heightAnchor.constraint(equalToConstant: 154),
@@ -197,16 +235,13 @@ class StoreDetailsVC: UIViewController {
             reservationCard.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             reservationCard.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             
-            contactCard.topAnchor.constraint(equalTo: reservationCard.bottomAnchor, constant: 12),
-            contactCard.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            contactCard.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            contactCard.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         ])
     }
 }
 
 extension StoreDetailsVC: StoreCardDelegate {
     func didTapFavBtn() {
+        guard let store = store else { return }
         storeViewModel.toggleFavorite(store: store)
     }
 }
