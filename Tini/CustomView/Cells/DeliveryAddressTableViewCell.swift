@@ -7,9 +7,17 @@
 
 import UIKit
 
+protocol DeliveryAddressTableViewCellDelegate: AnyObject {
+    func didTapDeleteBtn(_ cell: DeliveryAddressTableViewCell)
+}
+
 class DeliveryAddressTableViewCell: UITableViewCell {
 
     static let identifier = "DeliveryAddressTableViewCell"
+    
+    weak var delegate: DeliveryAddressTableViewCellDelegate?
+    
+    var address: DeliveryAddressModel?
     
     private let cellView: UIView = {
         let cellView = UIView()
@@ -57,6 +65,7 @@ class DeliveryAddressTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupUI()
+        configureDeleteBtn()
     }
     
     required init?(coder: NSCoder) {
@@ -64,11 +73,21 @@ class DeliveryAddressTableViewCell: UITableViewCell {
     }
     
     func configure(deliveryAddress: DeliveryAddressModel) {
+        address = deliveryAddress
         addressText.text = "\(deliveryAddress.address),\(deliveryAddress.city),\(deliveryAddress.district),\(deliveryAddress.ward)"
         recipientDetailText.text = "\(deliveryAddress.recipientName) - \(deliveryAddress.recipientPhoneNumber)"
     }
     
+    func configureDeleteBtn() {
+        deleteButton.addTarget(self, action: #selector(deleteBtnTapped), for: .touchUpInside)
+    }
+    
+    @objc func deleteBtnTapped() {
+        delegate?.didTapDeleteBtn(self)
+    }
+    
     private func setupUI() {
+        contentView.isUserInteractionEnabled = true
         selectionStyle = .none
         backgroundColor = .clear
         addSubview(cellView)
@@ -91,6 +110,8 @@ class DeliveryAddressTableViewCell: UITableViewCell {
             
             deleteButton.centerYAnchor.constraint(equalTo: cellView.centerYAnchor),
             deleteButton.trailingAnchor.constraint(equalTo: cellView.trailingAnchor, constant: -19),
+            deleteButton.widthAnchor.constraint(equalToConstant: 20),
+            deleteButton.heightAnchor.constraint(equalToConstant: 20),
             
             addressText.topAnchor.constraint(equalTo: topAnchor, constant: 8),
             addressText.leadingAnchor.constraint(equalTo: locationIcon.trailingAnchor, constant: 13),
