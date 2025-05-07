@@ -123,7 +123,7 @@ class OrderDetailsVC: UIViewController {
         return label
     }()
     
-    private let orderInfoView = OrderInfoView(orderId: "247-96024", orderDate: "20/04/2025, 04:20")
+    private var orderInfoView: OrderInfoView
     
     private let deliveryLabel: UILabel = {
         let deliveryLabel = UILabel()
@@ -287,6 +287,7 @@ class OrderDetailsVC: UIViewController {
     
     init(order: OrderModel) {
         self.order = order
+        self.orderInfoView = OrderInfoView(orderId: "247-96024", orderDate: order.createdAt)
         super.init(nibName: nil, bundle: nil)
     }
     
