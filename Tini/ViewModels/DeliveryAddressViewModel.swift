@@ -12,9 +12,9 @@ struct DeliveryAddressViewModel {
     
     static let shared = DeliveryAddressViewModel()
     
-    private var deliveryAddressSubject = CurrentValueSubject<[DeliveryAddressModel], Never>([
-        .init(address: "128 Nguyen Dinh Chieu", city: "Ho Chi Minh", district: "District 1", ward: "Ward A", recipientName: "Nick", recipientPhoneNumber: "0896969696"),
-        .init(address: "128 Nguyen Dinh Chieu", city: "Hanoi", district: "Ba Dinh", ward: "Ward 1", recipientName: "Tu", recipientPhoneNumber: "0896969696"),
+    var deliveryAddressSubject = CurrentValueSubject<[DeliveryAddressModel], Never>([
+        .init(id: UUID(), address: "128 Nguyen Dinh Chieu", city: "Ho Chi Minh", district: "District 1", ward: "Ward A", recipientName: "Nick", recipientPhoneNumber: "0896969696"),
+        .init(id: UUID(), address: "128 Nguyen Dinh Chieu", city: "Hanoi", district: "Ba Dinh", ward: "Ward 1", recipientName: "Tu", recipientPhoneNumber: "0896969696"),
     ])
     
     var deliveryAddressPublisher: AnyPublisher<[DeliveryAddressModel], Never>{
@@ -29,5 +29,12 @@ struct DeliveryAddressViewModel {
         var currentAddresses = deliveryAddressSubject.value
         currentAddresses.append(address)
         deliveryAddressSubject.send(currentAddresses)
+    }
+    
+    func deleteAddress(id: UUID) {
+        let updatedAddresses = deliveryAddressSubject.value.filter {
+            $0.id != id
+        }
+        deliveryAddressSubject.send(updatedAddresses)
     }
 }
