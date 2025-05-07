@@ -7,7 +7,8 @@
 
 import Foundation
 
-struct DeliveryAddressModel {
+struct DeliveryAddressModel: Identifiable {
+    let id: UUID
     let address: String
     let city: String
     let district: String

@@ -258,10 +258,20 @@ extension AddressListVC: UITableViewDelegate, UITableViewDataSource {
         }
         let deliveryAddress = addresses[indexPath.row]
         cell.configure(deliveryAddress: deliveryAddress)
+        cell.delegate = self
         return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 59
+    }
+}
+
+extension AddressListVC: DeliveryAddressTableViewCellDelegate {
+    func didTapDeleteBtn(_ cell: DeliveryAddressTableViewCell) {
+        guard let addressId = cell.address?.id else {return}
+        let vc = DeleteAddressVC(id: addressId)
+        vc.modalPresentationStyle = .overCurrentContext
+        present(vc, animated: true)
     }
 }

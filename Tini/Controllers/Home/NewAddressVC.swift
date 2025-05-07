@@ -143,6 +143,7 @@ class NewAddressVC: UIViewController {
         
         if isValid {
             let newAddress = DeliveryAddressModel(
+                id: UUID(),
                 address: addressField.input.text!,
                 city: cityField.input.text!,
                 district: districtField.input.text!,
