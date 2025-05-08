@@ -9,6 +9,8 @@ import UIKit
 
 class ReservationCard: UIView {
     
+    var onReservationsTapped: (() -> Void)?
+    
     private let stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
@@ -61,6 +63,7 @@ class ReservationCard: UIView {
     private let reserveTableButton = CustomButton(title: "Reserve a table", backgroundColor: nil, image: UIImage(systemName: "calendar"))
     private let reservationsButton = CustomButton(title: "My reservations", backgroundColor: nil, image: nil)
     
+    
     init(showBtns: Bool) {
         super.init(frame: .zero)
         setupUI()
@@ -83,9 +86,14 @@ class ReservationCard: UIView {
                 buttonGroup.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 8),
                 buttonGroup.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16)
             ])
+            reservationsButton.addTarget(self, action: #selector(goToReservations), for: .touchUpInside)
         } else {
             stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16).isActive = true
         }
+    }
+    
+    @objc func goToReservations() {
+        onReservationsTapped?()
     }
     
     private func setupUI() {
