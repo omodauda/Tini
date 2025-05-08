@@ -9,6 +9,7 @@ import UIKit
 
 class OrderInfoView: UIView {
     
+    
     private let idLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -59,10 +60,12 @@ class OrderInfoView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    init(orderId: String, orderDate: String) {
+    init(orderId: String, orderDate: Date) {
         super.init(frame: .zero)
         self.orderId.text = orderId
-        self.orderDate.text = orderDate
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd/MM/yyyy, HH:mm"
+        self.orderDate.text = formatter.string(from: orderDate)
         setupUI()
     }
     

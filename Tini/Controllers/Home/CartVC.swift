@@ -7,16 +7,13 @@
 
 import UIKit
 
-enum DeliveryType {
-    case pickup
-    case delivery
-}
-
 class CartVC: UIViewController {
     
-    private let deliveryType: DeliveryType
+    private let orderType: OrderType
     
     private let cartViewModel = CartViewModel.shared
+    
+    private let ordersViewModel = OrdersViewModel.shared
     
     private var isCouponApplied: Bool = false
     
@@ -168,8 +165,8 @@ class CartVC: UIViewController {
     
     private let payBtn = CustomButton(title: "Pay", backgroundColor: UIColor(hex: Colors.primary), image: nil)
     
-    init(deliveryType: DeliveryType) {
-        self.deliveryType = deliveryType
+    init(orderType: OrderType) {
+        self.orderType = orderType
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -182,6 +179,7 @@ class CartVC: UIViewController {
         setupUI()
         configureDeliveryDetailView()
         configureRightIcon()
+        configurePayBtn()
         updatePrices()
     }
     
@@ -192,7 +190,7 @@ class CartVC: UIViewController {
     
     private func configureDeliveryDetailView() {
         
-        if deliveryType == .delivery {
+        if orderType == .delivery {
             deliveryLabel.text = "Shipping details"
             
             let cartDeliveryView = CartDeliveryView()
@@ -206,7 +204,7 @@ class CartVC: UIViewController {
                 cartDeliveryView.trailingAnchor.constraint(equalTo: deliveryDetailView.trailingAnchor, constant: -16),
                 cartDeliveryView.bottomAnchor.constraint(equalTo: deliveryDetailView.bottomAnchor, constant: -16),
             ])
-        } else if deliveryType == .pickup {
+        } else if orderType == .pickup {
             deliveryLabel.text = "Pickup details"
             
             let cartPickupView = CartPickupView()
@@ -225,6 +223,37 @@ class CartVC: UIViewController {
     
     private func configureRightIcon() {
         rightIcon.addTarget(self, action: #selector(didTapApplyCoupon), for: .touchUpInside)
+    }
+    
+    private func configurePayBtn() {
+        payBtn.addTarget(self, action: #selector(didTapPayBtn), for: .touchUpInside)
+    }
+    
+    @objc func didTapPayBtn() {
+        let status: OrderStatus = .preparing
+        let createdAt: Date = Date()
+        let storeAddress: String = "13 Han Thuyen, D.1, HCM city"
+        let deliveryDate: String? = "10:00, Today"
+        let deliveryAddress: String? = orderType == .delivery ? "285 CMT8, HCM city" : nil
+        let total: Double = cartViewModel.cartTotal
+        let shippingFee: Double = cartViewModel.shippingFee
+        let promotion: Double = cartViewModel.couponPrice
+        let items: [CartItemModel] = cartViewModel.cartItems
+        
+        let order = OrderModel(status: status, createdAt: createdAt, type: orderType, storeAddress: storeAddress, deliveryDate: deliveryDate, deliveryAddress: deliveryAddress, total: total, shippingFee: shippingFee, promotion: promotion, items: items)
+        
+        ordersViewModel.addOrder(order: order)
+        cartViewModel.clearCart()
+        
+        if let tabBarController = self.tabBarController, let viewControllers = tabBarController.viewControllers {
+            let orderTabIndex = 2
+            tabBarController.selectedIndex = orderTabIndex
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                if let navController = viewControllers[0] as? UINavigationController {
+                    navController.popToRootViewController(animated: false)
+                }
+            }
+        }
     }
     
     @objc private func didTapApplyCoupon() {
@@ -249,7 +278,6 @@ class CartVC: UIViewController {
     }
     
     private func applyCoupon(code: String) {
-//        print(code)
         dismiss(animated: true)
         isCouponApplied = true
         promotionValue.text = "-\(cartViewModel.couponPrice)"

@@ -24,7 +24,7 @@ enum OrderType: String {
 
 struct OrderModel {
     let status: OrderStatus
-    let createdAt: String
+    let createdAt: Date
     let type: OrderType
     let storeAddress: String
     let deliveryDate: String?

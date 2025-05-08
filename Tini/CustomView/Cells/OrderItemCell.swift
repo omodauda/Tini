@@ -41,7 +41,6 @@ class OrderItemCell: UITableViewCell {
         orderDateLabel.textColor = UIColor(hex: Colors.secondary)
         orderDateLabel.font = .systemFont(ofSize: 12, weight: .regular)
         orderDateLabel.translatesAutoresizingMaskIntoConstraints = false
-        orderDateLabel.text = "20/04/2020, 04:20"
         return orderDateLabel
     }()
     
@@ -156,7 +155,10 @@ class OrderItemCell: UITableViewCell {
         orderItems.text = order.items.map {"\($0.productName) (x\($0.quantity))"}.joined(separator: ", ")
         storeAddress.text = order.storeAddress
         orderTotal.text = "\(order.total)"
-    }
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd/MM/yyyy, HH:mm"
+        orderDateLabel.text = formatter.string(from: order.createdAt
+)    }
     
     private func setupUI() {
         selectionStyle = .none

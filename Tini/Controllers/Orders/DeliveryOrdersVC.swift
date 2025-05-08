@@ -6,14 +6,15 @@
 //
 
 import UIKit
+import Combine
 
 class DeliveryOrdersVC: UIViewController {
     
     private let ordersViewModel = OrdersViewModel.shared
     
-    var deliveryOrders: [OrderModel] {
-        return ordersViewModel.orders.filter({$0.type == .delivery})
-    }
+    var cancellables = Set<AnyCancellable>()
+    
+    var orders: [OrderModel] = []
     
     private let emptyView = EmptyOrderView()
     
@@ -33,11 +34,22 @@ class DeliveryOrdersVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        ordersViewModel.ordersPublisher
+            .map({ orders in
+                orders.filter { order in
+                    order.type == .delivery
+                }
+            })
+            .sink { [weak self] orders in
+                self?.orders = orders
+                self?.tableView.reloadData()
+            }
+            .store(in: &cancellables)
         updateUI()
     }
     
     func updateUI() {
-        if deliveryOrders.isEmpty {
+        if orders.isEmpty {
             tableView.isHidden = true
             emptyView.isHidden = false
         } else {
@@ -74,18 +86,18 @@ class DeliveryOrdersVC: UIViewController {
 extension DeliveryOrdersVC: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return deliveryOrders.count
+        return orders.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: OrderItemCell.identifier, for: indexPath) as? OrderItemCell else { return UITableViewCell() }
-        let order = deliveryOrders[indexPath.row]
+        let order = orders[indexPath.row]
         cell.configure(order: order)
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let order = deliveryOrders[indexPath.row]
+        let order = orders[indexPath.row]
         let vc = OrderDetailsVC(order: order)
         vc.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(vc, animated: false)
