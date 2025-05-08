@@ -67,4 +67,9 @@ class CartViewModel {
             cartItems.append(item)
         }
     }
+    
+    func clearCart() {
+        cartItems = []
+        isCouponApplied = false
+    }
 }
