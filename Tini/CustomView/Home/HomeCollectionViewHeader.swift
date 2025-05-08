@@ -12,6 +12,7 @@ class HomeCollectionViewHeader: UICollectionReusableView {
     
     var onPickupPressed: (() -> Void)?
     var onDeliveryPressed: (() -> Void)?
+    var onReservationsPressed: (() -> Void)?
     
     private let discountCollection = DiscountCollectionView()
 
@@ -38,6 +39,7 @@ class HomeCollectionViewHeader: UICollectionReusableView {
     private let deliveryView = DeliveryCardInfoView(image: Images.Home.deliveryImage!, title: "Delivery", desc: "Always on time")
     
     private let reservationCard = ReservationCard(showBtns: true)
+    
     private let title: UILabel = {
         let title = UILabel()
         title.text = "Promotion campaign"
@@ -80,6 +82,10 @@ class HomeCollectionViewHeader: UICollectionReusableView {
         addSubview(discountCollection)
         addSubview(stackView)
         addSubview(reservationCard)
+        
+        reservationCard.onReservationsTapped = { [weak self] in
+            self?.onReservationsPressed?()
+        }
         addSubview(title)
         
         discountCollection.translatesAutoresizingMaskIntoConstraints = false

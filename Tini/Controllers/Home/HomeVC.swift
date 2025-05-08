@@ -51,6 +51,12 @@ class HomeVC: UIViewController {
         navigationController?.pushViewController(deliveryMenuVC, animated: false)
     }
     
+    private func goToMyReservations() {
+        let vc = ReservationsVC()
+        vc.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(vc, animated: false)
+    }
+    
     private func setupUI() {
         
         view.addSubview(headerView)
@@ -111,6 +117,10 @@ extension HomeVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollec
             
             header.onDeliveryPressed = { [weak self] in
                 self?.goToDeliveryScreen()
+            }
+            
+            header.onReservationsPressed = { [weak self] in
+                self?.goToMyReservations()
             }
             return header
         }
