@@ -40,6 +40,8 @@ class StorePickupOrdersVC: UIViewController {
             }
             .sink { [weak self] orders in
             self?.orders = orders
+                self?.tableView.reloadData()
+                
         }.store(in: &cancellables)
         setupUI()
         updateUI()
