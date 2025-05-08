@@ -9,7 +9,7 @@ import UIKit
 
 class ProductDetailVC: UIViewController {
     
-    private let deliveryType: DeliveryType
+    private let orderType: OrderType
     
     private let product: Product
     
@@ -186,9 +186,9 @@ class ProductDetailVC: UIViewController {
     
     private lazy var cartItemView = ProductAddedToCartView(total: total, quantity: quantity, productName: product.name)
     
-    init(product: Product, deliveryType: DeliveryType) {
+    init(product: Product, orderType: OrderType) {
         self.product = product
-        self.deliveryType = deliveryType
+        self.orderType = orderType
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -466,7 +466,7 @@ extension ProductDetailVC: UITextViewDelegate {
 
 extension ProductDetailVC: ProductAddedToCartViewDelegate {
     func didTap() {
-        let vc = CartVC(deliveryType: deliveryType)
+        let vc = CartVC(orderType: orderType)
         vc.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(vc, animated: false)
         hideProductInCartView()

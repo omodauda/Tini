@@ -284,7 +284,7 @@ extension DeliveryMenuVC: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let product = menuList.sections[indexPath.section].products[indexPath.row]
-        let vc = ProductDetailVC(product: product, deliveryType: .delivery)
+        let vc = ProductDetailVC(product: product, orderType: .delivery)
         vc.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(vc, animated: false)
     }

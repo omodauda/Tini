@@ -199,7 +199,7 @@ extension StorePickupMenuVC: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let product = menuList.sections[indexPath.section].products[indexPath.row]
-        let vc = ProductDetailVC(product: product, deliveryType: .pickup)
+        let vc = ProductDetailVC(product: product, orderType: .pickup)
         vc.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(vc, animated: false)
     }
