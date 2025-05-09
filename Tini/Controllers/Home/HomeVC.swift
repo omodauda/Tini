@@ -52,7 +52,7 @@ class HomeVC: UIViewController {
     }
     
     private func goToMyReservations() {
-        let vc = ReservationsVC()
+        let vc = MyReservationsVC()
         vc.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(vc, animated: false)
     }
