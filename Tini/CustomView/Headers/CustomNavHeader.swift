@@ -16,14 +16,14 @@ class CustomNavHeader: UIView {
     
     var delegate: CustomNavHeaderDelegate?
     
-    private let backIcon: UIButton = {
+    let backIcon: UIButton = {
         let backIcon = UIButton()
         backIcon.translatesAutoresizingMaskIntoConstraints = false
         backIcon.tintColor = UIColor(hex: Colors.titleText)
         return backIcon
     }()
     
-    private let headerTitle: UILabel = {
+    let headerTitle: UILabel = {
         let headerTitle = UILabel()
         headerTitle.text = "Store pickup"
         headerTitle.font = UIFont.systemFont(ofSize: 18, weight: .bold)

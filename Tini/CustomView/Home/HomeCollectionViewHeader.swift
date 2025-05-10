@@ -13,6 +13,7 @@ class HomeCollectionViewHeader: UICollectionReusableView {
     var onPickupPressed: (() -> Void)?
     var onDeliveryPressed: (() -> Void)?
     var onReservationsPressed: (() -> Void)?
+    var onReserveTablePressed: (() -> Void)?
     
     private let discountCollection = DiscountCollectionView()
 
@@ -86,6 +87,11 @@ class HomeCollectionViewHeader: UICollectionReusableView {
         reservationCard.onReservationsTapped = { [weak self] in
             self?.onReservationsPressed?()
         }
+        
+        reservationCard.onReserveTableTapped = { [weak self] in
+            self?.onReserveTablePressed?()
+        }
+        
         addSubview(title)
         
         discountCollection.translatesAutoresizingMaskIntoConstraints = false

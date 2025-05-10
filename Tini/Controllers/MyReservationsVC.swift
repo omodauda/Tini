@@ -41,6 +41,11 @@ class MyReservationsVC: UIViewController {
     private let footerBtn = CustomButton(title: "Reserve a table", backgroundColor: UIColor(hex: Colors.primary), image: nil)
     
     private let emptyReservationView = EmptyReservationView()
+    
+    private func goToReserveTable() {
+        let vc = ReservationVC()
+        navigationController?.pushViewController(vc, animated: true)
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -57,6 +62,9 @@ class MyReservationsVC: UIViewController {
         
         view.addSubview(emptyReservationView)
         emptyReservationView.translatesAutoresizingMaskIntoConstraints = false
+        emptyReservationView.goToReserveTable = { [weak self] in
+            self?.goToReserveTable()
+        }
 //        view.addSubview(footer)
 //        footer.addSubview(footerBtn)
         

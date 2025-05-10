@@ -9,6 +9,8 @@ import UIKit
 
 class EmptyReservationView: UIView {
     
+    var goToReserveTable: (() -> Void)?
+    
     private let emptyImage: UIImageView = {
         let imageView = UIImageView()
         imageView.image = Images.emptyReservation
@@ -44,10 +46,19 @@ class EmptyReservationView: UIView {
     override init(frame: CGRect) {
         super.init(frame: .zero)
         setupUI()
+        configureBtn()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func configureBtn() {
+        button.addTarget(self, action: #selector(onBtnTapped), for: .touchUpInside)
+    }
+    
+    @objc private func onBtnTapped() {
+        goToReserveTable?()
     }
     
     func setupUI() {

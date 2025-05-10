@@ -10,6 +10,7 @@ import UIKit
 class ReservationCard: UIView {
     
     var onReservationsTapped: (() -> Void)?
+    var onReserveTableTapped: (() -> Void)?
     
     private let stackView: UIStackView = {
         let stackView = UIStackView()
@@ -87,6 +88,7 @@ class ReservationCard: UIView {
                 buttonGroup.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16)
             ])
             reservationsButton.addTarget(self, action: #selector(goToReservations), for: .touchUpInside)
+            reserveTableButton.addTarget(self, action: #selector(goToReserveTable), for: .touchUpInside)
         } else {
             stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16).isActive = true
         }
@@ -94,6 +96,10 @@ class ReservationCard: UIView {
     
     @objc func goToReservations() {
         onReservationsTapped?()
+    }
+    
+    @objc func goToReserveTable() {
+        onReserveTableTapped?()
     }
     
     private func setupUI() {
