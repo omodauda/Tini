@@ -81,4 +81,5 @@ struct Images {
     static let barcode = UIImage(named: "Barcode")
     static let headset = UIImage(named: "Headset")
     static let emptyReservation = UIImage(named: "EmptyReservation")
+    static let reservationBg = UIImage(named: "ReservationBg")
 }
