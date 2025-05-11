@@ -9,6 +9,9 @@ import UIKit
 
 class ReservationVC: UIViewController {
     
+    var numberOfAdults = 1
+    var date: Date = Date()
+    
     private let bgImage: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
@@ -36,10 +39,27 @@ class ReservationVC: UIViewController {
     }()
     
     private let storeView = TableStoreView()
+    
+    private let adultPickerView = AdultPickerView()
+    private let datePickerView = DatePickerView()
+    
+    private let stackView: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .horizontal
+        stack.spacing = 16
+        stack.distribution = .fillProportionally
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+    }
+    
+    private func updateAdultCount(newValue: Int) {
+        numberOfAdults = newValue
+        adultPickerView.update(newValue: newValue)
     }
     
     func setupUI() {
@@ -57,6 +77,23 @@ class ReservationVC: UIViewController {
         view.addSubview(formView)
         formView.addSubview(storeView)
         storeView.translatesAutoresizingMaskIntoConstraints = false
+        formView.addSubview(stackView)
+        
+        adultPickerView.translatesAutoresizingMaskIntoConstraints = false
+        adultPickerView.onAdultPickerPressed = { [weak self] in
+            let vc = AdultPickerVC(selected: self?.numberOfAdults ?? 1)
+            vc.onSelect = { [weak self] num in
+                guard let self = self else { return }
+                self.updateAdultCount(newValue: num)
+            }
+            vc.modalPresentationStyle = .overCurrentContext
+            self?.present(vc, animated: false)
+        }
+        
+        datePickerView.translatesAutoresizingMaskIntoConstraints = false
+        
+        stackView.addArrangedSubview(adultPickerView)
+        stackView.addArrangedSubview(datePickerView)
         
         NSLayoutConstraint.activate([
             bgImage.topAnchor.constraint(equalTo: view.topAnchor),
@@ -76,11 +113,15 @@ class ReservationVC: UIViewController {
             formView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             formView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             formView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            formView.heightAnchor.constraint(equalToConstant: view.frame.height / 2),
+            formView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.5),
             
             storeView.topAnchor.constraint(equalTo: formView.topAnchor, constant: 16),
             storeView.leadingAnchor.constraint(equalTo: formView.leadingAnchor, constant: 16),
             storeView.trailingAnchor.constraint(equalTo: formView.trailingAnchor, constant: -16),
+            
+            stackView.topAnchor.constraint(equalTo: storeView.bottomAnchor, constant: 16),
+            stackView.leadingAnchor.constraint(equalTo: formView.leadingAnchor, constant: 16),
+            stackView.trailingAnchor.constraint(equalTo: formView.trailingAnchor, constant: -16),
         ])
     }
 
