@@ -7,15 +7,17 @@
 
 import UIKit
 
-protocol ModalHeaderViewDelegate: AnyObject {
-    func didTapDismissButton()
-}
+//protocol ModalHeaderViewDelegate: AnyObject {
+//    func didTapDismissButton()
+//}
 
 class ModalHeaderView: UIView {
+    
+    var onDismiss: (() -> Void)?
 
     private let title: String
     
-    weak var delegate: ModalHeaderViewDelegate?
+//    weak var delegate: ModalHeaderViewDelegate?
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
@@ -58,7 +60,8 @@ class ModalHeaderView: UIView {
     }
     
     @objc private func dismissTapped() {
-        delegate?.didTapDismissButton()
+//        delegate?.didTapDismissButton()
+        onDismiss?()
     }
     
     private func setupUI() {
