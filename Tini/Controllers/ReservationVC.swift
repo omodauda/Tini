@@ -62,6 +62,11 @@ class ReservationVC: UIViewController {
         adultPickerView.update(newValue: newValue)
     }
     
+    private func updateDate(newDate: Date) {
+        date = newDate
+        datePickerView.update(newValue: newDate)
+    }
+    
     func setupUI() {
         view.backgroundColor = UIColor(hex: Colors.background)
         
@@ -91,6 +96,16 @@ class ReservationVC: UIViewController {
         }
         
         datePickerView.translatesAutoresizingMaskIntoConstraints = false
+        datePickerView.update(newValue: date )
+        datePickerView.onDatePickerPressed = { [weak self] in
+            let vc = DatePickerVC(selected: self?.date ?? Date())
+            vc.onSelect = { [weak self] date in
+                guard let self = self else { return }
+                self.updateDate(newDate: date)
+            }
+            vc.modalPresentationStyle = .overCurrentContext
+            self?.present(vc, animated: false)
+        }
         
         stackView.addArrangedSubview(adultPickerView)
         stackView.addArrangedSubview(datePickerView)
