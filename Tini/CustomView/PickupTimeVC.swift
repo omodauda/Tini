@@ -118,7 +118,10 @@ class PickupTimeVC: UIViewController {
         view.addSubview(modalView)
         modalView.addSubview(modalHeader)
         modalHeader.translatesAutoresizingMaskIntoConstraints = false
-        modalHeader.delegate = self
+        modalHeader.onDismiss = { [weak self] in
+            self?.dismiss(animated: true)
+        }
+//        modalHeader.delegate = self
         
         modalView.addSubview(stackView)
         stackView.addArrangedSubview(dateTableView)
@@ -159,11 +162,11 @@ class PickupTimeVC: UIViewController {
     }
 }
 
-extension PickupTimeVC: ModalHeaderViewDelegate {
-    func didTapDismissButton() {
-        dismiss(animated: true)
-    }
-}
+//extension PickupTimeVC: ModalHeaderViewDelegate {
+//    func didTapDismissButton() {
+//        dismiss(animated: true)
+//    }
+//}
 
 extension PickupTimeVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
