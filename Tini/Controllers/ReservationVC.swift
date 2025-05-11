@@ -11,6 +11,7 @@ class ReservationVC: UIViewController {
     
     var numberOfAdults = 1
     var date: Date = Date()
+    var timestamp = ""
     
     private let bgImage: UIImageView = {
         let imageView = UIImageView()
@@ -51,10 +52,15 @@ class ReservationVC: UIViewController {
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
+    
+    private let timePickerView = TimePickerView()
+    
+    private let reserveButton = CustomButton(title: "Reserve this table", backgroundColor: UIColor.gray, image: nil)
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        configureReserveBtn()
     }
     
     private func updateAdultCount(newValue: Int) {
@@ -65,6 +71,29 @@ class ReservationVC: UIViewController {
     private func updateDate(newDate: Date) {
         date = newDate
         datePickerView.update(newValue: newDate)
+    }
+    
+    private func updateTime(newTime: String) {
+        timestamp = newTime
+        updateSubmitButtonState()
+    }
+    
+    private func updateSubmitButtonState() {
+        let isFormValid = timestamp != ""
+
+        reserveButton.isEnabled = isFormValid
+        reserveButton.backgroundColor = isFormValid ? UIColor(hex: Colors.primary) : UIColor.gray
+    }
+    
+    private func configureReserveBtn() {
+        reserveButton.addTarget(self, action: #selector(handleReserve), for: .touchUpInside)
+    }
+    
+    @objc private func handleReserve() {
+        print("Reserve table")
+        print("number of adults: \(numberOfAdults)")
+        print("date: \(date)")
+        print("time: \(timestamp)")
     }
     
     func setupUI() {
@@ -110,6 +139,16 @@ class ReservationVC: UIViewController {
         stackView.addArrangedSubview(adultPickerView)
         stackView.addArrangedSubview(datePickerView)
         
+        formView.addSubview(timePickerView)
+        timePickerView.translatesAutoresizingMaskIntoConstraints = false
+        timePickerView.onTimeSelected = { [weak self] time in
+            self?.updateTime(newTime: time)
+        }
+        
+        formView.addSubview(reserveButton)
+        reserveButton.translatesAutoresizingMaskIntoConstraints = false
+        reserveButton.isEnabled = false
+        
         NSLayoutConstraint.activate([
             bgImage.topAnchor.constraint(equalTo: view.topAnchor),
             bgImage.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -128,7 +167,7 @@ class ReservationVC: UIViewController {
             formView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             formView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             formView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            formView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.5),
+            formView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
             storeView.topAnchor.constraint(equalTo: formView.topAnchor, constant: 16),
             storeView.leadingAnchor.constraint(equalTo: formView.leadingAnchor, constant: 16),
@@ -137,6 +176,16 @@ class ReservationVC: UIViewController {
             stackView.topAnchor.constraint(equalTo: storeView.bottomAnchor, constant: 16),
             stackView.leadingAnchor.constraint(equalTo: formView.leadingAnchor, constant: 16),
             stackView.trailingAnchor.constraint(equalTo: formView.trailingAnchor, constant: -16),
+            
+            timePickerView.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 16),
+            timePickerView.leadingAnchor.constraint(equalTo: formView.leadingAnchor, constant: 16),
+            timePickerView.trailingAnchor.constraint(equalTo: formView.trailingAnchor),
+            timePickerView.heightAnchor.constraint(equalToConstant: 57),
+            
+            reserveButton.topAnchor.constraint(equalTo: timePickerView.bottomAnchor, constant: 16),
+            reserveButton.leadingAnchor.constraint(equalTo: formView.leadingAnchor, constant: 16),
+            reserveButton.trailingAnchor.constraint(equalTo: formView.trailingAnchor, constant: -16),
+            reserveButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
         ])
     }
 
