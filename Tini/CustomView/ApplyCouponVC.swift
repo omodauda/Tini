@@ -105,7 +105,10 @@ class ApplyCouponVC: UIViewController {
         view.addSubview(modalView)
         modalView.addSubview(modalHeader)
         modalHeader.translatesAutoresizingMaskIntoConstraints = false
-        modalHeader.delegate = self
+        modalHeader.onDismiss = { [weak self] in
+            self?.dismiss(animated: false)
+        }
+//        modalHeader.delegate = self
         
         view.addSubview(couponTextField)
         couponTextField.delegate = self
@@ -129,11 +132,11 @@ class ApplyCouponVC: UIViewController {
 
 }
 
-extension ApplyCouponVC: ModalHeaderViewDelegate {
-    func didTapDismissButton() {
-        dismiss(animated: true)
-    }
-}
+//extension ApplyCouponVC: ModalHeaderViewDelegate {
+//    func didTapDismissButton() {
+//        dismiss(animated: true)
+//    }
+//}
 
 extension ApplyCouponVC: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
