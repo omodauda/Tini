@@ -30,10 +30,9 @@ class DatePickerView: UIView {
         return view
     }()
     
-    private let pickerValueLabel: UILabel = {
+    let pickerValueLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Today 10/05/2025"
         label.font = .systemFont(ofSize: 14, weight: .regular)
         label.textColor = UIColor(hex: Colors.titleText)
         return label
@@ -57,13 +56,21 @@ class DatePickerView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func update(newValue: Date) {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd/MM/yyyy"
+        formatter.timeZone = TimeZone.current
+        
+        let isToday = Calendar.current.isDateInToday(newValue)
+        pickerValueLabel.text = "\(isToday ? "Today" : "") \(formatter.string(from: newValue))"
+    }
+    
     private func configurePress() {
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTap))
         pickerView.addGestureRecognizer(tapGestureRecognizer)
     }
     
     @objc private func handleTap() {
-        print("Tapped")
         onDatePickerPressed?()
     }
     
