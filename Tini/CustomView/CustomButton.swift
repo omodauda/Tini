@@ -45,6 +45,10 @@ class CustomButton: UIButton {
         }
     }
     
+    func updateTitle(_ title: String) {
+        setTitle(title, for: .normal)
+    }
+    
     private func configure() {
         configuration = .plain()
         layer.cornerRadius = 15
