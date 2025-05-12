@@ -90,10 +90,12 @@ class ReservationVC: UIViewController {
     }
     
     @objc private func handleReserve() {
-        print("Reserve table")
-        print("number of adults: \(numberOfAdults)")
-        print("date: \(date)")
-        print("time: \(timestamp)")
+//        print("Reserve table")
+//        print("number of adults: \(numberOfAdults)")
+//        print("date: \(date)")
+//        print("time: \(timestamp)")
+        let vc = ReviewReservationVC()
+        navigationController?.pushViewController(vc, animated: false)
     }
     
     func setupUI() {
