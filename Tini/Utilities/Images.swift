@@ -82,4 +82,5 @@ struct Images {
     static let headset = UIImage(named: "Headset")
     static let emptyReservation = UIImage(named: "EmptyReservation")
     static let reservationBg = UIImage(named: "ReservationBg")
+    static let timeoutTableImg = UIImage(named: "TimeoutTable")
 }
