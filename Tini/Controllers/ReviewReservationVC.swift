@@ -190,6 +190,7 @@ class ReviewReservationVC: UIViewController {
             
             reservationsViewModel.reserveTable(reservation: newReservation)
             let myReservationsVC = MyReservationsVC()
+            myReservationsVC.hidesBottomBarWhenPushed = true
             // Replace the entire stack with HomeVC and MyReservationsVC
             if let navController = navigationController,
                let homeVC = navController.viewControllers.first {
