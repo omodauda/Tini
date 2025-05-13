@@ -10,7 +10,7 @@ import UIKit
 class ReviewReservationVC: UIViewController {
     
     var timer: Timer?
-    var remainingSeconds: Int = 60
+    var remainingSeconds: Int = 300
     
     private let headerWrapper: UIView = {
         let headerWrapper = UIView()
@@ -63,7 +63,20 @@ class ReviewReservationVC: UIViewController {
         super.viewDidLoad()
         setupUI()
         startCountdown()
+        createDismissKeyboardTapGesture()
+        configureFooterBtn()
     }
+    
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
+    }
+
+    private func createDismissKeyboardTapGesture() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tapGesture.cancelsTouchesInView = false
+        view.addGestureRecognizer(tapGesture)
+    }
+
     
     private func startCountdown() {
         timer?.invalidate()
@@ -87,12 +100,72 @@ class ReviewReservationVC: UIViewController {
             timer?.invalidate()
             timer = nil
             
-//            let vc = TimeoutDialogVC()
-//            vc.onReselectTable = { [weak self] in
-//                self?.navigationController?.popViewController(animated: false)
-//            }
-//            vc.modalPresentationStyle = .overCurrentContext
-//            present(vc, animated: false)
+            let vc = TimeoutDialogVC()
+            vc.onReselectTable = { [weak self] in
+                self?.navigationController?.popViewController(animated: false)
+            }
+            vc.modalPresentationStyle = .overCurrentContext
+            present(vc, animated: false)
+        }
+    }
+    
+    private func configureFooterBtn() {
+        footerBtn.addTarget(self, action: #selector(bookTable), for: .touchUpInside)
+    }
+    
+    @objc private func bookTable() {
+        validateForm()
+    }
+    
+    private func validateForm() {
+        var isValid = true
+        
+        func validate(_ field: FormField, _ customCheck: (() -> Bool)? = nil, _ errorMessage: String) {
+            if let check = customCheck {
+                if !check() {
+                    field.errorLabel.text = errorMessage
+                    isValid = false
+                } else {
+                    field.errorLabel.text = ""
+                }
+            } else if field.input.text?.trimmingCharacters(in: .whitespaces).isEmpty ?? true {
+                field.errorLabel.text = errorMessage
+                isValid = false
+            } else {
+                field.errorLabel.text = ""
+            }
+        }
+        
+        // Name: Must be at least two words
+            validate(contactInfoView.nameField, {
+                guard let text = self.contactInfoView.nameField.input.text?.trimmingCharacters(in: .whitespacesAndNewlines) else { return false }
+                let nameParts = text.split(separator: " ")
+                return nameParts.count >= 2 && nameParts.allSatisfy { !$0.isEmpty }
+            }, "Please enter your full name")
+
+            // Email: Must be a valid email format
+            validate(contactInfoView.emailField, {
+                guard let email = self.contactInfoView.emailField.input.text?.trimmingCharacters(in: .whitespacesAndNewlines) else { return false }
+                let emailRegex = #"^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$"#
+                let predicate = NSPredicate(format: "SELF MATCHES[c] %@", emailRegex)
+                return predicate.evaluate(with: email)
+            }, "Enter a valid email address")
+
+            // Phone: Must be 11-digit number
+            validate(contactInfoView.phoneField, {
+                guard let text = self.contactInfoView.phoneField.input.text else { return false }
+                return text.count == 11 && text.allSatisfy({ $0.isNumber })
+            }, "Enter a valid 11-digit phone number")
+        
+        if isValid {
+//            print(contactInfoView.fullName)
+//            print(contactInfoView.email)
+//            print(contactInfoView.phoneNumber)
+//            print(notesView.numberOfEderly)
+//            print(notesView.numberOfChildren)
+//            print(notesView.sittingAreaView.selectedOption ?? "")
+//            print(notesView.detailNoteView.detailNote)
+            print("Book Table")
         }
     }
     
