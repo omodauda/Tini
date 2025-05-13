@@ -11,6 +11,8 @@ class ReservationViewTableViewCell: UITableViewCell {
     
     static let identifier = "ReservationViewTableViewCell"
     
+    private var reservation: TableReservationModel?
+    
     private let cardView: UIView = {
         let card = UIView()
         card.layer.cornerRadius = 8
@@ -105,6 +107,37 @@ class ReservationViewTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func configure(reservation: TableReservationModel) {
+        self.reservation = reservation
+        switch reservation.status {
+        case .reserved:
+            statusView.backgroundColor = UIColor(hex: Colors.lightGreen)
+            statusLabel.textColor = UIColor(hex: Colors.green)
+            statusLabel.text = "Reserved"
+        case .cancelled:
+            statusView.backgroundColor = UIColor(hex: Colors.background)
+            statusLabel.textColor = UIColor(hex: Colors.secondary)
+            statusLabel.text = "Canceled"
+        case .past:
+            statusView.backgroundColor = UIColor(hex: Colors.lightPrimary)
+            statusLabel.textColor = UIColor(hex: Colors.primary)
+            statusLabel.text = "Past"
+        }
+        
+        stackView.addArrangedSubview(createRow(icon: Images.storeIcon!, text: reservation.storeAddress))
+        stackView.addArrangedSubview(createDivider())
+        stackView.addArrangedSubview(createRow(icon: UIImage(systemName: "figure.stand")!, text: "Table for \(reservation.numberOfPeople)"))
+        stackView.addArrangedSubview(createDivider())
+        
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd/MM"
+        formatter.timeZone = TimeZone.current
+        
+        let isToday = Calendar.current.isDateInToday(reservation.date)
+        let dateText = "\(isToday ? "Today" : "") \(formatter.string(from: reservation.date))"
+        stackView.addArrangedSubview(createRow(icon: Images.clockIcon!, text: "\(dateText), \(reservation.time)"))
+    }
+    
     func setupUI() {
         selectionStyle = .none
         contentView.isUserInteractionEnabled = true
@@ -114,12 +147,6 @@ class ReservationViewTableViewCell: UITableViewCell {
         
         cardView.addSubview(statusView)
         statusView.addSubview(statusLabel)
-        
-        stackView.addArrangedSubview(createRow(icon: Images.storeIcon!, text: "SB CMT8"))
-        stackView.addArrangedSubview(createDivider())
-        stackView.addArrangedSubview(createRow(icon: UIImage(systemName: "figure.stand")!, text: "Table for 2"))
-        stackView.addArrangedSubview(createDivider())
-        stackView.addArrangedSubview(createRow(icon: Images.clockIcon!, text: "Today 14/02, 13:00"))
         
         cardView.addSubview(stackView)
         
