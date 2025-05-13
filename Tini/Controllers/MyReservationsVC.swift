@@ -6,8 +6,13 @@
 //
 
 import UIKit
+import Combine
 
 class MyReservationsVC: UIViewController {
+    
+    let reservationsViewModel = ReservationsViewModel.shared
+    private var cancellables = Set<AnyCancellable>()
+    private var reservations: [TableReservationModel] = []
     
     private let headerWrapper: UIView = {
         let headerWrapper = UIView()
@@ -50,28 +55,80 @@ class MyReservationsVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        reservationsViewModel.reservationsPublisher.sink { [weak self] reservations in
+            self?.reservations = reservations
+            self?.updateView()
+            self?.tableView.reloadData()
+        }
+        .store(in: &cancellables)
     }
     
-    func setupUI() {
-        view.backgroundColor = UIColor(hex: Colors.background)
+    private func updateView() {
+        if reservations.isEmpty {
+            showEmptyView()
+        } else {
+            showTableView()
+        }
+    }
+    
+    private func showTableView() {
+        emptyReservationView.isHidden = true
+        tableView.isHidden = false
         
-        view.addSubview(headerWrapper)
-        headerWrapper.addSubview(header)
-        header.translatesAutoresizingMaskIntoConstraints = false
-        header.delegate = self
+        view.addSubview(footer)
+        footer.addSubview(footerBtn)
+        footerBtn.addTarget(self, action: #selector(handleReserveTable), for: .touchUpInside)
+        
+        view.addSubview(tableView)
+        tableView.delegate = self
+        tableView.dataSource = self
+        
+        NSLayoutConstraint.activate([
+            footer.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            footer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            footer.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            
+            footerBtn.topAnchor.constraint(equalTo: footer.topAnchor, constant: 8),
+            footerBtn.leadingAnchor.constraint(equalTo: footer.leadingAnchor, constant: 16),
+            footerBtn.trailingAnchor.constraint(equalTo: footer.trailingAnchor, constant: -16),
+            footerBtn.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8),
+            
+            tableView.topAnchor.constraint(equalTo: headerWrapper.bottomAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableView.bottomAnchor.constraint(equalTo: footer.topAnchor)
+        ])
+    }
+    
+    private func showEmptyView() {
+        tableView.isHidden = true
+        emptyReservationView.isHidden = false
         
         view.addSubview(emptyReservationView)
         emptyReservationView.translatesAutoresizingMaskIntoConstraints = false
         emptyReservationView.goToReserveTable = { [weak self] in
             self?.goToReserveTable()
         }
-//        view.addSubview(footer)
-//        footer.addSubview(footerBtn)
         
-//        view.addSubview(tableView)
-        tableView.delegate = self
-        tableView.dataSource = self
+        NSLayoutConstraint.activate([
+            emptyReservationView.topAnchor.constraint(equalTo: headerWrapper.bottomAnchor),
+            emptyReservationView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            emptyReservationView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            emptyReservationView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+        ])
+    }
+    
+    @objc private func handleReserveTable() {
+        goToReserveTable()
+    }
+    
+    private func setupUI() {
+        view.backgroundColor = UIColor(hex: Colors.background)
         
+        view.addSubview(headerWrapper)
+        headerWrapper.addSubview(header)
+        header.translatesAutoresizingMaskIntoConstraints = false
+        header.delegate = self
         
         NSLayoutConstraint.activate([
             headerWrapper.topAnchor.constraint(equalTo: view.topAnchor),
@@ -82,25 +139,6 @@ class MyReservationsVC: UIViewController {
             header.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             header.leadingAnchor.constraint(equalTo: headerWrapper.leadingAnchor),
             header.trailingAnchor.constraint(equalTo: headerWrapper.trailingAnchor),
-            
-            emptyReservationView.topAnchor.constraint(equalTo: headerWrapper.bottomAnchor),
-            emptyReservationView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            emptyReservationView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            emptyReservationView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-            
-//            footer.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-//            footer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-//            footer.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-//            
-//            footerBtn.topAnchor.constraint(equalTo: footer.topAnchor, constant: 8),
-//            footerBtn.leadingAnchor.constraint(equalTo: footer.leadingAnchor, constant: 16),
-//            footerBtn.trailingAnchor.constraint(equalTo: footer.trailingAnchor, constant: -16),
-//            footerBtn.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8),
-//            
-//            tableView.topAnchor.constraint(equalTo: headerWrapper.bottomAnchor),
-//            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-//            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-//            tableView.bottomAnchor.constraint(equalTo: footer.topAnchor)
         ])
     }
 
@@ -111,24 +149,20 @@ extension MyReservationsVC: CustomNavHeaderDelegate {
         navigationController?.popViewController(animated: false)
     }
     
-    func didTapSearch() {
-        
-    }
-    
-    
+    func didTapSearch() {}
 }
 
 extension MyReservationsVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
+        return reservations.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: ReservationViewTableViewCell.identifier, for: indexPath) as? ReservationViewTableViewCell else {
             return UITableViewCell()
         }
+        let reservation = reservations[indexPath.row]
+        cell.configure(reservation: reservation)
         return cell
     }
-    
-    
 }
