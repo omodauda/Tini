@@ -26,12 +26,6 @@ class ContactInfoView: UIView {
         return view
     }()
     
-    struct FormField {
-        let label: UILabel
-        let input: UITextField
-        let errorLabel: UILabel
-    }
-    
     let nameField = FormField(label: UILabel(), input: CustomInput(placeholder: "Recipient's name"), errorLabel: UILabel())
     let emailField = FormField(label: UILabel(), input: CustomInput(placeholder: "E.g a.nguyen@tiki.vn"), errorLabel: UILabel())
     let phoneField = FormField(label: UILabel(), input: CustomInput(placeholder: "Recipient's phone number"), errorLabel: UILabel())
@@ -40,17 +34,10 @@ class ContactInfoView: UIView {
         super.init(frame: .zero)
         setupUI()
         setupFields()
-        createDismissKeyboardTapGesture()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    func createDismissKeyboardTapGesture() {
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(UIView.endEditing))
-        tapGesture.cancelsTouchesInView = false
-        self.addGestureRecognizer(tapGesture)
     }
     
     var fullName: String {
@@ -69,10 +56,14 @@ class ContactInfoView: UIView {
         setupField(nameField, label: "Full name")
         nameField.input.delegate = self
         nameField.input.tag = 1
+        nameField.input.autocorrectionType = .no
         
         setupField(emailField, label: "Email")
         emailField.input.delegate = self
         emailField.input.tag = 2
+        emailField.input.keyboardType = .emailAddress
+        emailField.input.autocapitalizationType = .none
+        emailField.input.autocorrectionType = .no
         
         setupField(phoneField, label: "11-digit phone number")
         phoneField.input.delegate = self
@@ -135,4 +126,21 @@ class ContactInfoView: UIView {
 
 extension ContactInfoView: UITextFieldDelegate {
     
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        switch textField.tag {
+        case 1:
+            nameField.errorLabel.text = ""
+        case 2:
+            emailField.errorLabel.text = ""
+        case 3:
+            phoneField.errorLabel.text = ""
+        default:
+            return
+        }
+    }
 }
