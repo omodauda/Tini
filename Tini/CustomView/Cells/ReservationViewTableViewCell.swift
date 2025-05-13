@@ -101,10 +101,19 @@ class ReservationViewTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupUI()
+        configureCancelBtn()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func configureCancelBtn() {
+        cancelBtn.addTarget(self, action: #selector(handleCancel), for: .touchUpInside)
+    }
+    
+    @objc private func handleCancel() {
+        print("Cancel \(String(describing: reservation?.id))")
     }
     
     func configure(reservation: TableReservationModel) {
@@ -118,10 +127,16 @@ class ReservationViewTableViewCell: UITableViewCell {
             statusView.backgroundColor = UIColor(hex: Colors.background)
             statusLabel.textColor = UIColor(hex: Colors.secondary)
             statusLabel.text = "Canceled"
+            
+            cancelBtn.isHidden = true
+            contactSupportBtn.isHidden = true
         case .past:
             statusView.backgroundColor = UIColor(hex: Colors.lightPrimary)
             statusLabel.textColor = UIColor(hex: Colors.primary)
             statusLabel.text = "Past"
+            
+            cancelBtn.isHidden = true
+            contactSupportBtn.isHidden = true
         }
         
         stackView.addArrangedSubview(createRow(icon: Images.storeIcon!, text: reservation.storeAddress))
@@ -136,6 +151,37 @@ class ReservationViewTableViewCell: UITableViewCell {
         let isToday = Calendar.current.isDateInToday(reservation.date)
         let dateText = "\(isToday ? "Today" : "") \(formatter.string(from: reservation.date))"
         stackView.addArrangedSubview(createRow(icon: Images.clockIcon!, text: "\(dateText), \(reservation.time)"))
+        
+        showBtns()
+    }
+    
+    private func showBtns() {
+        
+        if (reservation?.status == .reserved) {
+            cardView.addSubview(contactSupportBtn)
+            cardView.addSubview(cancelBtn)
+            
+            NSLayoutConstraint.activate([
+                contactSupportBtn.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -16),
+                contactSupportBtn.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -16),
+                
+                cancelBtn.centerYAnchor.constraint(equalTo: contactSupportBtn.centerYAnchor),
+                cancelBtn.trailingAnchor.constraint(equalTo: contactSupportBtn.leadingAnchor, constant: -20),
+                
+                stackView.topAnchor.constraint(equalTo: statusView.bottomAnchor, constant: 12),
+                stackView.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 16),
+                stackView.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -16),
+                stackView.bottomAnchor.constraint(equalTo: contactSupportBtn.topAnchor, constant: -12)
+            ])
+        } else {
+            NSLayoutConstraint.activate([
+                stackView.topAnchor.constraint(equalTo: statusView.bottomAnchor, constant: 12),
+                stackView.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 16),
+                stackView.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -16),
+                stackView.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -12)
+            ])
+        }
+        
     }
     
     func setupUI() {
@@ -150,9 +196,6 @@ class ReservationViewTableViewCell: UITableViewCell {
         
         cardView.addSubview(stackView)
         
-        cardView.addSubview(contactSupportBtn)
-        cardView.addSubview(cancelBtn)
-        
         NSLayoutConstraint.activate([
             cardView.topAnchor.constraint(equalTo: topAnchor),
             cardView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
@@ -166,18 +209,6 @@ class ReservationViewTableViewCell: UITableViewCell {
             statusLabel.leadingAnchor.constraint(equalTo: statusView.leadingAnchor, constant: 12),
             statusLabel.trailingAnchor.constraint(equalTo: statusView.trailingAnchor, constant: -12),
             statusLabel.bottomAnchor.constraint(equalTo: statusView.bottomAnchor, constant: -4),
-            
-            contactSupportBtn.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -16),
-            contactSupportBtn.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -16),
-            
-            cancelBtn.centerYAnchor.constraint(equalTo: contactSupportBtn.centerYAnchor),
-            cancelBtn.trailingAnchor.constraint(equalTo: contactSupportBtn.leadingAnchor, constant: -20),
-            
-            stackView.topAnchor.constraint(equalTo: statusView.bottomAnchor, constant: 12),
-            stackView.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 16),
-            stackView.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -16),
-            stackView.bottomAnchor.constraint(equalTo: contactSupportBtn.topAnchor, constant: -12)
-            
         ])
     }
     
