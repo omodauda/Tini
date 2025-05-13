@@ -12,6 +12,12 @@ class ReviewReservationVC: UIViewController {
     var timer: Timer?
     var remainingSeconds: Int = 300
     
+    var date: Date
+    var time: String
+    var numberOfGuests: Int
+    
+    private let reservationsViewModel = ReservationsViewModel.shared
+    
     private let headerWrapper: UIView = {
         let headerWrapper = UIView()
         headerWrapper.translatesAutoresizingMaskIntoConstraints = false
@@ -40,7 +46,11 @@ class ReviewReservationVC: UIViewController {
         return contentView
     }()
     
-    private let tableInfo = ReviewTableInfoView()
+    private lazy var tableInfo: ReviewTableInfoView = {
+        let tableInfo = ReviewTableInfoView(date: date, time: time, numberOfGuests: numberOfGuests)
+        tableInfo.translatesAutoresizingMaskIntoConstraints = false
+        return tableInfo
+    }()
     
     private let footer: UIView = {
         let view = UIView()
@@ -58,6 +68,17 @@ class ReviewReservationVC: UIViewController {
     private let contactInfoView = ContactInfoView()
     
     private let notesView = NoteView()
+    
+    init(date: Date, time: String, numberOfGuests: Int) {
+        self.date = date
+        self.time = time
+        self.numberOfGuests = numberOfGuests
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -66,6 +87,8 @@ class ReviewReservationVC: UIViewController {
         createDismissKeyboardTapGesture()
         configureFooterBtn()
     }
+    
+    
     
     @objc private func dismissKeyboard() {
         view.endEditing(true)
@@ -158,14 +181,16 @@ class ReviewReservationVC: UIViewController {
             }, "Enter a valid 11-digit phone number")
         
         if isValid {
-//            print(contactInfoView.fullName)
-//            print(contactInfoView.email)
-//            print(contactInfoView.phoneNumber)
-//            print(notesView.numberOfEderly)
-//            print(notesView.numberOfChildren)
-//            print(notesView.sittingAreaView.selectedOption ?? "")
-//            print(notesView.detailNoteView.detailNote)
-            print("Book Table")
+            let newReservation: TableReservationModel = TableReservationModel(id: UUID(), status: .reserved, storeAddress: "Domino's Pizza Abule Egba", numberOfPeople: numberOfGuests, date: date, time: time, fullName: contactInfoView.fullName, email: contactInfoView.email, phoneNumber: contactInfoView.phoneNumber, numberOfEderly: notesView.numberOfEderly, numberOfChildren: notesView.numberOfChildren, sittingArea: notesView.sittingAreaView.selectedOption ?? "Any", notes: notesView.detailNoteView.detailNote)
+            
+            reservationsViewModel.reserveTable(reservation: newReservation)
+            
+            let myReservationsVC = MyReservationsVC()
+            // Replace the entire stack with HomeVC and MyReservationsVC
+            if let navController = navigationController,
+               let homeVC = navController.viewControllers.first {
+                navController.setViewControllers([homeVC, myReservationsVC], animated: true)
+            }
         }
     }
     
