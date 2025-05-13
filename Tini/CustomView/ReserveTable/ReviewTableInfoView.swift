@@ -103,6 +103,23 @@ class ReviewTableInfoView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    init(date: Date, time: String, numberOfGuests: Int) {
+        super.init(frame: .zero)
+        setupUI()
+        
+        stackView.addArrangedSubview(createRow(icon: Images.storeIcon!, text: "SB CMT8"))
+        stackView.addArrangedSubview(createDivider())
+        stackView.addArrangedSubview(createRow(icon: UIImage(systemName: "figure.stand")!, text: "Table for \(numberOfGuests)"))
+        stackView.addArrangedSubview(createDivider())
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd/MM"
+        formatter.timeZone = TimeZone.current
+        
+        let isToday = Calendar.current.isDateInToday(date)
+        let dateText = "\(isToday ? "Today" : "") \(formatter.string(from: date))"
+        stackView.addArrangedSubview(createRow(icon: Images.clockIcon!, text: "\(dateText), \(time)"))
+    }
+    
     func updateTimer(with time: String) {
         timerLabel.text = time
     }
@@ -116,11 +133,6 @@ class ReviewTableInfoView: UIView {
         headerView.addSubview(subTitleLabel)
         headerView.addSubview(timerLabel)
         
-        stackView.addArrangedSubview(createRow(icon: Images.storeIcon!, text: "SB CMT8"))
-        stackView.addArrangedSubview(createDivider())
-        stackView.addArrangedSubview(createRow(icon: UIImage(systemName: "figure.stand")!, text: "Table for 2"))
-        stackView.addArrangedSubview(createDivider())
-        stackView.addArrangedSubview(createRow(icon: Images.clockIcon!, text: "Today 14/02, 13:00"))
         addSubview(stackView)
         
         NSLayoutConstraint.activate([
