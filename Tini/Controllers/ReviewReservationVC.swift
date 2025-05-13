@@ -88,7 +88,10 @@ class ReviewReservationVC: UIViewController {
         configureFooterBtn()
     }
     
-    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        stopTimer()
+    }
     
     @objc private func dismissKeyboard() {
         view.endEditing(true)
@@ -106,6 +109,11 @@ class ReviewReservationVC: UIViewController {
         timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateCountdown), userInfo: nil, repeats: true)
     }
     
+    private func stopTimer() {
+        timer?.invalidate()
+        timer = nil
+    }
+    
     @objc private func updateCountdown() {
         if remainingSeconds > 0 {
             remainingSeconds -= 1
@@ -119,10 +127,7 @@ class ReviewReservationVC: UIViewController {
             tableInfo.updateTimer(with: timestamp)
             footerBtn.updateTitle("Book table (\(timestamp))")
         } else {
-            print("time up!!!")
-            timer?.invalidate()
-            timer = nil
-            
+            stopTimer()
             let vc = TimeoutDialogVC()
             vc.onReselectTable = { [weak self] in
                 self?.navigationController?.popViewController(animated: false)
@@ -184,7 +189,6 @@ class ReviewReservationVC: UIViewController {
             let newReservation: TableReservationModel = TableReservationModel(id: UUID(), status: .reserved, storeAddress: "Domino's Pizza Abule Egba", numberOfPeople: numberOfGuests, date: date, time: time, fullName: contactInfoView.fullName, email: contactInfoView.email, phoneNumber: contactInfoView.phoneNumber, numberOfEderly: notesView.numberOfEderly, numberOfChildren: notesView.numberOfChildren, sittingArea: notesView.sittingAreaView.selectedOption ?? "Any", notes: notesView.detailNoteView.detailNote)
             
             reservationsViewModel.reserveTable(reservation: newReservation)
-            
             let myReservationsVC = MyReservationsVC()
             // Replace the entire stack with HomeVC and MyReservationsVC
             if let navController = navigationController,
