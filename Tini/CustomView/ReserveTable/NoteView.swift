@@ -11,7 +11,7 @@ class NoteView: UIView {
     
     var numberOfEderly = 0
     var numberOfChildren = 0
-    var sittingArea = "Any"
+//    var sittingArea = "Any"
     
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -49,6 +49,10 @@ class NoteView: UIView {
     private let elderlySelection = SelectionCounterView(title: "Elderly people", subTitle: "60 years old & over", value: 0)
     
     private let childrenSelection = SelectionCounterView(title: "Children", subTitle: "3 years and under", value: 0)
+    
+    let sittingAreaView = SittingAreaView()
+    
+    let detailNoteView = DetailNoteView()
 
     override init(frame: CGRect) {
         super.init(frame: .zero)
@@ -96,6 +100,14 @@ class NoteView: UIView {
         
         stackView.addArrangedSubview(childrenSelection)
         stackView.addArrangedSubview(createDivider())
+        
+        sittingAreaView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.addArrangedSubview(sittingAreaView)
+        stackView.addArrangedSubview(createDivider())
+        
+        detailNoteView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.addArrangedSubview(detailNoteView)
+        
         
         sectionCard.addSubview(stackView)
         
